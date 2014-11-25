@@ -2,4 +2,5 @@
 README.txt
 setup.py
 wafer_map\__init__.py
+wafer_map\example.py
 wafer_map\wafer_map.py

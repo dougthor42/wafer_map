@@ -4,11 +4,11 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map"],
-    version="0.0.1",
+    version="0.1.0",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
-    url="https://pypi.python.org/pypi/wafer_map",
+    url="https://github.com/dougthor42/wafer_map",
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Manufacturing",
@@ -38,5 +38,9 @@ Expected capabilities:
     4. Accept continuous or discrete data and color accordingly.
     5. Provide zoom and pan capabilities.
     6. Mouse-over to display die coordinate and value
+
+Changelog:
+    2014-11-25: 0.1.0   First working code. Added example file.
+    2014-11-25: 0.0.1   Project Creation
 """,
     )
