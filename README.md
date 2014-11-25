@@ -1,12 +1,6 @@
+=========
 wafer_map
 =========
-
-Semiconductor Wafer Mapping
-
-
-============
-wafer_map.py
-============
 Plots up a wafer map. Used in semiconductor processing and analysis.
 --------------------------------------------------------------------
 
