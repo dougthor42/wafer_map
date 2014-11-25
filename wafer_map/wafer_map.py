@@ -23,7 +23,6 @@ from __future__ import print_function, division, absolute_import
 import math
 import numpy as np
 import wx
-import wx.lib.mixins.inspection
 from wx.lib.floatcanvas import FloatCanvas
 
 # Library Constants
