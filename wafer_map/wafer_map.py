@@ -56,11 +56,15 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
 
 class WaferMap(wx.Panel):
     """
-    The Canvas that the wafer map resides on
+    The Canvas that the wafer map resides on.
+
+    Usage: WaferMap(parent, xyd, wafer_info)
+        xyd :: List of (x_coord, y_coord, data) tuples
+        wafer_info :: instance of the WaferInfo class
     """
-    def __init__(self, parent, rcd, wafer_info=None):
+    def __init__(self, parent, xyd, wafer_info):
         wx.Panel.__init__(self, parent)
-        self.rcd = rcd
+        self.xyd = xyd
         self.wafer_info = wafer_info
         self.drag = False
 
@@ -101,7 +105,7 @@ class WaferMap(wx.Panel):
                       }
         color_dict = None
 
-        for die in self.rcd:
+        for die in self.xyd:
             if color_dict is None:
                 color1 = max(50, min(rescale(die[2],
                                              (0, (self.wafer_info.dia / 2)**2),
@@ -250,17 +254,17 @@ class WaferMap(wx.Panel):
         """
         pass
 
-#    def mouse_right_down(self, event):
-#        """
-#        Start making the zoom-out box.
-#        """
-#        pass
-#
-#    def mouse_right_up(self, event):
-#        """
-#        Stop making the zoom-out box and execute the zoom
-#        """
-#        pass
+    def mouse_right_down(self, event):
+        """
+        Start making the zoom-out box.
+        """
+        pass
+
+    def mouse_right_up(self, event):
+        """
+        Stop making the zoom-out box and execute the zoom
+        """
+        pass
 
     def MoveImageDoug(self):
         """ actually move the image? """
