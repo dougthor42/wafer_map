@@ -1,0 +1,37 @@
+Metadata-Version: 1.1
+Name: wafer_map
+Version: 0.0.1
+Summary: Semiconductor Wafer Mapping
+Home-page: https://pypi.python.org/pypi/wafer_map
+Author: Douglas Thor
+Author-email: doug.thor@gmail.com
+License: UNKNOWN
+Description: 
+        Plots up a wafer map. Used in semiconductor processing and analysis.
+        
+        Currently in Planning phase.
+        
+        Requires: wxPython
+        
+        
+        Expected capabilities:
+            1. Draw wafer outline and flat or notch.
+            2. Draw edge exclusion outline.
+            3. Draw wafer center crosshairs.
+            4. Accept continuous or discrete data and color accordingly.
+            5. Provide zoom and pan capabilities.
+            6. Mouse-over to display die coordinate and value
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Manufacturing
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Scientific/Engineering :: Visualization
