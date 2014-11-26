@@ -107,23 +107,11 @@ class WaferMapWindow(wx.Frame):
         # Create menu bar
         self.menu_bar = wx.MenuBar()
 
-        # Create the menu items and bind the events
-        self.file_menu = wx.Menu()
-
-        self.menu_item = self.file_menu.Append(wx.ID_ANY,
-                                               text="Redraw",
-                                               help="Force Redraw",
-                                               )
-#        self.Bind(wx.EVT_MENU, self.redraw, self.menu_item)
-
-        self.menu_item = self.file_menu.Append(wx.ID_ANY,
-                                               text="&Close",
-                                               help="Close this frame",
-                                               )
-        self.Bind(wx.EVT_MENU, self.on_quit, self.menu_item)
-
-        # Add our menu items to the menu bar
-        self.menu_bar.Append(self.file_menu, "&File")
+        self._create_menus()
+        self._create_menu_items()
+        self._add_menu_items()
+        self._add_menus()
+        self._bind_events()
 
         # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
         self.SetMenuBar(self.menu_bar)
@@ -132,10 +120,76 @@ class WaferMapWindow(wx.Frame):
         self.panel = WaferMapPanel(self,
                                    self.xyd,
                                    self.wafer_info)
-#        self.Show(True)
+
+    # TODO: There's gotta be a more scalable way to make menu items
+    #       and bind events... I'll run out of names if I have too many items.
+    #       If I use numbers, as displayed in wxPython Demo, then things
+    #       become confusing if I want to reorder things.
+    def _create_menus(self):
+        """ Create each menu for the menu bar """
+        self.mfile = wx.Menu()
+        self.medit = wx.Menu()
+        self.mview = wx.Menu()
+        self.mopts = wx.Menu()
+
+    def _create_menu_items(self):
+        """ Create each item for each menu """
+#        self.mf_new = wx.MenuItem(self.mfile, wx.ID_ANY, "&New\tCtrl+N", "TestItem")
+#        self.mf_open = wx.MenuItem(self.mfile, wx.ID_ANY, "&Open\tCtrl+O", "TestItem")
+        self.mf_close = wx.MenuItem(self.mfile, wx.ID_ANY, "&Close\tCtrl+Q", "TestItem")
+
+        self.me_redraw = wx.MenuItem(self.medit, wx.ID_ANY, "&Redraw", "Force Redraw")
+#        self.me_test1 = wx.MenuItem(self.medit, wx.ID_ANY, "&Test1", "Test Menu1")
+#        self.me_test2 = wx.MenuItem(self.medit, wx.ID_ANY, "&Test2", "Test Menu2")
+
+        self.mv_zoomfit = wx.MenuItem(self.mview, wx.ID_ANY, "Zoom &Fit\tHome", "Zoom to fit")
+
+        self.mo_test = wx.MenuItem(self.mopts, wx.ID_ANY, "&Test", "Nothing")
+
+    def _add_menu_items(self):
+        """ Appends MenuItems to each menu """
+#        self.mfile.AppendItem(self.mf_new)
+#        self.mfile.AppendItem(self.mf_open)
+        self.mfile.AppendItem(self.mf_close)
+
+        self.medit.AppendItem(self.me_redraw)
+#        self.medit.AppendItem(self.me_test1)
+#        self.medit.AppendItem(self.me_test2)
+
+        self.mview.AppendItem(self.mv_zoomfit)
+
+        self.mopts.AppendItem(self.mo_test)
+
+    def _add_menus(self):
+        """ Appends each menu to the menu bar """
+        self.menu_bar.Append(self.mfile, "&File")
+        self.menu_bar.Append(self.medit, "&Edit")
+        self.menu_bar.Append(self.mview, "&View")
+        self.menu_bar.Append(self.mopts, "&Options")
+
+    def _bind_events(self):
+        """ Binds events to varoius MenuItems """
+        self.Bind(wx.EVT_MENU, self.on_quit, self.mf_close)
+        self.Bind(wx.EVT_MENU, self.zoom_fit, self.mv_zoomfit)
+
+        # If I define an ID to the menu item, then I can use that instead of
+        #   and event source:
+        #self.mo_test = wx.MenuItem(self.mopts, 402, "&Test", "Nothing")
+        #self.Bind(wx.EVT_MENU, self.zoom_fit, id=402)
+
+        # TODO: Seperate events that are specific to WaferMapPanel.
+        #       Some events are specific to the WaferMapPanel and should
+        #       only be active if the WaferMapPanel is the active area.
+        #       Such as: Home Key. If the programmer calles WaferMapPanel
+        #       directly and integrates it into his own UI, then he shouldn't
+        #       have to add a menu item and shortcut for Zoom to Fit.
 
     def on_quit(self, event):
         self.Close(True)
+
+    def zoom_fit(self, event):
+        print("Frame Event!")
+        self.panel.zoom_fill()
 
 
 class WaferMapPanel(wx.Panel):
@@ -201,7 +255,6 @@ class WaferMapPanel(wx.Panel):
             else:
                 color = color_dict[die[2]]
             self.canvas.AddRectangle((die[0], die[1]),
-                                     # TODO: Change die_size to instance var
                                      self.wafer_info.die_size,
                                      LineWidth=1,
                                      FillColor=color,
@@ -220,6 +273,13 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
         self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
         self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
+        # note that key-down is bound again - this allows hotkeys to work
+        # even if the main Frame, which defines hotkeys in menus, is not
+        # present. wx sents the EVT_KEY_DOWN up the chain and, if the Frame
+        # and hotkeys are present, executes those instead.
+        # At least I think that's how that works...
+        # See http://wxpython.org/Phoenix/docs/html/events_overview.html
+        # for more info.
         self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
 
         # Zoom to the entire image by default
@@ -260,20 +320,21 @@ class WaferMapPanel(wx.Panel):
         """
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
-        # TODO: Change die_size to instance var
         die_coord_x = int(event.Coords[0] // self.wafer_info.die_size[0]) + 24
         # Since FloatCanvas uses Lower-Left as origin, we need to
         # adjust y-coords. Nuts.
-        # TODO: Change die_size to instance var
         # TODO: Adjust displayed coord to account for the fact that the
         #   die center is the origin of the die. Right now, if you're on the
         #   left of the die you get X=23 and the right gives X=24
         die_coord_y = 20 - int(event.Coords[1] // self.wafer_info.die_size[1])
         status_str = "{x:0.3f}, {y:0.3f} :: x{die_x:03d}, y{die_y:03d}"
-        parent.SetStatusText(status_str.format(x=event.Coords[0],
-                                               y=event.Coords[1],
-                                               die_x=die_coord_x,
-                                               die_y=die_coord_y))
+        try:
+            parent.SetStatusText(status_str.format(x=event.Coords[0],
+                                                   y=event.Coords[1],
+                                                   die_x=die_coord_x,
+                                                   die_y=die_coord_y))
+        except:
+            pass
 
         # If we're dragging, actually move the image.
         if self.drag:
@@ -317,6 +378,8 @@ class WaferMapPanel(wx.Panel):
             HOME:   Zoom to fill window
             other keys:    none yet
         """
+#        pass
+        print("panel event!")
         key = event.GetKeyCode()
         if key == wx.WXK_HOME:
             self.zoom_fill()
@@ -328,25 +391,25 @@ class WaferMapPanel(wx.Panel):
         """
         Start making the zoom-to-box box.
         """
-        pass
+        print("Left mouse down!")
 
     def mouse_left_up(self, event):
         """
         End making the zoom-to-box box and execute the zoom.
         """
-        pass
+        print("Left mouse up!")
 
     def mouse_right_down(self, event):
         """
         Start making the zoom-out box.
         """
-        pass
+        print("Right mouse down!")
 
     def mouse_right_up(self, event):
         """
         Stop making the zoom-out box and execute the zoom
         """
-        pass
+        print("Right mouse up!")
 
     def MoveImageDoug(self):
         """ actually move the image? """
@@ -457,7 +520,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
     :flat:  Flat edge exclusion. Defaults to the same as excl.
     """
     # Defined by SEMI M1-0302
-    FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
+#    FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
     rad = float(dia)/2.0
 

@@ -65,7 +65,7 @@ def generate_fake_data():
     dia = random.choice([100, 150, 200, 210])
     die_size = (die_x, die_y)
     edge_excl = random.choice([0, 2.5, 5, 10])
-    flat_excl = random.choice([0, 2.5, 5, 10])
+    flat_excl = random.choice([i for i in [0, 2.5, 5, 10] if i >= edge_excl])
 
     # put all the wafer info into the WaferInfo class.
     wafer_info = wafer_map.WaferInfo(die_size,      # Die Size in (X, Y)
@@ -117,7 +117,7 @@ def main():
     # Generate some fake data
     wafer_info, xyd = generate_fake_data()
 
-    # Call the Standalone App code:
+    # Example of calling the Standalone App:
     wafer_map.WaferMapApp(xyd,
                           wafer_info.die_size,
                           wafer_info.center_xy,
@@ -125,6 +125,35 @@ def main():
                           wafer_info.edge_excl,
                           wafer_info.flat_excl,
                           )
+
+    # Example of adding the WaferMapPanel to an existing App:
+    app = wx.App()
+
+    class ExampleFrame(wx.Frame):
+        """ Base Frame """
+        def __init__(self, title, xyd, wafer_info):
+            wx.Frame.__init__(self,
+                              None,                         # Window Parent
+                              wx.ID_ANY,                    # id
+                              title=title,                  # Window Title
+                              size=(800 + 16, 600 + 38),    # Size in px
+                              )
+            self.xyd = xyd
+            self.wafer_info = wafer_info
+
+            self.Bind(wx.EVT_CLOSE, self.OnQuit)
+
+            # Here's where we call the WaferMapPanel
+            self.panel = wafer_map.WaferMapPanel(self,
+                                                 self.xyd,
+                                                 self.wafer_info)
+
+        def OnQuit(self, event):
+            self.Destroy()
+
+    frame = ExampleFrame("TitleText!", xyd, wafer_info)
+    frame.Show()
+    app.MainLoop()
 
 if __name__ == "__main__":
     main()
