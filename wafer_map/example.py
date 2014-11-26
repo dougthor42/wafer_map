@@ -33,102 +33,6 @@ __version__ = "v0.1.0"
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 
-class WaferMapApp(wx.App):
-    """ Main App for WaferMap """
-    def OnInit(self):
-        frame = MainWindow("Wafer Map")
-        frame.Show()
-        self.SetTopWindow(frame)
-        return True
-
-
-class MainWindow(wx.Frame):
-    """
-    This is the main window of the application. It contains the MainPanel
-    and the MenuBar.
-
-    Although technically I don't need to have only 1 panel in the MainWindow,
-    I can have multiple panels. But I think I'll stick with this for now.
-    """
-    def __init__(self, title, size=(800, 800)):
-        wx.Frame.__init__(self,
-                          None,
-                          wx.ID_ANY,
-                          title=title,
-                          size=size,
-                          )
-        self.init_ui()
-
-    def init_ui(self):
-        # Create menu bar
-        self.menu_bar = wx.MenuBar()
-
-        # Create the menu items and bind the events
-        self.file_menu = wx.Menu()
-
-        self.menu_item = self.file_menu.Append(wx.ID_ANY,
-                                               text="Redraw",
-                                               help="Force Redraw",
-                                               )
-#        self.Bind(wx.EVT_MENU, self.redraw, self.menu_item)
-
-        self.menu_item = self.file_menu.Append(wx.ID_ANY,
-                                               text="&Close",
-                                               help="Close this frame",
-                                               )
-        self.Bind(wx.EVT_MENU, self.on_quit, self.menu_item)
-
-        # Add our menu items to the menu bar
-        self.menu_bar.Append(self.file_menu, "&File")
-
-        # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
-        self.SetMenuBar(self.menu_bar)
-        self.CreateStatusBar()
-
-        self.panel = MainPanel(self)
-#        self.Show(True)
-
-    def on_quit(self, event):
-        self.Close(True)
-
-
-class MainPanel(wx.Panel):
-    """
-    This is the main panel of the application. It contains all other panels
-    """
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        self.init_ui()
-
-    def init_ui(self):
-        """ Create the UI """
-        # Add layout management
-        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-
-        # Create Items
-        self.wafer_map_panel = WaferMapPanel(self)
-
-        # Add items to layout
-        self.hbox.Add(self.wafer_map_panel, 1, wx.EXPAND)
-        self.SetSizer(self.hbox)
-
-
-class WaferMapPanel(wx.Panel):
-    """
-    Contains the wafer map
-    """
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        self.init_ui()
-
-    def init_ui(self):
-        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-        self.wafer_info, self.rcd = generate_fake_data()
-        self.wafer_map = wafer_map.WaferMap(self, self.rcd, self.wafer_info)
-        self.hbox.Add(self.wafer_map, 1, wx.EXPAND)
-        self.SetSizer(self.hbox)
-
-
 def max_dist_sqrd(center, size):
     """
     Calcualtes the largest distance from the origin for a rectangle of
@@ -210,8 +114,17 @@ def generate_fake_data():
 
 def main():
     """ Main Code """
-    app = WaferMapApp()
-    app.MainLoop()
+    # Generate some fake data
+    wafer_info, xyd = generate_fake_data()
+
+    # Call the Standalone App code:
+    wafer_map.WaferMapApp(xyd,
+                          wafer_info.die_size,
+                          wafer_info.center_xy,
+                          wafer_info.dia,
+                          wafer_info.edge_excl,
+                          wafer_info.flat_excl,
+                          )
 
 if __name__ == "__main__":
     main()

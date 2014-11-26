@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @name:          wafer_map.py
-@vers:          0.1.0
+@vers:          0.2.0
 @author:        dthor
 @created:       Tue Nov 11 15:08:43 2014
 @descr:         A new file
@@ -30,7 +30,7 @@ from wx.lib.floatcanvas import FloatCanvas
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
-__version__ = "v0.1.0"
+__version__ = "v0.2.0"
 
 
 def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
@@ -54,7 +54,91 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     return result
 
 
-class WaferMap(wx.Panel):
+class WaferMapApp(object):
+    """
+    A self-contained Window for a Wafer Map.
+    """
+    def __init__(self,
+                 xyd,
+                 die_size,
+                 center_xy=(0, 0),
+                 dia=150,
+                 edge_excl=5,
+                 flat_excl=5,
+                 ):
+        app = wx.App()
+        self.wafer_info = WaferInfo(die_size,
+                                    (0, 0),
+                                    dia,
+                                    edge_excl,
+                                    flat_excl,
+                                    )
+        self.xyd = xyd
+        frame = WaferMapWindow("Wafer Map", self.xyd, self.wafer_info)
+        frame.Show()
+        app.MainLoop()
+
+
+class WaferMapWindow(wx.Frame):
+    """
+    This is the main window of the application. It contains the WaferMapPanel
+    and the MenuBar.
+
+    Although technically I don't need to have only 1 panel in the MainWindow,
+    I can have multiple panels. But I think I'll stick with this for now.
+    """
+    def __init__(self,
+                 title,
+                 xyd,
+                 wafer_info,
+                 size=(800, 800),
+                 ):
+        wx.Frame.__init__(self,
+                          None,
+                          wx.ID_ANY,
+                          title=title,
+                          size=size,
+                          )
+        self.xyd = xyd
+        self.wafer_info = wafer_info
+        self.init_ui()
+
+    def init_ui(self):
+        # Create menu bar
+        self.menu_bar = wx.MenuBar()
+
+        # Create the menu items and bind the events
+        self.file_menu = wx.Menu()
+
+        self.menu_item = self.file_menu.Append(wx.ID_ANY,
+                                               text="Redraw",
+                                               help="Force Redraw",
+                                               )
+#        self.Bind(wx.EVT_MENU, self.redraw, self.menu_item)
+
+        self.menu_item = self.file_menu.Append(wx.ID_ANY,
+                                               text="&Close",
+                                               help="Close this frame",
+                                               )
+        self.Bind(wx.EVT_MENU, self.on_quit, self.menu_item)
+
+        # Add our menu items to the menu bar
+        self.menu_bar.Append(self.file_menu, "&File")
+
+        # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
+        self.SetMenuBar(self.menu_bar)
+        self.CreateStatusBar()
+
+        self.panel = WaferMapPanel(self,
+                                   self.xyd,
+                                   self.wafer_info)
+#        self.Show(True)
+
+    def on_quit(self, event):
+        self.Close(True)
+
+
+class WaferMapPanel(wx.Panel):
     """
     The Canvas that the wafer map resides on.
 
@@ -80,7 +164,6 @@ class WaferMap(wx.Panel):
         """
         # Create items to add to our layout
         self.canvas = FloatCanvas.FloatCanvas(self,
-#                                              ProjectionFun=YDownProjection,
                                               BackgroundColor="BLACK",
                                               )
 
@@ -236,7 +319,6 @@ class WaferMap(wx.Panel):
         """
         key = event.GetKeyCode()
         if key == wx.WXK_HOME:
-            print("home pressed!")
             self.zoom_fill()
 
     def zoom_fill(self):
@@ -354,8 +436,12 @@ class WaferInfo(object):
         self.flat_excl = flat_excl
 
     def __str__(self):
-        string = "{}mm wafer with {}mm edge exclusion. Die Size = {}"
-        return string.format(self.dia, self.edge_excl, self.die_size)
+        string = """{}mm wafer with {}mm edge exclusion and \
+{}mm flat exclusion. Die Size = {}"""
+        return string.format(self.dia,
+                             self.edge_excl,
+                             self.flat_excl,
+                             self.die_size)
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
