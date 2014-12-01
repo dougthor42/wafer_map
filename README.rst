@@ -70,7 +70,7 @@ to learn how to distribute things on PyPI and GitHub, so there will be a
 lot of quick updates. Sometimes it won't work. Sometimes I'll break things.
 Sometimes I'll completely change the API.
 
-This package is attempting to modify any files or write any data, so using
+This package is not attempting to modify any files or write any data, so using
 it in alpha phase should not cause any computer harm or data loss (unless I
 do something stupid).
 
