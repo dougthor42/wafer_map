@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map"],
-    version="0.2.0",
+    version="0.3.0",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -66,6 +66,12 @@ Expected capabilities:
 
 Changelog:
 
+* 2014-12-01: 0.3.0   Added kb shortcuts and menu items for display toggle
+                      of wafer outline and crosshairs. Added placeholder
+                      for legend and kb shortcut for display toggle.
+                      Added option for plotting discrete data.
+* 2014-11-26: 0.2.0   Made it so a wafer map can be plotted with a single
+                      command. Updated example.py to demo this.
 * 2014-11-25: 0.1.0   First working code. Added example file.
 * 2014-11-25: 0.0.1   Project Creation
 """,

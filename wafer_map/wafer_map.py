@@ -14,8 +14,15 @@ Options:
     --version           # Show version.
 
 Changelog:
-    2014-11-25: 0.1.0   Removed code used for testing - was moved to
-                        example.py.
+
+* 2014-12-01: 0.3.0   Added kb shortcuts and menu items for display toggle
+                      of wafer outline and crosshairs. Added placeholder
+                      for legend and kb shortcut for display toggle.
+                      Added option for plotting discrete data.
+* 2014-11-26: 0.2.0   Made it so a wafer map can be plotted with a single
+                      command. Updated example.py to demo this.
+* 2014-11-25: 0.1.0   First working code. Added example file.
+* 2014-11-25: 0.0.1   Project Creation
 """
 
 from __future__ import print_function, division, absolute_import
@@ -28,6 +35,7 @@ from wx.lib.floatcanvas import FloatCanvas
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
+# TODO: Add legend to Panel - should not be included in bounding box.
 
 
 # Library Constants
@@ -35,7 +43,7 @@ from wx.lib.floatcanvas import FloatCanvas
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
-__version__ = "v0.2.0"
+__version__ = "v0.3.0"
 
 
 def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
@@ -111,6 +119,8 @@ class WaferMapWindow(wx.Frame):
         self.init_ui()
 
     def init_ui(self):
+     
+        
         # Create menu bar
         self.menu_bar = wx.MenuBar()
 
@@ -123,6 +133,7 @@ class WaferMapWindow(wx.Frame):
         # Initialize default states
         self.mv_outline.Check()
         self.mv_crosshairs.Check()
+        self.mv_legend.Check()
 
         # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
         self.SetMenuBar(self.menu_bar)
@@ -130,7 +141,7 @@ class WaferMapWindow(wx.Frame):
 
         self.panel = WaferMapPanel(self,
                                    self.xyd,
-                                   self.wafer_info)
+                                   self.wafer_info)   
 
     # TODO: There's gotta be a more scalable way to make menu items
     #       and bind events... I'll run out of names if I have too many items.
@@ -156,6 +167,7 @@ class WaferMapWindow(wx.Frame):
         self.mv_zoomfit = wx.MenuItem(self.mview, wx.ID_ANY, "Zoom &Fit\tHome", "Zoom to fit")
         self.mv_crosshairs = wx.MenuItem(self.mview, wx.ID_ANY, "Crosshairs\tC", "Show or hide the crosshairs", wx.ITEM_CHECK)
         self.mv_outline = wx.MenuItem(self.mview, wx.ID_ANY, "Wafer Outline\tO", "Show or hide the wafer outline", wx.ITEM_CHECK)
+        self.mv_legend = wx.MenuItem(self.mview, wx.ID_ANY, "Legend\tL", "Show or hide the legend", wx.ITEM_CHECK)
 
         self.mo_test = wx.MenuItem(self.mopts, wx.ID_ANY, "&Test", "Nothing")
 
@@ -172,6 +184,7 @@ class WaferMapWindow(wx.Frame):
         self.mview.AppendItem(self.mv_zoomfit)
         self.mview.AppendItem(self.mv_crosshairs)
         self.mview.AppendItem(self.mv_outline)
+        self.mview.AppendItem(self.mv_legend)
 
         self.mopts.AppendItem(self.mo_test)
 
@@ -188,6 +201,7 @@ class WaferMapWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.zoom_fit, self.mv_zoomfit)
         self.Bind(wx.EVT_MENU, self.toggle_crosshairs, self.mv_crosshairs)
         self.Bind(wx.EVT_MENU, self.toggle_outline, self.mv_outline)
+        self.Bind(wx.EVT_MENU, self.toggle_legend, self.mv_legend)
 
         # If I define an ID to the menu item, then I can use that instead of
         #   and event source:
@@ -209,6 +223,13 @@ class WaferMapWindow(wx.Frame):
     # TODO: I don't think I need a separate method for this
     def toggle_outline(self, event):
         self.panel.toggle_outline()
+
+    # TODO: I don't think I need a separate method for this
+    #       However if I don't use these then I have to 
+    #           1) instance self.panel at the start of __init__
+    #           2) make it so that self.panel.toggle_legend accepts the event arg
+    def toggle_legend(self, event):
+        self.panel.toggle_legend()
 
 
 # TODO: figure out how to handle discrete data vs continuous data
@@ -243,6 +264,7 @@ class WaferMapPanel(wx.Panel):
         self.drag = False
         self.wfr_outline_bool = True
         self.crosshairs_bool = True
+        self.legend_bool = True
         self.data_type = data_type
         self.coord_type = coord_type
 
@@ -309,6 +331,15 @@ class WaferMapPanel(wx.Panel):
         self.canvas.AddObject(self.wafer_outline)
         self.crosshairs = draw_crosshairs(self.wafer_info.dia)
         self.canvas.AddObject(self.crosshairs)
+
+        self.legend = Legend("Legend Placeholder",
+                             (20, 20),
+                             Size=18,
+                             Color="Black",
+                             BackgroundColor='Pink',
+                             )
+                                      
+        self.canvas.GridOver = self.legend
 
         # Bind events to the canvas
         # TODO: Move event binding to method
@@ -445,6 +476,8 @@ class WaferMapPanel(wx.Panel):
             self.toggle_outline()
         if key == 67:               # "C"
             self.toggle_crosshairs()
+        if key == 76:               # "L"
+            self.toggle_legend()
 
     def zoom_fill(self):
         self.canvas.ZoomToBB()
@@ -467,6 +500,16 @@ class WaferMapPanel(wx.Panel):
         else:
             self.canvas.AddObject(self.crosshairs)
             self.crosshairs_bool = True
+        self.canvas.Draw()
+
+    def toggle_legend(self):
+        """ Toggles the legend on and off """
+        if self.legend_bool:
+            self.canvas.GridOver = None
+            self.legend_bool = False
+        else:
+            self.canvas.GridOver = self.legend
+            self.legend_bool = True
         self.canvas.Draw()
 
     def mouse_left_down(self, event):
@@ -589,6 +632,47 @@ class WaferInfo(object):
                              self.die_size)
 
 
+class Legend(FloatCanvas.Text):
+    """ Demo of drawing overlay - to be used for legend """
+    def __init__(self,
+                 String,
+                 xy,
+                 Size=24,
+                 Color="Black",
+                 BackgroundColor=None,
+                 Family=wx.MODERN,
+                 Style=wx.NORMAL,
+                 Weight=wx.NORMAL,
+                 Underlined=False,
+                 Font=None):
+        FloatCanvas.Text.__init__(self,
+                                  String,
+                                  xy,
+                                  Size=Size,
+                                  Color=Color,
+                                  BackgroundColor=BackgroundColor,
+                                  Family=Family,
+                                  Style=Style,
+                                  Weight=Weight,
+                                  Underlined=Underlined,
+                                  Font=Font)
+
+    # TODO: Change this so that it creates the custom legend
+    def _Draw(self, dc, Canvas):
+        """
+        _Draw method for Overlay
+         note: this is a differeent signarture than the DrawObject Draw
+        """
+        dc.SetFont(self.Font)
+        dc.SetTextForeground(self.Color)
+        if self.BackgroundColor:
+            dc.SetBackgroundMode(wx.SOLID)
+            dc.SetTextBackground(self.BackgroundColor)
+        else:
+            dc.SetBackgroundMode(wx.TRANSPARENT)
+        dc.DrawTextPoint(self.String, self.XY)
+
+
 def draw_wafer_outline(dia=150, excl=5, flat=5):
     """
     Draws a wafer outline for a given radius, including any edge exclusion
@@ -601,8 +685,6 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
     :excl:  Wafer edge exclusion in mm. Defaults to None (no edge excl.)
     :flat:  Flat edge exclusion. Defaults to the same as excl.
     """
-    # Defined by SEMI M1-0302
-#    FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
     rad = float(dia)/2.0
 
