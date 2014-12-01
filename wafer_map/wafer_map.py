@@ -25,6 +25,11 @@ import numpy as np
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 
+
+# Module-level TODO list.
+# TODO: make variables "private" (prepend underscore)
+
+
 # Library Constants
 # Defined by SEMI M1-0302
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
@@ -54,6 +59,7 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     return result
 
 
+# TODO: Move this to a separate module?
 class WaferMapApp(object):
     """
     A self-contained Window for a Wafer Map.
@@ -79,6 +85,7 @@ class WaferMapApp(object):
         app.MainLoop()
 
 
+# TODO: Move this to a separate module?
 class WaferMapWindow(wx.Frame):
     """
     This is the main window of the application. It contains the WaferMapPanel
@@ -112,6 +119,10 @@ class WaferMapWindow(wx.Frame):
         self._add_menu_items()
         self._add_menus()
         self._bind_events()
+        
+        # Initialize default states
+        self.mv_outline.Check()
+        self.mv_crosshairs.Check()
 
         # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
         self.SetMenuBar(self.menu_bar)
@@ -143,6 +154,8 @@ class WaferMapWindow(wx.Frame):
 #        self.me_test2 = wx.MenuItem(self.medit, wx.ID_ANY, "&Test2", "Test Menu2")
 
         self.mv_zoomfit = wx.MenuItem(self.mview, wx.ID_ANY, "Zoom &Fit\tHome", "Zoom to fit")
+        self.mv_crosshairs = wx.MenuItem(self.mview, wx.ID_ANY, "Crosshairs\tC", "Show or hide the crosshairs", wx.ITEM_CHECK)
+        self.mv_outline = wx.MenuItem(self.mview, wx.ID_ANY, "Wafer Outline\tO", "Show or hide the wafer outline", wx.ITEM_CHECK)
 
         self.mo_test = wx.MenuItem(self.mopts, wx.ID_ANY, "&Test", "Nothing")
 
@@ -157,6 +170,8 @@ class WaferMapWindow(wx.Frame):
 #        self.medit.AppendItem(self.me_test2)
 
         self.mview.AppendItem(self.mv_zoomfit)
+        self.mview.AppendItem(self.mv_crosshairs)
+        self.mview.AppendItem(self.mv_outline)
 
         self.mopts.AppendItem(self.mo_test)
 
@@ -171,27 +186,33 @@ class WaferMapWindow(wx.Frame):
         """ Binds events to varoius MenuItems """
         self.Bind(wx.EVT_MENU, self.on_quit, self.mf_close)
         self.Bind(wx.EVT_MENU, self.zoom_fit, self.mv_zoomfit)
+        self.Bind(wx.EVT_MENU, self.toggle_crosshairs, self.mv_crosshairs)
+        self.Bind(wx.EVT_MENU, self.toggle_outline, self.mv_outline)
 
         # If I define an ID to the menu item, then I can use that instead of
         #   and event source:
         #self.mo_test = wx.MenuItem(self.mopts, 402, "&Test", "Nothing")
         #self.Bind(wx.EVT_MENU, self.zoom_fit, id=402)
 
-        # TODO: Seperate events that are specific to WaferMapPanel.
-        #       Some events are specific to the WaferMapPanel and should
-        #       only be active if the WaferMapPanel is the active area.
-        #       Such as: Home Key. If the programmer calles WaferMapPanel
-        #       directly and integrates it into his own UI, then he shouldn't
-        #       have to add a menu item and shortcut for Zoom to Fit.
-
     def on_quit(self, event):
         self.Close(True)
 
+    # TODO: I don't think I need a separate method for this
     def zoom_fit(self, event):
         print("Frame Event!")
         self.panel.zoom_fill()
 
+    # TODO: I don't think I need a separate method for this
+    def toggle_crosshairs(self, event):
+        self.panel.toggle_crosshairs()
 
+    # TODO: I don't think I need a separate method for this
+    def toggle_outline(self, event):
+        self.panel.toggle_outline()
+
+
+# TODO: figure out how to handle discrete data vs continuous data
+# TODO: figure out how to handle row-col coords data vs absolute xy coords
 class WaferMapPanel(wx.Panel):
     """
     The Canvas that the wafer map resides on.
@@ -200,11 +221,30 @@ class WaferMapPanel(wx.Panel):
         xyd :: List of (x_coord, y_coord, data) tuples
         wafer_info :: instance of the WaferInfo class
     """
-    def __init__(self, parent, xyd, wafer_info):
+    def __init__(self,
+                 parent,
+                 xyd,
+                 wafer_info,
+                 data_type='continuous',
+                 coord_type='absolute',
+                 ):
+        """
+        __init__(self,
+                 parent_panel,
+                 [(x, y, data), ...] xyd,
+                 WaferInfo wafer_info,
+                 string data_type='continuous',
+                 string coord_type='absolute',
+                 ) -> wx.Panel
+        """
         wx.Panel.__init__(self, parent)
         self.xyd = xyd
         self.wafer_info = wafer_info
         self.drag = False
+        self.wfr_outline_bool = True
+        self.crosshairs_bool = True
+        self.data_type = data_type
+        self.coord_type = coord_type
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -235,12 +275,14 @@ class WaferMapPanel(wx.Panel):
         self.canvas.InitAll()       # Needs to come before adding items!
 
         # Add the die
-        # TODO: Change rcd to instance var
-        color_dict = {0: (255, 0, 0),
-                      1: (0, 255, 0),
-                      2: (0, 0, 255),
-                      }
         color_dict = None
+        # if discrete data, generate a list of colors
+        # TODO: I'm sure there's a lib for this already...
+        if self.data_type == 'discrete':
+            unique_items = {_die[2] for _die in self.xyd}
+            color_dict = {_i: (255*_n/len(unique_items), 0, 0)
+                          for _n, _i
+                          in enumerate(unique_items)}
 
         for die in self.xyd:
             if color_dict is None:
@@ -260,13 +302,16 @@ class WaferMapPanel(wx.Panel):
                                      FillColor=color,
                                      )
 
-        # Add the wafer outline
-        wafer_outline = draw_wafer_outline(self.wafer_info.dia,
-                                           self.wafer_info.edge_excl,
-                                           self.wafer_info.flat_excl)
-        self.canvas.AddObject(wafer_outline)
+        # Add the wafer outline and crosshairs (or center dot)
+        self.wafer_outline = draw_wafer_outline(self.wafer_info.dia,
+                                                self.wafer_info.edge_excl,
+                                                self.wafer_info.flat_excl)
+        self.canvas.AddObject(self.wafer_outline)
+        self.crosshairs = draw_crosshairs(self.wafer_info.dia)
+        self.canvas.AddObject(self.crosshairs)
 
         # Bind events to the canvas
+        # TODO: Move event binding to method
         self.canvas.Bind(FloatCanvas.EVT_MOTION, self.mouse_move)
         self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
@@ -374,18 +419,55 @@ class WaferMapPanel(wx.Panel):
 
     def key_down(self, event):
         """
-        Event Handler for Keyboard Shortcuts:
+        Event Handler for Keyboard Shortcuts. This is used when the panel
+        is integrated into a Frame and the Frame does not define the KB
+        Shortcuts already.
+
+        If inside a frame, the wx.EVT_KEY_DOWN event is sent to the toplevel
+        Frame which handles the event (if defined).
+
+        At least I think that's how that works...
+        See http://wxpython.org/Phoenix/docs/html/events_overview.html
+        for more info.
+
+        Shortcuts:
             HOME:   Zoom to fill window
-            other keys:    none yet
+            O:      Toggle wafer outline
+            C:      Toggle wafer crosshairs
         """
 #        pass
         print("panel event!")
         key = event.GetKeyCode()
+        print("KeyCode: {}".format(key))
         if key == wx.WXK_HOME:
             self.zoom_fill()
+        if key == 79:               # "O"
+            self.toggle_outline()
+        if key == 67:               # "C"
+            self.toggle_crosshairs()
 
     def zoom_fill(self):
         self.canvas.ZoomToBB()
+
+    def toggle_outline(self):
+        """ Toggles the wafer outline and edge exclusion on and off """
+        if self.wfr_outline_bool:
+            self.canvas.RemoveObject(self.wafer_outline)
+            self.wfr_outline_bool = False
+        else:
+            self.canvas.AddObject(self.wafer_outline)
+            self.wfr_outline_bool = True
+        self.canvas.Draw()
+
+    def toggle_crosshairs(self):
+        """ Toggles the center crosshairs on and off """
+        if self.crosshairs_bool:
+            self.canvas.RemoveObject(self.crosshairs)
+            self.crosshairs_bool = False
+        else:
+            self.canvas.AddObject(self.crosshairs)
+            self.crosshairs_bool = True
+        self.canvas.Draw()
 
     def mouse_left_down(self, event):
         """
@@ -563,6 +645,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
     # Group the outline arc and the orientation (flat / notch) together
     group = FloatCanvas.Group([arc, notch])
 
+    # if an exclusion is defined: create it and add to group
     if excl != 0:
         exclRad = 0.5 * (dia - 2.0 * excl)
 
@@ -601,23 +684,29 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
 
             excl_notch = draw_wafer_notch(exclRad)
         group = FloatCanvas.Group([arc, notch, excl_arc, excl_notch])
+    return group
 
-    # Add dot for center of wafer
-    # replaced by crosshairs
-#    circ = FloatCanvas.Circle((0, 0),
-#                              2.5,
-#                              FillColor=wx.RED,
-#                              )
 
-    # Add crosshairs
-    xline = FloatCanvas.Line([(rad * 1.05, 0), (-rad * 1.05, 0)],
-                             LineColor=wx.CYAN,
-                             )
-    yline = FloatCanvas.Line([(0, rad * 1.05), (0, -rad * 1.05)],
-                             LineColor=wx.CYAN,
-                             )
+def draw_crosshairs(dia=150, dot=False):
+    """ Draws the crosshairs or center dot """
+    if dot:
+        circ = FloatCanvas.Circle((0, 0),
+                                  2.5,
+                                  FillColor=wx.RED,
+                                  )
 
-    return FloatCanvas.Group([group, xline, yline])
+        return FloatCanvas.Group([circ])
+    else:
+        # Default: use crosshairs
+        rad = dia / 2
+        xline = FloatCanvas.Line([(rad * 1.05, 0), (-rad * 1.05, 0)],
+                                 LineColor=wx.CYAN,
+                                 )
+        yline = FloatCanvas.Line([(0, rad * 1.05), (0, -rad * 1.05)],
+                                 LineColor=wx.CYAN,
+                                 )
+
+        return FloatCanvas.Group([xline, yline])
 
 
 def draw_wafer_flat(rad, flat_length):
@@ -660,6 +749,7 @@ def draw_wafer_notch(rad):
     return notch
 
 
+# TODO: Finish this function
 def plot_wafer_map_wx(rcd, **kwargs):
                    #wafer=(150, 5, 4.5),
                    #die_xy=(2.43, 3.3),

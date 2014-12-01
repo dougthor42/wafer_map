@@ -60,8 +60,8 @@ def generate_fake_data():
     """
     # Generate random wafer attributes
     import random
-    die_x = random.uniform(2, 10)
-    die_y = random.uniform(2, 10)
+    die_x = random.uniform(3, 10)
+    die_y = random.uniform(3, 10)
     dia = random.choice([100, 150, 200, 210])
     die_size = (die_x, die_y)
     edge_excl = random.choice([0, 2.5, 5, 10])
@@ -151,7 +151,44 @@ def main():
         def OnQuit(self, event):
             self.Destroy()
 
-    frame = ExampleFrame("TitleText!", xyd, wafer_info)
+    frame = ExampleFrame("Called directly!", xyd, wafer_info)
+    frame.Show()
+    app.MainLoop()
+
+    # Example showing how discrete data looks
+    import random
+    discrete_xyd = [(_x, _y, random.randint(1, 6))
+                    for _x, _y, _
+                    in xyd]
+
+    class ExampleFrame(wx.Frame):
+        """ Base Frame """
+        def __init__(self, title, xyd, wafer_info, data_type):
+            wx.Frame.__init__(self,
+                              None,                         # Window Parent
+                              wx.ID_ANY,                    # id
+                              title=title,                  # Window Title
+                              size=(800 + 16, 600 + 38),    # Size in px
+                              )
+            self.xyd = xyd
+            self.wafer_info = wafer_info
+            self.data_type = data_type
+
+            self.Bind(wx.EVT_CLOSE, self.OnQuit)
+
+            # Here's where we call the WaferMapPanel
+            self.panel = wafer_map.WaferMapPanel(self,
+                                                 self.xyd,
+                                                 self.wafer_info,
+                                                 self.data_type)
+
+        def OnQuit(self, event):
+            self.Destroy()
+
+    frame = ExampleFrame("Discrete Data",
+                         discrete_xyd,
+                         wafer_info,
+                         data_type='discrete')
     frame.Show()
     app.MainLoop()
 
