@@ -1,0 +1,118 @@
+=========
+wafer_map
+=========
+
+Plots up a wafer map. Used in semiconductor processing and analysis.
+
+
+Feature
+=======
+
+  - Bullet1
+
+  - Bullet2
+
+  - Bullet3
+
+
+Installation
+============
+
+Install from PyPI.
+
+    pip install wafer_map
+
+
+Usage
+=====
+
+Since I'm still making the package, the usage will change. Since no
+no documentation is better than wrong documentation, I'm leaving this section
+mostly barren until I hash things out.
+
+What I can show you is the example.py file. Navigate to the wafer_map
+directory in your python installtion (../site_packages/wafer_map) and
+run example.py in your cmd prompt or terminal:
+
+    >>> python example.py
+
+Example.py generates a fake data set and then displays it in 3 different ways:
+
+  1. As a standalone app. This requires only calling a single function in
+     your code.
+
+  2. As a panel added to your own wx.Frame object. This allows you to add
+     the wafer map to your own wxPython app.
+
+  3. As a panel added to your own wx.Frame object, but this time plotting
+     discrete (rather than continuous) data.
+
+Keyboard Shortcuts and Mouse Usage
+----------------------------------
+
+No matter if you use the standalone app or add the panel to your own wx.Frame
+instance, keyboard shortcuts work. I've only added a few so far, but I plan
+on adding more.
+
+The panel also supports mouse controls. Middle click will pan, mouse wheel
+will zoom in and out.
+
+- **Home**: Zoom to full wafer
+
+- **O**: Toggle display of wafer and exclusion outline
+
+- **C**: Toggle crosshair display
+
+- **L**: Toggle legend display
+
+
+Notes
+=====
+
+**This is Currently in Alpha phase.**
+
+This package is currently undergoing a lot of modification. I'm using this
+to learn how to distribute things on PyPI and GitHub, so there will be a
+lot of quick updates. Sometimes it won't work. Sometimes I'll break things.
+Sometimes I'll completely change the API.
+
+This package is attempting to modify any files or write any data, so using
+it in alpha phase should not cause any computer harm or data loss (unless I
+do something stupid).
+
+Requires: wxPython
+
+**Usage:**
+
+First, just try and run example.py. This *should* work out of the box and display a wafer map generated from random parameters. The wafer map can be interacted with (to a limited extent right now) with middle-click and scroll wheel.
+
+**Scroll forward:** zoom in, centered on the mouse cursor
+
+**Scrolling backward:** zoom out, centered on the mouse cursor
+
+**Middle-click + drag:** Pan
+
+Data is input into the primary class ``WaferMap`` as a list of ``(x_coord, y_coord, data)`` tuples.
+
+
+Expected capabilities:
+
+    1. Draw wafer outline and flat or notch.
+    2. Draw edge exclusion outline.
+    3. Draw wafer center crosshairs.
+    4. Accept continuous or discrete data and color accordingly.
+    5. Provide zoom and pan capabilities.
+    6. Mouse-over to display die coordinate and value
+
+
+Changelog
+=========
+
+* 2014-12-01: 0.3.0   Added kb shortcuts and menu items for display toggle
+                      of wafer outline and crosshairs. Added placeholder
+                      for legend and kb shortcut for display toggle.
+                      Added option for plotting discrete data.
+* 2014-11-26: 0.2.0   Made it so a wafer map can be plotted with a single
+                      command. Updated example.py to demo this.
+* 2014-11-25: 0.1.0   First working code. Added example file.
+* 2014-11-25: 0.0.1   Project Creation
