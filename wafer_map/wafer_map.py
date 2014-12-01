@@ -510,7 +510,7 @@ class WaferMapPanel(wx.Panel):
         else:
             self.canvas.GridOver = self.legend
             self.legend_bool = True
-        self.canvas.Draw()
+        self.canvas.Draw(Force=True)
 
     def mouse_left_down(self, event):
         """
