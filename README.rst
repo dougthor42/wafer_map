@@ -29,7 +29,7 @@ no documentation is better than wrong documentation, I'm leaving this section
 mostly barren until I hash things out.
 
 What I can show you is the example.py file. Navigate to the wafer_map
-directory in your python installtion (../site_packages/wafer_map) and
+directory in your python installtion (``../Lib/site-packages/wafer_map``) and
 run example.py in your cmd prompt or terminal:
 
     >>> python example.py
