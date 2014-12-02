@@ -92,6 +92,11 @@ Expected capabilities:
 Changelog
 =========
 
+* **0.4.0 / 2014-12-02**
+
+  + Massive change to package hierarchy - separated app, frame, info, and fake
+    data into individual modules.
+
 * **0.3.0 / 2014-12-01**
 
   + Added kb shortcuts and menu items for display toggle

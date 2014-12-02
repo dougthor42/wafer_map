@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map"],
-    version="0.3.0",
+    version="0.4.0",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -25,37 +25,88 @@ setup(
         ],
     requires=["wxPython"],
     long_description="""
-wafer_map.py
+=========
+wafer_map
+=========
 
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
 
+Features
+========
+
+- Mouse and keyboard shortcuts!
+- Knows SEMI M1-0302 wafer sizes!
+- Something else!
+
+
+Installation
+============
+
+Install from PyPI.
+
+``pip install wafer_map``
+
+
+Usage
+=====
+
+Since I'm still making the package, the usage will change. Since no
+no documentation is better than wrong documentation, I'm leaving this section
+mostly barren until I hash things out.
+
+What I can show you is the example.py file. Navigate to the wafer_map
+directory in your python installtion (``../Lib/site-packages/wafer_map``) and
+run example.py in your cmd prompt or terminal:
+
+    >>> python example.py
+
+Example.py generates a fake data set and then displays it in 3 different ways:
+
+1. As a standalone app. This requires only calling a single function in
+   your code.
+2. As a panel added to your own wx.Frame object. This allows you to add
+   the wafer map to your own wxPython app.
+3. As a panel added to your own wx.Frame object, but this time plotting
+   discrete (rather than continuous) data.
+
+
+Keyboard Shortcuts and Mouse Usage
+----------------------------------
+
+No matter if you use the standalone app or add the panel to your own wx.Frame
+instance, keyboard shortcuts work. I've only added a few so far, but I plan
+on adding more.
+
+The panel also supports mouse controls. Middle click will pan, mouse wheel
+will zoom in and out.
+
+  :Home:  Zoom to full wafer
+  :O:     Toggle display of wafer and exclusion outline
+  :C:     Toggle crosshair display
+  :L:     Toggle legend display
+
+
+Notes
+=====
+
 **Currently in Alpha phase.**
 
-Requires: wxPython
+This package is currently undergoing a lot of modification. I'm using this
+to learn how to distribute things on PyPI and GitHub, so there will be a
+lot of quick updates. Sometimes it won't work. Sometimes I'll break things.
+Sometimes I'll completely change the API.
 
-**Usage:**
+This package is not attempting to modify any files or write any data, so using
+it in alpha phase should not cause any computer harm or data loss (unless I
+do something stupid).
 
-First, just try and run example.py. This *should* work out of the box and
-display a wafer map generated from random parameters. The wafer map
-can be interacted with (to a limited extent right now) with middle-click
-and scroll wheel.
+**Requires: wxPython**
 
-**Scroll forward:** zoom in, centered on the mouse cursor
-
-**Scroll backward:** zoom out, centered on the mouse cursor
-
-**Middle-click + drag:** Pan
-
-**Left-click + drag:** Not yet implemented (probably zoom-to-box)
-
-**Right-click + drag:** Not yet implemented
-
-Data is input into the primary class ``WaferMap`` as a list
-of ``(x_coord, y_coord, data)`` tuples.
-
+Data is input into the primary class ``WaferMap`` as a list of ``(x_coord, y_coord, data)`` tuples.
 
 Expected capabilities:
+----------------------
 
 1. Draw wafer outline and flat or notch.
 2. Draw edge exclusion outline.
@@ -64,15 +115,35 @@ Expected capabilities:
 5. Provide zoom and pan capabilities.
 6. Mouse-over to display die coordinate and value
 
-Changelog:
 
-* 2014-12-01: 0.3.0   Added kb shortcuts and menu items for display toggle
-                      of wafer outline and crosshairs. Added placeholder
-                      for legend and kb shortcut for display toggle.
-                      Added option for plotting discrete data.
-* 2014-11-26: 0.2.0   Made it so a wafer map can be plotted with a single
-                      command. Updated example.py to demo this.
-* 2014-11-25: 0.1.0   First working code. Added example file.
-* 2014-11-25: 0.0.1   Project Creation
+Changelog
+=========
+
+* **0.4.0 / 2014-12-02**
+
+  + Massive change to package hierarchy - separated app, frame, info, and fake
+    data into individual modules.
+
+* **0.3.0 / 2014-12-01**
+
+  + Added kb shortcuts and menu items for display toggle
+    of wafer outline and crosshairs.
+  + Added placeholder for legend and kb shortcut for display toggle.
+  + Added option for plotting discrete data.
+
+* **0.2.0 / 2014-11-26**
+
+  + Made it so a wafer map can be plotted with a single
+    command.
+  + Updated example.py to demo single-command usage.
+
+* **0.1.0 / 2014-11-25**
+
+  + First working code. Added example file.
+
+* **0.0.1 / 2014-11-25**
+
+  + Project Creation
+
 """,
     )

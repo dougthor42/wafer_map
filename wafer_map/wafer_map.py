@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @name:          wafer_map.py
-@vers:          0.2.0
+@vers:          0.4.0
 @author:        dthor
 @created:       Tue Nov 11 15:08:43 2014
 @descr:         A new file
@@ -13,16 +13,35 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 
-Changelog:
+Changelog
+=========
 
-* 2014-12-01: 0.3.0   Added kb shortcuts and menu items for display toggle
-                      of wafer outline and crosshairs. Added placeholder
-                      for legend and kb shortcut for display toggle.
-                      Added option for plotting discrete data.
-* 2014-11-26: 0.2.0   Made it so a wafer map can be plotted with a single
-                      command. Updated example.py to demo this.
-* 2014-11-25: 0.1.0   First working code. Added example file.
-* 2014-11-25: 0.0.1   Project Creation
+* **0.4.0 / 2014-12-02**
+
+  + Massive change to package hierarchy - separated app, frame, info, and fake
+    data into individual modules.
+
+* **0.3.0 / 2014-12-01**
+
+  + Added kb shortcuts and menu items for display toggle
+    of wafer outline and crosshairs.
+  + Added placeholder for legend and kb shortcut for display toggle.
+  + Added option for plotting discrete data.
+
+* **0.2.0 / 2014-11-26**
+
+  + Made it so a wafer map can be plotted with a single
+    command.
+  + Updated example.py to demo single-command usage.
+
+* **0.1.0 / 2014-11-25**
+
+  + First working code. Added example file.
+
+* **0.0.1 / 2014-11-25**
+
+  + Project Creation
+
 """
 
 from __future__ import print_function, division, absolute_import
@@ -43,7 +62,7 @@ from wx.lib.floatcanvas import FloatCanvas
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
-__version__ = "v0.3.0"
+__version__ = "v0.4.0"
 
 
 def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
@@ -65,171 +84,6 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     denominator = original_max - original_min
     result = (part_a - part_b)/denominator
     return result
-
-
-# TODO: Move this to a separate module?
-class WaferMapApp(object):
-    """
-    A self-contained Window for a Wafer Map.
-    """
-    def __init__(self,
-                 xyd,
-                 die_size,
-                 center_xy=(0, 0),
-                 dia=150,
-                 edge_excl=5,
-                 flat_excl=5,
-                 ):
-        app = wx.App()
-        self.wafer_info = WaferInfo(die_size,
-                                    (0, 0),
-                                    dia,
-                                    edge_excl,
-                                    flat_excl,
-                                    )
-        self.xyd = xyd
-        frame = WaferMapWindow("Wafer Map", self.xyd, self.wafer_info)
-        frame.Show()
-        app.MainLoop()
-
-
-# TODO: Move this to a separate module?
-class WaferMapWindow(wx.Frame):
-    """
-    This is the main window of the application. It contains the WaferMapPanel
-    and the MenuBar.
-
-    Although technically I don't need to have only 1 panel in the MainWindow,
-    I can have multiple panels. But I think I'll stick with this for now.
-    """
-    def __init__(self,
-                 title,
-                 xyd,
-                 wafer_info,
-                 size=(800, 800),
-                 ):
-        wx.Frame.__init__(self,
-                          None,
-                          wx.ID_ANY,
-                          title=title,
-                          size=size,
-                          )
-        self.xyd = xyd
-        self.wafer_info = wafer_info
-        self.init_ui()
-
-    def init_ui(self):
-     
-        
-        # Create menu bar
-        self.menu_bar = wx.MenuBar()
-
-        self._create_menus()
-        self._create_menu_items()
-        self._add_menu_items()
-        self._add_menus()
-        self._bind_events()
-        
-        # Initialize default states
-        self.mv_outline.Check()
-        self.mv_crosshairs.Check()
-        self.mv_legend.Check()
-
-        # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
-        self.SetMenuBar(self.menu_bar)
-        self.CreateStatusBar()
-
-        self.panel = WaferMapPanel(self,
-                                   self.xyd,
-                                   self.wafer_info)   
-
-    # TODO: There's gotta be a more scalable way to make menu items
-    #       and bind events... I'll run out of names if I have too many items.
-    #       If I use numbers, as displayed in wxPython Demo, then things
-    #       become confusing if I want to reorder things.
-    def _create_menus(self):
-        """ Create each menu for the menu bar """
-        self.mfile = wx.Menu()
-        self.medit = wx.Menu()
-        self.mview = wx.Menu()
-        self.mopts = wx.Menu()
-
-    def _create_menu_items(self):
-        """ Create each item for each menu """
-#        self.mf_new = wx.MenuItem(self.mfile, wx.ID_ANY, "&New\tCtrl+N", "TestItem")
-#        self.mf_open = wx.MenuItem(self.mfile, wx.ID_ANY, "&Open\tCtrl+O", "TestItem")
-        self.mf_close = wx.MenuItem(self.mfile, wx.ID_ANY, "&Close\tCtrl+Q", "TestItem")
-
-        self.me_redraw = wx.MenuItem(self.medit, wx.ID_ANY, "&Redraw", "Force Redraw")
-#        self.me_test1 = wx.MenuItem(self.medit, wx.ID_ANY, "&Test1", "Test Menu1")
-#        self.me_test2 = wx.MenuItem(self.medit, wx.ID_ANY, "&Test2", "Test Menu2")
-
-        self.mv_zoomfit = wx.MenuItem(self.mview, wx.ID_ANY, "Zoom &Fit\tHome", "Zoom to fit")
-        self.mv_crosshairs = wx.MenuItem(self.mview, wx.ID_ANY, "Crosshairs\tC", "Show or hide the crosshairs", wx.ITEM_CHECK)
-        self.mv_outline = wx.MenuItem(self.mview, wx.ID_ANY, "Wafer Outline\tO", "Show or hide the wafer outline", wx.ITEM_CHECK)
-        self.mv_legend = wx.MenuItem(self.mview, wx.ID_ANY, "Legend\tL", "Show or hide the legend", wx.ITEM_CHECK)
-
-        self.mo_test = wx.MenuItem(self.mopts, wx.ID_ANY, "&Test", "Nothing")
-
-    def _add_menu_items(self):
-        """ Appends MenuItems to each menu """
-#        self.mfile.AppendItem(self.mf_new)
-#        self.mfile.AppendItem(self.mf_open)
-        self.mfile.AppendItem(self.mf_close)
-
-        self.medit.AppendItem(self.me_redraw)
-#        self.medit.AppendItem(self.me_test1)
-#        self.medit.AppendItem(self.me_test2)
-
-        self.mview.AppendItem(self.mv_zoomfit)
-        self.mview.AppendItem(self.mv_crosshairs)
-        self.mview.AppendItem(self.mv_outline)
-        self.mview.AppendItem(self.mv_legend)
-
-        self.mopts.AppendItem(self.mo_test)
-
-    def _add_menus(self):
-        """ Appends each menu to the menu bar """
-        self.menu_bar.Append(self.mfile, "&File")
-        self.menu_bar.Append(self.medit, "&Edit")
-        self.menu_bar.Append(self.mview, "&View")
-        self.menu_bar.Append(self.mopts, "&Options")
-
-    def _bind_events(self):
-        """ Binds events to varoius MenuItems """
-        self.Bind(wx.EVT_MENU, self.on_quit, self.mf_close)
-        self.Bind(wx.EVT_MENU, self.zoom_fit, self.mv_zoomfit)
-        self.Bind(wx.EVT_MENU, self.toggle_crosshairs, self.mv_crosshairs)
-        self.Bind(wx.EVT_MENU, self.toggle_outline, self.mv_outline)
-        self.Bind(wx.EVT_MENU, self.toggle_legend, self.mv_legend)
-
-        # If I define an ID to the menu item, then I can use that instead of
-        #   and event source:
-        #self.mo_test = wx.MenuItem(self.mopts, 402, "&Test", "Nothing")
-        #self.Bind(wx.EVT_MENU, self.zoom_fit, id=402)
-
-    def on_quit(self, event):
-        self.Close(True)
-
-    # TODO: I don't think I need a separate method for this
-    def zoom_fit(self, event):
-        print("Frame Event!")
-        self.panel.zoom_fill()
-
-    # TODO: I don't think I need a separate method for this
-    def toggle_crosshairs(self, event):
-        self.panel.toggle_crosshairs()
-
-    # TODO: I don't think I need a separate method for this
-    def toggle_outline(self, event):
-        self.panel.toggle_outline()
-
-    # TODO: I don't think I need a separate method for this
-    #       However if I don't use these then I have to 
-    #           1) instance self.panel at the start of __init__
-    #           2) make it so that self.panel.toggle_legend accepts the event arg
-    def toggle_legend(self, event):
-        self.panel.toggle_legend()
 
 
 # TODO: figure out how to handle discrete data vs continuous data
@@ -302,7 +156,8 @@ class WaferMapPanel(wx.Panel):
         # TODO: I'm sure there's a lib for this already...
         if self.data_type == 'discrete':
             unique_items = {_die[2] for _die in self.xyd}
-            color_dict = {_i: (255*_n/len(unique_items), 0, 0)
+            col_val = 255/len(unique_items)
+            color_dict = {_i: (_n*col_val, _n*col_val, _n*col_val)
                           for _n, _i
                           in enumerate(unique_items)}
 
@@ -338,7 +193,7 @@ class WaferMapPanel(wx.Panel):
                              Color="Black",
                              BackgroundColor='Pink',
                              )
-                                      
+
         self.canvas.GridOver = self.legend
 
         # Bind events to the canvas
@@ -605,31 +460,6 @@ class WaferMapPanel(wx.Panel):
             dc.DrawBitmapPoint(self.canvas._Buffer, xy_tl)
         dc.EndDrawing()
         #self.Canvas.Update()
-
-
-class WaferInfo(object):
-    """
-    Contains the wafer info:
-    Die Size
-    Center XY
-    Wafer Diameter
-    Edge Exclusion
-    Flat Exclusion
-    """
-    def __init__(self, die_size, center_xy, dia=150, edge_excl=5, flat_excl=5):
-        self.die_size = die_size
-        self.center_xy = center_xy
-        self.dia = dia
-        self.edge_excl = edge_excl
-        self.flat_excl = flat_excl
-
-    def __str__(self):
-        string = """{}mm wafer with {}mm edge exclusion and \
-{}mm flat exclusion. Die Size = {}"""
-        return string.format(self.dia,
-                             self.edge_excl,
-                             self.flat_excl,
-                             self.die_size)
 
 
 class Legend(FloatCanvas.Text):
