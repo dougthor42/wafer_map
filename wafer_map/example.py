@@ -21,7 +21,19 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 #from docopt import docopt
 import wx
-import gen_fake_data
+
+# check to see if we can import local, otherwise import absolute
+print(__file__)
+if 'site-packages' in __file__:
+    print("we're being run from site-pkg")
+    from wafer_map import gen_fake_data
+    from wafer_map import wm_core
+    from wafer_map import wm_app
+else:
+    print("running in dev mode")
+    import gen_fake_data
+    import wm_core
+    import wm_app
 
 __author__ = "Douglas Thor"
 __version__ = "v0.4.0"
@@ -30,11 +42,9 @@ __version__ = "v0.4.0"
 def main():
     """ Main Code """
     # Generate some fake data
-    import wafer_map
     wafer_info, xyd = gen_fake_data.generate_fake_data()
 
     # Example of calling the Standalone App:
-    import wm_app
     wm_app.WaferMapApp(xyd,
                        wafer_info.die_size,
                        wafer_info.center_xy,
@@ -61,9 +71,9 @@ def main():
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
 
             # Here's where we call the WaferMapPanel
-            self.panel = wafer_map.WaferMapPanel(self,
-                                                 self.xyd,
-                                                 self.wafer_info)
+            self.panel = wm_core.WaferMapPanel(self,
+                                               self.xyd,
+                                               self.wafer_info)
 
         def OnQuit(self, event):
             self.Destroy()
@@ -94,10 +104,10 @@ def main():
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
 
             # Here's where we call the WaferMapPanel
-            self.panel = wafer_map.WaferMapPanel(self,
-                                                 self.xyd,
-                                                 self.wafer_info,
-                                                 self.data_type)
+            self.panel = wm_core.WaferMapPanel(self,
+                                               self.xyd,
+                                               self.wafer_info,
+                                               self.data_type)
 
         def OnQuit(self, event):
             self.Destroy()

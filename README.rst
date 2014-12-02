@@ -92,6 +92,13 @@ Expected capabilities:
 Changelog
 =========
 
+* **0.5.0 / 2014-12-02**
+
+  + renamed wafer_map.py to wm_core.py.
+  + Finally figured out the imports for running in development from my
+    own dev directory vs running in "production" from the site-packages
+    directory.
+
 * **0.4.0 / 2014-12-02**
 
   + Massive change to package hierarchy - separated app, frame, info, and fake

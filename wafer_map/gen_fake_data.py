@@ -17,8 +17,17 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 from docopt import docopt
-import wm_info
 import math
+
+# check to see if we can import local, otherwise import absolute
+print(__file__)
+if 'site-packages' in __file__:
+    print("we're being run from site-pkg")
+    from wafer_map import wm_info
+else:
+    print("running in dev mode")
+    import wm_info
+
 
 __author__ = "Douglas Thor"
 __version__ = "v0.1.0"

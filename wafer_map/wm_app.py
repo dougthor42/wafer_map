@@ -17,9 +17,20 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import wx
-import wm_frame
-import wm_info
-import gen_fake_data
+
+# check to see if we can import local, otherwise import absolute
+print(__file__)
+if 'site-packages' in __file__:
+    print("we're being run from site-pkg")
+    from wafer_map import wm_frame
+    from wafer_map import wm_info
+    from wafer_map import gen_fake_data
+else:
+    print("running in dev mode")
+    import wm_frame
+    import wm_info
+    import gen_fake_data
+
 
 __author__ = "Douglas Thor"
 __version__ = "v0.1.0"

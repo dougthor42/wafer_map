@@ -17,7 +17,16 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import wx
-import wafer_map
+
+# check to see if we can import local, otherwise import absolute
+print(__file__)
+if 'site-packages' in __file__:
+    print("we're being run from site-pkg")
+    from wafer_map import wm_core
+else:
+    print("running in dev mode")
+    import wm_core
+
 
 __author__ = "Douglas Thor"
 __version__ = "v0.1.0"
@@ -81,10 +90,10 @@ class WaferMapWindow(wx.Frame):
         if __name__ == "__main__":
             self.panel = None
         else:
-            self.panel = wafer_map.WaferMapPanel(self,
-                                                 self.xyd,
-                                                 self.wafer_info,
-                                                 )
+            self.panel = wm_core.WaferMapPanel(self,
+                                               self.xyd,
+                                               self.wafer_info,
+                                               )
 
     # TODO: There's gotta be a more scalable way to make menu items
     #       and bind events... I'll run out of names if I have too many items.

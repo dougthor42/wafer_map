@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @name:          wafer_map.py
-@vers:          0.4.0
+@vers:          0.5.0
 @author:        dthor
 @created:       Tue Nov 11 15:08:43 2014
 @descr:         A new file
@@ -15,6 +15,13 @@ Options:
 
 Changelog
 =========
+
+* **0.5.0 / 2014-12-02**
+
+  + renamed wafer_map.py to wm_core.py.
+  + Finally figured out the imports for running in development from my
+    own dev directory vs running in "production" from the site-packages
+    directory.
 
 * **0.4.0 / 2014-12-02**
 
@@ -62,7 +69,7 @@ from wx.lib.floatcanvas import FloatCanvas
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
-__version__ = "v0.4.0"
+__version__ = "v0.5.0"
 
 
 def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
