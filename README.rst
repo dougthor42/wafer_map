@@ -52,18 +52,18 @@ confusion between a die's coordinates on the wafer (floating-point
 values representing the absolute postion of a die) and a die's grid location
 (integer row-column or x-y values that are sometimes printed on die).
 
-  :coordinate:  Floating-point value representing the exact location of
-                a die on the wafer.
-  :coord:       Alias for `coordinate`.
-  :grid:        Integer value representing the printed die. Can only be mapped
-                to a coordinate if a grid_center is defined.
+:coordinate:  Floating-point value representing the exact location of
+              a die on the wafer.
+:coord:       Alias for ``coordinate``.
+:grid:        Integer value representing the printed die. Can only be mapped
+              to a coordinate if a grid_center is defined.
                 
-                Each grid line falls on a die's center.
-  :grid_center: The `(grid_x, grid_y)` tuple which is coincident with the
-                wafer's center coordinate `(0, 0)`. This value can be made
-                up of floats.
-  :row:         Alias for `grid_y`
-  :col:         Alias for `grid_x`
+              Each grid line falls on a die's center.
+:grid_center: The ``(grid_x, grid_y)`` tuple which is coincident with the
+              wafer's center coordinate ``(0, 0)``. This value can be made
+              up of floats.
+:row:         Alias for ``grid_y``
+:col:         Alias for ``grid_x``
 
 
 Keyboard Shortcuts and Mouse Usage
