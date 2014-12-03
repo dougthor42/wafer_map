@@ -58,6 +58,15 @@ import numpy as np
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 
+# check to see if we can import local, otherwise import absolute
+print(__file__)
+if 'site-packages' in __file__:
+    print("we're being run from site-pkg")
+    from wafer_map import wm_legend
+else:
+    print("running in dev mode")
+    import wm_legend
+
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
@@ -70,6 +79,18 @@ FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
 __version__ = "v0.5.0"
+
+
+def nanpercentile(a, percentile):
+    """
+    Performs a numpy.percentile(a, percentile) calculation while
+    ignoring NaN values.
+
+    Only works on a 1D array.
+    """
+    if type(a) != np.ndarray:
+        a = np.array(a)
+    return np.percentile(a[np.logical_not(np.isnan(a))], percentile)
 
 
 def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
@@ -90,7 +111,7 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     part_b = original_min * new_max - original_max * new_min
     denominator = original_max - original_min
     result = (part_a - part_b)/denominator
-    return result
+    return float(result)
 
 
 # TODO: figure out how to handle discrete data vs continuous data
@@ -168,14 +189,17 @@ class WaferMapPanel(wx.Panel):
                           for _n, _i
                           in enumerate(unique_items)}
 
+        percentile_95 = float(nanpercentile([_i[2] for _i in self.xyd], 95))
+        percentile_05 = float(nanpercentile([_i[2] for _i in self.xyd], 5))
         for die in self.xyd:
             if color_dict is None:
                 color1 = max(50, min(rescale(die[2],
-                                             (0, (self.wafer_info.dia / 2)**2),
+                                             (percentile_05, percentile_95),
                                              (0, 255)
                                              ),
                                      255)
                              )
+
                 # black to yellow
                 color = (color1, color1, 0)
             else:
@@ -194,12 +218,24 @@ class WaferMapPanel(wx.Panel):
         self.crosshairs = draw_crosshairs(self.wafer_info.dia)
         self.canvas.AddObject(self.crosshairs)
 
-        self.legend = Legend("Legend Placeholder",
-                             (20, 20),
-                             Size=18,
-                             Color="Black",
-                             BackgroundColor='Pink',
-                             )
+        # Old legend placeholder
+#        self.legend = Legend("Legend Placeholder",
+#                             (20, 20),
+#                             Size=18,
+#                             Color="Black",
+#                             BackgroundColor='Pink',
+#                             )
+
+        # new legend
+        self.legend = wm_legend.Legend(self,
+                                       ["A", "Banana!", "C", "Donut", "E"],
+                                       [(0, 128, 0),
+                                        (0, 0, 255),
+                                        (255, 0, 0),
+                                        (128, 0, 128),
+                                        (0, 128, 128),
+                                        ],
+                                       )
 
         self.canvas.GridOver = self.legend
 
