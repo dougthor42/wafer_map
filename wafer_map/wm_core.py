@@ -143,6 +143,25 @@ class WaferMapPanel(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.xyd = xyd
         self.wafer_info = wafer_info
+        self.center_xy = self.wafer_info.center_xy
+        print("center xy is {}".format(self.center_xy))
+        self.die_size = self.wafer_info.die_size
+
+        # Create a die_location variable that stores integer die row/col vals
+        self.die_loc_dict = {}
+
+        # duplicate code from gen_wafer_map
+        self.nX = int(math.ceil(self.wafer_info.dia/self.die_size[0]))
+        print("There are {} X die".format(self.nX))
+        self.nY = int(math.ceil(self.wafer_info.dia/self.die_size[1]))
+        print("There are {} Y die".format(self.nY))
+
+        for (_x, _y, _d) in self.xyd:
+            x_loc = self.nX - (int(_x // self.die_size[0]) + self.center_xy[0])
+            y_loc = self.nY - (self.center_xy[1] - int(_y // self.die_size[1]))
+            xy_str = "x{:03f}y{:03f}".format(x_loc, y_loc)
+            self.die_loc_dict[xy_str] = _d
+
         self.drag = False
         self.wfr_outline_bool = True
         self.crosshairs_bool = True
@@ -295,19 +314,39 @@ class WaferMapPanel(wx.Panel):
         """
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
-        die_coord_x = int(event.Coords[0] // self.wafer_info.die_size[0]) + 24
+
+        die_coord_x = int(event.Coords[0] // self.die_size[0]) + int(math.floor(self.center_xy[0]))
         # Since FloatCanvas uses Lower-Left as origin, we need to
         # adjust y-coords. Nuts.
         # TODO: Adjust displayed coord to account for the fact that the
         #   die center is the origin of the die. Right now, if you're on the
         #   left of the die you get X=23 and the right gives X=24
-        die_coord_y = 20 - int(event.Coords[1] // self.wafer_info.die_size[1])
-        status_str = "{x:0.3f}, {y:0.3f} :: x{die_x:03d}, y{die_y:03d}"
+        die_coord_y = int(math.floor(self.center_xy[1])) - int(event.Coords[1] // self.die_size[1])
+#        die_coord_y = int(event.Coords[1] // self.die_size[1])
+#        die_coord_x = self.nX - (int(event.Coords[0] // self.die_size[0])
+#                                 + self.center_xy[0])
+#        die_coord_y = self.nY - (self.center_xy[1]
+#                                 - int(event.Coords[1] // self.die_size[1]))
+
+        die_coord = "x{:03d}y{:03d}".format(die_coord_x, die_coord_y)
         try:
-            parent.SetStatusText(status_str.format(x=event.Coords[0],
-                                                   y=event.Coords[1],
-                                                   die_x=die_coord_x,
-                                                   die_y=die_coord_y))
+            die_val = self.die_loc_dict[die_coord]
+        except KeyError:
+            die_val = ""
+
+        coord_str = "{x:0.3f}, {y:0.3f}".format(x=event.Coords[0],
+                                                y=event.Coords[1],
+                                                )
+        die_loc_str = "x{die_x:03d}, y{die_y:03d}".format(die_x=die_coord_x,
+                                                          die_y=die_coord_y,
+                                                          )
+        value_str = "{}".format(die_val)
+        status_str = "{coord} :: {loc} :: {val}".format(coord=coord_str,
+                                                        loc=die_loc_str,
+                                                        val=value_str,
+                                                        )
+        try:
+            parent.SetStatusText(status_str)
         except:
             pass
 

@@ -66,29 +66,21 @@ def generate_fake_data():
     # Generate random wafer attributes
     import random
     die_x = random.uniform(5, 10)
+    die_x = 9.37363
     die_y = random.uniform(5, 10)
+    die_y = 8.84682
     dia = random.choice([100, 150, 200, 210])
+    dia = 210
     die_size = (die_x, die_y)
     edge_excl = random.choice([0, 2.5, 5, 10])
+    edge_excl = 0
     flat_excl = random.choice([i for i in [0, 2.5, 5, 10] if i >= edge_excl])
-
-    # put all the wafer info into the WaferInfo class.
-    wafer_info = wm_info.WaferInfo(die_size,      # Die Size in (X, Y)
-                                   (0, 0),        # Center Coord (X, Y)
-                                   dia,           # Wafer Diameter
-                                   edge_excl,     # Edge Exclusion
-                                   flat_excl,     # Flat Exclusion
-                                   )
-    print(wafer_info)
+    flat_excl = 10
 
     xyd = []            # our list of (x_coord, x_coord, data) tuples
 
     # Create a temp wafer map for testing
     # Note that this assumes the center of the wafer lies in the die streets
-    # XXX:  For the folloinw parameters, there are some die that are included
-    #       when they should not be:
-    #       150mm wafer with 2.5mm edge exclusion and 2.5mm flat exclusion.
-    #       Die Size = (8.033, 8.77667)
 
     # Determine where our wafer edge is for the flat area
     flat_y = -dia/2     # assume wafer edge at first
@@ -101,12 +93,14 @@ def generate_fake_data():
     for i in xrange(nX):
         for j in xrange(nY):
             # die center coordinates
-            x_coord = (i - nX//2) * die_x
-            y_coord = (j - nY//2) * die_y
+            x_coord = (i - nX//2) * die_x + 0.5 * die_x
+            y_coord = (j - nY//2) * die_y + 0.5 * die_y
             max_dist = max_dist_sqrd((x_coord, y_coord), (die_size))
 
-            # if we're off the wafer, don't add the die
-            if max_dist > (dia/2)**2 or y_coord - die_y/2 < flat_y:
+            # if we're out of excl. zone, don't add the die
+            excl_sq = (dia/2)**2 + (edge_excl**2) - (dia * edge_excl)
+#            if max_dist > (dia/2)**2 or y_coord - die_y/2 < flat_y:
+            if max_dist > excl_sq or y_coord < (flat_y + flat_excl):
                 continue
             else:
                 r_squared = (x_coord**2 + y_coord**2)
@@ -117,6 +111,19 @@ def generate_fake_data():
                             r_squared))
 
     print("Number of Die Plotted: {}".format(len(xyd)))
+
+    # add 0.5 to each because DieLoc origin is center of die, while DieCoord
+    # is lower-left corner.
+    center_xy = (nX/2 + 0.5, nY/2 + 0.5)
+
+    # put all the wafer info into the WaferInfo class.
+    wafer_info = wm_info.WaferInfo(die_size,      # Die Size in (X, Y)
+                                   center_xy,     # Center Coord (X, Y)
+                                   dia,           # Wafer Diameter
+                                   edge_excl,     # Edge Exclusion
+                                   flat_excl,     # Flat Exclusion
+                                   )
+    print(wafer_info)
 
     return (wafer_info, xyd)
 

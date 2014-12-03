@@ -47,28 +47,33 @@ class WaferMapApp(object):
                  dia=150,
                  edge_excl=5,
                  flat_excl=5,
+                 data_type='continuous'
                  ):
         """
         __init__(self,
                  list xyd,
                  tuple die_size,
-                 tuple center_xy=(0, 0),
+                 tuple center_xy=(0, 0),center_xy
                  float dia=150,
                  float edge_excl=5,
-                 float flat_exlc=5) -> object
+                 float flat_exlc=5,
+                 string data_type='continuous',
+                 ) -> object
         """
         self.app = wx.App()
         self.wafer_info = wm_info.WaferInfo(die_size,
-                                            (0, 0),
+                                            center_xy,
                                             dia,
                                             edge_excl,
                                             flat_excl,
                                             )
         self.xyd = xyd
+        self.data_type = data_type
 
         self.frame = wm_frame.WaferMapWindow("Wafer Map",
                                              self.xyd,
-                                             self.wafer_info)
+                                             self.wafer_info,
+                                             data_type=self.data_type)
 
         self.frame.Show()
         self.app.MainLoop()
@@ -78,12 +83,19 @@ def main():
     """ Main Code """
 #    raise RuntimeError("This module is not meant to be run by itself.")
     wafer_info, xyd = gen_fake_data.generate_fake_data()
+
+    import random
+    discrete_xyd = [(_x, _y, random.randint(1, 6))
+                    for _x, _y, _
+                    in xyd]
+
     WaferMapApp(xyd,
                 wafer_info.die_size,
                 wafer_info.center_xy,
                 wafer_info.dia,
                 wafer_info.edge_excl,
                 wafer_info.flat_excl,
+#                data_type='discrete',
                 )
 
 

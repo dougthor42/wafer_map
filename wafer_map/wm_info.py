@@ -38,12 +38,19 @@ class WaferInfo(object):
         self.flat_excl = flat_excl
 
     def __str__(self):
-        string = """{}mm wafer with {}mm edge exclusion and \
-{}mm flat exclusion. Die Size = {}"""
+        string = """
+Wafer Die: {}mm
+Die Size: {}
+Center XY: {}
+Edge Excl: {}
+Flat Excl: {}
+"""
         return string.format(self.dia,
+                             self.die_size,
+                             self.center_xy,
                              self.edge_excl,
                              self.flat_excl,
-                             self.die_size)
+                             )
 
 
 def main():

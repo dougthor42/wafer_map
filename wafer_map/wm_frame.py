@@ -45,13 +45,16 @@ class WaferMapWindow(wx.Frame):
                  xyd,
                  wafer_info,
                  size=(800, 800),
+                 data_type='continuous',
                  ):
         """
         __init__(self,
                  string title,
                  list xyd,
                  WaferInfo wafer_info,
-                 tuple size=(800, 800)) -> wx.Frame
+                 tuple size=(800, 800),
+                 string data_type='continuous',
+                 ) -> wx.Frame
         """
         wx.Frame.__init__(self,
                           None,
@@ -61,6 +64,7 @@ class WaferMapWindow(wx.Frame):
                           )
         self.xyd = xyd
         self.wafer_info = wafer_info
+        self.data_type = data_type
         self.init_ui()
 
     def init_ui(self):
@@ -93,6 +97,7 @@ class WaferMapWindow(wx.Frame):
             self.panel = wm_core.WaferMapPanel(self,
                                                self.xyd,
                                                self.wafer_info,
+                                               data_type=self.data_type,
                                                )
 
     # TODO: There's gotta be a more scalable way to make menu items
