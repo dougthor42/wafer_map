@@ -70,12 +70,12 @@ def generate_fake_data():
     die_y = random.uniform(5, 10)
     die_y = 8.84682
     dia = random.choice([100, 150, 200, 210])
-    dia = 210
+    dia = 75
     die_size = (die_x, die_y)
     edge_excl = random.choice([0, 2.5, 5, 10])
-    edge_excl = 0
+    edge_excl = 5
     flat_excl = random.choice([i for i in [0, 2.5, 5, 10] if i >= edge_excl])
-    flat_excl = 10
+    flat_excl = 5
 
     xyd = []            # our list of (x_coord, x_coord, data) tuples
 
@@ -90,6 +90,7 @@ def generate_fake_data():
 
     nX = int(math.ceil(dia/die_x))
     nY = int(math.ceil(dia/die_y))
+    centers = []
     for i in xrange(nX):
         for j in xrange(nY):
             # die center coordinates
@@ -109,6 +110,30 @@ def generate_fake_data():
                 xyd.append((x_coord - die_x / 2,
                             y_coord - die_y / 2,
                             r_squared))
+                centers.append((x_coord - die_x/2, y_coord - die_y/2))
+
+    # Set comprehensions to generate individual lists of coords.
+    # this might have an issue with floating point numbers, but I haven't
+    # seen any issues yet.
+    xCoords = {i[0] for i in centers}
+    yCoords = {i[1] for i in centers}
+
+    # Convert die center coodinates to die center row/column coordinates
+    colCoords = range(1, len(xCoords) + 1)
+    rowCoords = range(1, len(yCoords) + 1)
+    rowCoords.reverse()
+    cr = []
+    for c in colCoords:
+        for r in rowCoords:
+            cr.append((c, r))
+
+    die_list = []
+    i = 0
+    for coord in centers:
+        die_list.append((cr[i][0], cr[i][1], coord[0], coord[1], xyd[i][2]))
+        i += 1
+
+#    return die_list
 
     print("Number of Die Plotted: {}".format(len(xyd)))
 
@@ -125,7 +150,7 @@ def generate_fake_data():
                                    )
     print(wafer_info)
 
-    return (wafer_info, xyd)
+    return (wafer_info, die_list)
 
 
 def main():

@@ -156,7 +156,7 @@ class WaferMapPanel(wx.Panel):
         self.nY = int(math.ceil(self.wafer_info.dia/self.die_size[1]))
         print("There are {} Y die".format(self.nY))
 
-        for (_x, _y, _d) in self.xyd:
+        for (_c, _r, _x, _y, _d) in self.xyd:
             x_loc = self.nX - (int(_x // self.die_size[0]) + self.center_xy[0])
             y_loc = self.nY - (self.center_xy[1] - int(_y // self.die_size[1]))
             xy_str = "x{:03f}y{:03f}".format(x_loc, y_loc)
@@ -195,17 +195,17 @@ class WaferMapPanel(wx.Panel):
         # if discrete data, generate a list of colors
         # TODO: I'm sure there's a lib for this already...
         if self.data_type == 'discrete':
-            unique_items = {_die[2] for _die in self.xyd}
+            unique_items = {_die[4] for _die in self.xyd}
             col_val = 255/len(unique_items)
             color_dict = {_i: (_n*col_val, _n*col_val, _n*col_val)
                           for _n, _i
                           in enumerate(unique_items)}
 
-        percentile_95 = float(nanpercentile([_i[2] for _i in self.xyd], 95))
-        percentile_05 = float(nanpercentile([_i[2] for _i in self.xyd], 5))
+        percentile_95 = float(nanpercentile([_i[4] for _i in self.xyd], 95))
+        percentile_05 = float(nanpercentile([_i[4] for _i in self.xyd], 5))
         for die in self.xyd:
             if color_dict is None:
-                color1 = max(50, min(rescale(die[2],
+                color1 = max(50, min(rescale(die[4],
                                              (percentile_05, percentile_95),
                                              (0, 255)
                                              ),
@@ -215,8 +215,8 @@ class WaferMapPanel(wx.Panel):
                 # black to yellow
                 color = (color1, color1, 0)
             else:
-                color = color_dict[die[2]]
-            self.canvas.AddRectangle((die[0], die[1]),
+                color = color_dict[die[4]]
+            self.canvas.AddRectangle((die[2], die[3]),
                                      self.wafer_info.die_size,
                                      LineWidth=1,
                                      FillColor=color,
