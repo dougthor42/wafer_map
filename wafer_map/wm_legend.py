@@ -18,7 +18,7 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 #from docopt import docopt
 import wx
-#from wx.lib.floatcanvas import FloatCanvas
+from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 __author__ = "Douglas Thor"
@@ -26,7 +26,13 @@ __version__ = "v0.1.0"
 
 
 class Legend(wx.Panel):
-    """ Demo of drawing overlay - to be used for legend """
+    """
+    Legend for discrete values
+
+    Is basically a 2D table of label-color rows. The colors are actually
+    buttons that can be clicked on - a color picker appears. However, as of
+    2014-12-03, changing the color does not do anything.
+    """
     def __init__(self,
                  parent,
                  labels,
@@ -63,38 +69,55 @@ class Legend(wx.Panel):
                                               "",
                                               value,
                                               style=wx.NO_BORDER,
-                                              size=(30, 30))
+                                              size=(20, 20))
 
             self.fgs.Add(self.label, flag=wx.ALIGN_CENTER_VERTICAL)
             self.fgs.Add(self.colorbox)
 
+        # Add our items to the layout manager and set the sizer.
         self.hbox.Add(self.fgs)
         self.SetSizer(self.hbox)
 
+
+class LegendOverlay(FloatCanvas.Text):
+    """ Demo of drawing overlay - to be used for legend """
+    def __init__(self,
+                 String,
+                 xy,
+                 Size=24,
+                 Color="Black",
+                 BackgroundColor=None,
+                 Family=wx.MODERN,
+                 Style=wx.NORMAL,
+                 Weight=wx.NORMAL,
+                 Underlined=False,
+                 Font=None):
+        FloatCanvas.Text.__init__(self,
+                                  String,
+                                  xy,
+                                  Size=Size,
+                                  Color=Color,
+                                  BackgroundColor=BackgroundColor,
+                                  Family=Family,
+                                  Style=Style,
+                                  Weight=Weight,
+                                  Underlined=Underlined,
+                                  Font=Font)
+
+    # TODO: Change this so that it creates the custom legend
     def _Draw(self, dc, Canvas):
         """
         _Draw method for Overlay
-        note: this is a differeent signarture than the DrawObject Draw
-
-        dc = DeviceContext
+         note: this is a differeent signarture than the DrawObject Draw
         """
-#        dc.SetFont(self.Font)
-#        dc.SetTextForeground(self.Color)
-#        if self.BackgroundColor:
-#            dc.SetBackgroundMode(wx.SOLID)
-#            dc.SetTextBackground(self.BackgroundColor)
-#        else:
-#            dc.SetBackgroundMode(wx.TRANSPARENT)
-#        dc.DrawTextPoint(self.String, self.XY)
-
-        # TODO: Current status 2014-12-02
-        #       Figuring out how to implement this _Draw thing.
-        #
-        #       Idea 1 is to convert the Legend panel to an image and
-        #       then use dc.DrawBitmap
-        #
-        #       Idea 2 is... not yet formualted. But Idea 2 will allow me
-        #       to actually click on the colors.
+        dc.SetFont(self.Font)
+        dc.SetTextForeground(self.Color)
+        if self.BackgroundColor:
+            dc.SetBackgroundMode(wx.SOLID)
+            dc.SetTextBackground(self.BackgroundColor)
+        else:
+            dc.SetBackgroundMode(wx.TRANSPARENT)
+        dc.DrawTextPoint(self.String, self.XY)
 
 
 def main():

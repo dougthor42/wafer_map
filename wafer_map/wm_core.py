@@ -165,15 +165,8 @@ class WaferMapPanel(wx.Panel):
                                               BackgroundColor="BLACK",
                                               )
 
-        # Create layout manager and add items
-        self.vbox = wx.BoxSizer(wx.VERTICAL)
-
-        self.vbox.Add(self.canvas, 4, wx.EXPAND | wx.ALL)
-#        self.vbox.Add(self.MsgWindow, 1, wx.EXPAND | wx.ALL, 5)
-        self.SetSizer(self.vbox)
-
-        self.coord = (0, 0)
-        self.size = (30, 30)
+#        self.coord = (0, 0)
+#        self.size = (30, 30)
 
         # Work on the canvas
         self.canvas.InitAll()       # Needs to come before adding items!
@@ -215,18 +208,20 @@ class WaferMapPanel(wx.Panel):
                                                 self.wafer_info.edge_excl,
                                                 self.wafer_info.flat_excl)
         self.canvas.AddObject(self.wafer_outline)
-        self.crosshairs = draw_crosshairs(self.wafer_info.dia)
+        self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
 
-        # Old legend placeholder
-#        self.legend = Legend("Legend Placeholder",
-#                             (20, 20),
-#                             Size=18,
-#                             Color="Black",
-#                             BackgroundColor='Pink',
-#                             )
+        # Old legend - static using overlay
+#        self.legend_overlay = wm_legend.LegendOverlay(
+#            "Legend Placeholder",
+#            (20, 20),
+#            Size=18,
+#            Color="Black",
+#            BackgroundColor='Pink',
+#            )
+#        self.canvas.GridOver = self.legend_overlay
 
-        # new legend
+        # new legend - able to change colors
         self.legend = wm_legend.Legend(self,
                                        ["A", "Banana!", "C", "Donut", "E"],
                                        [(0, 128, 0),
@@ -236,8 +231,6 @@ class WaferMapPanel(wx.Panel):
                                         (0, 128, 128),
                                         ],
                                        )
-
-        self.canvas.GridOver = self.legend
 
         # Bind events to the canvas
         # TODO: Move event binding to method
@@ -259,6 +252,14 @@ class WaferMapPanel(wx.Panel):
         # Zoom to the entire image by default
         # TODO: Figure out why this isn't working on init.
         self.zoom_fill()
+
+        # Create layout manager and add items
+        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.hbox.Add(self.legend, 0, )
+        self.hbox.Add(self.canvas, 1, wx.EXPAND)
+
+        self.SetSizer(self.hbox)
 
     def mouse_wheel(self, event):
         """ Mouse wheel event for Zooming """
@@ -403,10 +404,15 @@ class WaferMapPanel(wx.Panel):
     def toggle_legend(self):
         """ Toggles the legend on and off """
         if self.legend_bool:
+            self.hbox.RemovePos(0)
+            self.Layout()       # forces update of layout
             self.canvas.GridOver = None
             self.legend_bool = False
         else:
-            self.canvas.GridOver = self.legend
+            self.hbox.Insert(0, self.legend, 0)
+            self.Layout()
+            # To be used if I want to do overlay legend instead
+#            self.canvas.GridOver = self.legend_overlay
             self.legend_bool = True
         self.canvas.Draw(Force=True)
 
@@ -505,45 +511,45 @@ class WaferMapPanel(wx.Panel):
         #self.Canvas.Update()
 
 
-class Legend(FloatCanvas.Text):
-    """ Demo of drawing overlay - to be used for legend """
-    def __init__(self,
-                 String,
-                 xy,
-                 Size=24,
-                 Color="Black",
-                 BackgroundColor=None,
-                 Family=wx.MODERN,
-                 Style=wx.NORMAL,
-                 Weight=wx.NORMAL,
-                 Underlined=False,
-                 Font=None):
-        FloatCanvas.Text.__init__(self,
-                                  String,
-                                  xy,
-                                  Size=Size,
-                                  Color=Color,
-                                  BackgroundColor=BackgroundColor,
-                                  Family=Family,
-                                  Style=Style,
-                                  Weight=Weight,
-                                  Underlined=Underlined,
-                                  Font=Font)
-
-    # TODO: Change this so that it creates the custom legend
-    def _Draw(self, dc, Canvas):
-        """
-        _Draw method for Overlay
-         note: this is a differeent signarture than the DrawObject Draw
-        """
-        dc.SetFont(self.Font)
-        dc.SetTextForeground(self.Color)
-        if self.BackgroundColor:
-            dc.SetBackgroundMode(wx.SOLID)
-            dc.SetTextBackground(self.BackgroundColor)
-        else:
-            dc.SetBackgroundMode(wx.TRANSPARENT)
-        dc.DrawTextPoint(self.String, self.XY)
+#class LegendOverlay(FloatCanvas.Text):
+#    """ Demo of drawing overlay - to be used for legend """
+#    def __init__(self,
+#                 String,
+#                 xy,
+#                 Size=24,
+#                 Color="Black",
+#                 BackgroundColor=None,
+#                 Family=wx.MODERN,
+#                 Style=wx.NORMAL,
+#                 Weight=wx.NORMAL,
+#                 Underlined=False,
+#                 Font=None):
+#        FloatCanvas.Text.__init__(self,
+#                                  String,
+#                                  xy,
+#                                  Size=Size,
+#                                  Color=Color,
+#                                  BackgroundColor=BackgroundColor,
+#                                  Family=Family,
+#                                  Style=Style,
+#                                  Weight=Weight,
+#                                  Underlined=Underlined,
+#                                  Font=Font)
+#
+#    # TODO: Change this so that it creates the custom legend
+#    def _Draw(self, dc, Canvas):
+#        """
+#        _Draw method for Overlay
+#         note: this is a differeent signarture than the DrawObject Draw
+#        """
+#        dc.SetFont(self.Font)
+#        dc.SetTextForeground(self.Color)
+#        if self.BackgroundColor:
+#            dc.SetBackgroundMode(wx.SOLID)
+#            dc.SetTextBackground(self.BackgroundColor)
+#        else:
+#            dc.SetBackgroundMode(wx.TRANSPARENT)
+#        dc.DrawTextPoint(self.String, self.XY)
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
