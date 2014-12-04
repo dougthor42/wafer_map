@@ -67,11 +67,8 @@ else:
     print("running in dev mode")
     import wm_legend
 
-
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
-# TODO: Add legend to Panel - should not be included in bounding box.
-
 
 # Library Constants
 # Defined by SEMI M1-0302
@@ -118,10 +115,9 @@ def coord_to_grid(coord, die_size, grid_center):
     """
     Converts a panel coordinate to a grid value.
     """
-    # FIXME: Only works for case where the wafer center lies on die street.
-    grid_x = int(math.floor((coord[0] / die_size[0]) + math.floor(grid_center[0]))) + 1
-    grid_y = int(math.floor(grid_center[0]) - int(math.floor(coord[1] / die_size[1])))
-
+    # TODO: seems have a error with negative 0 grid values.
+    grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
+    grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
     return (grid_x, grid_y)
 
 
@@ -136,14 +132,9 @@ def grid_to_rect_coord(grid, die_size, grid_center):
     taking ``grid_center - grid`` rather than ``grid - grid_center`` as is
     done in the X case.
     """
-    coord_die_center_x = die_size[0] * (grid[0] - grid_center[0])
-    # we have to reverse the y coord, hence why it's
-    # ``grid_center[1] - _y`` and not ``_y - grid_center[1]``
-    coord_die_center_y = die_size[1] * (grid_center[1] - grid[1])
-    coord_lower_left_x = coord_die_center_x - die_size[0]/2
-    coord_lower_left_y = coord_die_center_y - die_size[1]/2
-    coord_lower_left = (coord_lower_left_x, coord_lower_left_y)
-    return coord_lower_left
+    _x = die_size[0] * (grid[0] - grid_center[0] - 0.5)
+    _y = die_size[1] * (grid_center[1] - grid[1] - 0.5)
+    return (_x, _y)
 
 
 def max_dist_sqrd(center, size):
@@ -192,6 +183,7 @@ class WaferMapPanel(wx.Panel):
         """
         wx.Panel.__init__(self, parent)
         self.xyd = xyd
+        self.xyd_dict = self.xyd_to_dict(self.xyd)      # data duplication!
         self.wafer_info = wafer_info
         self.grid_center = self.wafer_info.center_xy
         self.die_size = self.wafer_info.die_size
@@ -208,6 +200,9 @@ class WaferMapPanel(wx.Panel):
         self.move_timer = wx.PyTimer(self.on_move_timer)
         self.init_ui()
 
+    def xyd_to_dict(self, xyd_list):
+        return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
+
     def init_ui(self):
         """
         Creates the UI Elements for the wafer map and binds various events
@@ -217,9 +212,6 @@ class WaferMapPanel(wx.Panel):
         self.canvas = FloatCanvas.FloatCanvas(self,
                                               BackgroundColor="BLACK",
                                               )
-
-#        self.coord = (0, 0)
-#        self.size = (30, 30)
 
         # Work on the canvas
         self.canvas.InitAll()       # Needs to come before adding items!
@@ -324,7 +316,6 @@ class WaferMapPanel(wx.Panel):
     def mouse_wheel(self, event):
         """ Mouse wheel event for Zooming """
         # Get the event position and how far the wheel moved
-#        point = event.Position
         speed = event.GetWheelRotation()
 
         # calculate a zoom factor based on the wheel movement
@@ -332,7 +323,6 @@ class WaferMapPanel(wx.Panel):
         #   factor < 0: zoom out. factor > 0: zoom in
         sign = abs(speed) / speed
         factor = (abs(speed) * 1.1 / 120)**sign
-#        print("MouseMove! {}: {}".format(event.GetWheelRotation(), factor))
 
         self.canvas.Zoom(factor,
                          center=event.Position,
@@ -345,7 +335,6 @@ class WaferMapPanel(wx.Panel):
         Redraw the canvas whenever the move_timer is triggered. Is needed to
         prevent buffers from being rebuilt too often
         """
-#        print("3s later?")
 #        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
         self.canvas.Draw()
 
@@ -361,25 +350,19 @@ class WaferMapPanel(wx.Panel):
                                                  self.grid_center,
                                                  )
 
-#        die_coord_x = int(event.Coords[0] // self.die_size[0]) + int(math.floor(self.grid_center[0]))
-#        die_coord_y = int(math.floor(self.grid_center[1])) - int(event.Coords[1] // self.die_size[1])
-
-#        die_coord = "x{:03d}y{:03d}".format(die_coord_x, die_coord_y)
-#        try:
-#            die_val = self.die_loc_dict[die_coord]
-#        except KeyError:
-#            die_val = ""
-        die_val = ""
+        # lookup the die value
+        die_coord = "x{}y{}".format(die_coord_x, die_coord_y)
+        try:
+            die_val = self.xyd_dict[die_coord]
+        except KeyError:
+            die_val = "N/A"
 
         coord_str = "{x:0.3f}, {y:0.3f}".format(x=event.Coords[0],
                                                 y=event.Coords[1],
                                                 )
-        die_loc_str = "x{die_x:03d}, y{die_y:03d}".format(die_x=die_coord_x,
-                                                          die_y=die_coord_y,
-                                                          )
         value_str = "{}".format(die_val)
         status_str = "{coord} :: {loc} :: {val}".format(coord=coord_str,
-                                                        loc=die_loc_str,
+                                                        loc=die_coord,
                                                         val=value_str,
                                                         )
         try:

@@ -85,17 +85,19 @@ def main():
     wafer_info, xyd = gen_fake_data.generate_fake_data()
 
     import random
-#    discrete_xyd = [(_c, _r, _x, _y, random.randint(1, 6))
-#                    for _c, _r, _x, _y, _
-#                    in xyd]
+    discrete_xyd = [(grid_x, grid_y, random.randint(1, 6))
+                    for grid_x, grid_y, _
+                    in xyd]
 
-    WaferMapApp(xyd,
+    WaferMapApp(
+#                xyd,
+                discrete_xyd,
                 wafer_info.die_size,
                 wafer_info.center_xy,
                 wafer_info.dia,
                 wafer_info.edge_excl,
                 wafer_info.flat_excl,
-#                data_type='discrete',
+                data_type='discrete',
                 )
 
 
