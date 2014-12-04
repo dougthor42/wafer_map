@@ -62,6 +62,9 @@ def generate_fake_data():
     """
     Generate a fake wafer map, where the die values are the die's
     radius squared.
+
+    Don't look too much into this code here. It's been hacked together
+    and I'm not proud of it :-P
     """
     # Generate random wafer attributes
     import random
@@ -119,21 +122,21 @@ def generate_fake_data():
     yCoords = {i[1] for i in centers}
 
     # Convert die center coodinates to die center row/column coordinates
-    colCoords = range(1, len(xCoords) + 1)
-    rowCoords = range(1, len(yCoords) + 1)
-    rowCoords.reverse()
-    cr = []
-    for c in colCoords:
-        for r in rowCoords:
-            cr.append((c, r))
+    grid_x_list = range(1, len(xCoords) + 1)
+    grid_y_list = range(1, len(yCoords) + 1)
+    grid_y_list.reverse()
+    grid_xy = []
+    for c in grid_x_list:
+        for r in grid_y_list:
+            grid_xy.append((c, r))
 
     die_list = []
     i = 0
     for coord in centers:
-        die_list.append((cr[i][0], cr[i][1], coord[0], coord[1], xyd[i][2]))
+        die_list.append((grid_xy[i][0], grid_xy[i][1],
+                         coord[0], coord[1],
+                         xyd[i][2]))
         i += 1
-
-#    return die_list
 
     print("Number of Die Plotted: {}".format(len(xyd)))
 
