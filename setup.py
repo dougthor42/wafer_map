@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map"],
-    version="0.5.0",
+    version="0.6.0",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -71,6 +71,32 @@ Example.py generates a fake data set and then displays it in 3 different ways:
    discrete (rather than continuous) data.
 
 
+Nomenclature
+------------
+
+For the entire project, the following nomenclature is used. This is to avoid
+confusion between a die's coordinates on the wafer (floating-point
+values representing the absolute postion of a die) and a die's grid location
+(integer row-column or x-y values that are sometimes printed on die).
+
+:coordinate:    Floating-point value representing the exact location of
+                a die on the wafer.
+
+                The coordinate origin is the center of the wafer and the
+                center of the FloatCanvas panel.
+:loc:           Alias for ``coordinate``.
+:grid:          Integer value representing the printed die. Can only be mapped
+                to a coordinate if a grid_center is defined.
+
+                Each grid line falls on a die's center.
+:grid_center:   The ``(float_x, float_y)`` tuple which is coincident with the
+                wafer's center coordinate ``(0, 0)``.
+
+                This is the only ``grid`` value that can be made up of floats.
+:row:           Alias for ``grid_y``.
+:col:           Alias for ``grid_x``.
+
+
 Keyboard Shortcuts and Mouse Usage
 ----------------------------------
 
@@ -81,10 +107,10 @@ on adding more.
 The panel also supports mouse controls. Middle click will pan, mouse wheel
 will zoom in and out.
 
-  :Home:  Zoom to full wafer
-  :O:     Toggle display of wafer and exclusion outline
-  :C:     Toggle crosshair display
-  :L:     Toggle legend display
+:Home:  Zoom to full wafer
+:O:     Toggle display of wafer and exclusion outline
+:C:     Toggle crosshair display
+:L:     Toggle legend display
 
 
 Notes
@@ -103,7 +129,8 @@ do something stupid).
 
 **Requires: wxPython**
 
-Data is input into the primary class ``WaferMap`` as a list of ``(x_coord, y_coord, data)`` tuples.
+Data is input into the primary class ``WaferMap`` as a list
+of ``(x_coord, y_coord, data)`` tuples.
 
 Expected capabilities:
 ----------------------
@@ -118,6 +145,17 @@ Expected capabilities:
 
 Changelog
 =========
+
+* **0.6.0 / 2014-12-04**
+
+  + Closed issues #1, 2, 3, 4, and 6 in the tracker.
+  + Updated gen_fake_data to use better algorithm and actually output
+    correct data.
+  + Updated wm_core.WaferMapPanel so that the status bar text displays
+    the correct grid values. Verified working with all sorts of
+    grid_center values.
+  + **Last Update before release, yay!** All that's left is to get the
+    legend working.
 
 * **0.5.0 / 2014-12-02**
 

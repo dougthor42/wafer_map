@@ -89,15 +89,21 @@ def main():
                     for grid_x, grid_y, _
                     in xyd]
 
-    WaferMapApp(
-#                xyd,
-                discrete_xyd,
+    discrete = False
+    dtype = 'continuous'
+
+#    discrete = True         # uncomment this line to use discrete data
+    if discrete:
+        xyd = discrete_xyd
+        dtype = 'discrete'
+
+    WaferMapApp(xyd,
                 wafer_info.die_size,
                 wafer_info.center_xy,
                 wafer_info.dia,
                 wafer_info.edge_excl,
                 wafer_info.flat_excl,
-                data_type='discrete',
+                data_type=dtype,
                 )
 
 

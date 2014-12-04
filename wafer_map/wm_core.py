@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @name:          wafer_map.py
-@vers:          0.5.0
+@vers:          0.6.0
 @author:        dthor
 @created:       Tue Nov 11 15:08:43 2014
 @descr:         A new file
@@ -15,6 +15,17 @@ Options:
 
 Changelog
 =========
+
+* **0.6.0 / 2014-12-04**
+
+  + Closed issues #1, 2, 3, 4, and 6 in the tracker.
+  + Updated gen_fake_data to use better algorithm and actually output
+    correct data.
+  + Updated wm_core.WaferMapPanel so that the status bar text displays
+    the correct grid values. Verified working with all sorts of
+    grid_center values.
+  + **Last Update before release, yay!** All that's left is to get the
+    legend working.
 
 * **0.5.0 / 2014-12-02**
 
@@ -75,7 +86,7 @@ else:
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
-__version__ = "v0.5.0"
+__version__ = "v0.6.0"
 
 
 def nanpercentile(a, percentile):
@@ -227,13 +238,15 @@ class WaferMapPanel(wx.Panel):
                           for _n, _i
                           in enumerate(unique_items)}
         else:
-            percentile_95 = float(nanpercentile([_i[2] for _i in self.xyd], 95))
-            percentile_05 = float(nanpercentile([_i[2] for _i in self.xyd], 5))
+            # use the 0.5 and .95 percentiles to set the color range
+            #   - prevents outliers from overwhelming scale.
+            p_95 = float(nanpercentile([_i[2] for _i in self.xyd], 95))
+            p_05 = float(nanpercentile([_i[2] for _i in self.xyd], 5))
 
         for die in self.xyd:
             if color_dict is None:
                 color1 = max(50, min(rescale(die[2],
-                                             (percentile_05, percentile_95),
+                                             (p_05, p_95),
                                              (0, 255)
                                              ),
                                      255)

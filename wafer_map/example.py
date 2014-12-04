@@ -14,7 +14,7 @@ Options:
     --version           # Show version.
 
 Description:
-    Provides an example on how to use the wafer_map.py module.
+    Provides an example on how to use the wafer_map module.
 """
 
 from __future__ import print_function, division, absolute_import

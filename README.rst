@@ -60,7 +60,7 @@ values representing the absolute postion of a die) and a die's grid location
 :loc:           Alias for ``coordinate``.
 :grid:          Integer value representing the printed die. Can only be mapped
                 to a coordinate if a grid_center is defined.
-                
+
                 Each grid line falls on a die's center.
 :grid_center:   The ``(float_x, float_y)`` tuple which is coincident with the
                 wafer's center coordinate ``(0, 0)``.
@@ -102,7 +102,8 @@ do something stupid).
 
 **Requires: wxPython**
 
-Data is input into the primary class ``WaferMap`` as a list of ``(x_coord, y_coord, data)`` tuples.
+Data is input into the primary class ``WaferMap`` as a list
+of ``(x_coord, y_coord, data)`` tuples.
 
 Expected capabilities:
 ----------------------
@@ -117,6 +118,17 @@ Expected capabilities:
 
 Changelog
 =========
+
+* **0.6.0 / 2014-12-04**
+
+  + Closed issues #1, 2, 3, 4, and 6 in the tracker.
+  + Updated gen_fake_data to use better algorithm and actually output
+    correct data.
+  + Updated wm_core.WaferMapPanel so that the status bar text displays
+    the correct grid values. Verified working with all sorts of
+    grid_center values.
+  + **Last Update before release, yay!** All that's left is to get the
+    legend working.
 
 * **0.5.0 / 2014-12-02**
 

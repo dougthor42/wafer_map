@@ -90,19 +90,11 @@ def generate_fake_data():
     # Generate random wafer attributes
     import random
     die_x = random.uniform(5, 10)
-    die_x = 6
-    die_x = 2.43
     die_y = random.uniform(5, 10)
-    die_y = 5
-    die_y = 3.3
     dia = random.choice([100, 150, 200, 210])
-    dia = 50
-    dia = 150
     die_size = (die_x, die_y)
     edge_excl = random.choice([0, 2.5, 5, 10])
-    edge_excl = 4.5
     flat_excl = random.choice([i for i in [0, 2.5, 5, 10] if i >= edge_excl])
-    flat_excl = 4.5
 
     # Determine where our wafer edge is for the flat area
     flat_y = -dia/2     # assume wafer edge at first
@@ -119,11 +111,10 @@ def generate_fake_data():
     grid_max_y = 2 * int(math.ceil(dia / die_y))
 
     # 2. Choose arbitraty center point
-    grid_center = (5.5, 5.5)
-    grid_center = (29, 21)
-#    grid_center = (grid_max_x/2 + 0.5, grid_max_y/2 + 0.5)
+    x_offset = random.choice([0, 0.5, -2, 0.24])
+    y_offset = random.choice([0, 0.5, -2, 0.24])
+    grid_center = (grid_max_x/2 + x_offset, grid_max_y/2 + y_offset)
 
-    # 1. and 3.
     # This could be more efficient
     grid_points = []
     for _x in xrange(1, grid_max_x):
@@ -145,13 +136,14 @@ def generate_fake_data():
                 grid_points.append((_x,
                                     _y,
                                     center_rad_sqrd,
+                                    # these items are for debug.
 #                                    coord_lower_left,
 #                                    center_rad_sqrd,
 #                                    coord_die_center,
 #                                    die_max_sqrd,
                                     ))
 
-    print("Plotting {} die.".format(len(grid_points)))
+    print("\nPlotting {} die.".format(len(grid_points)))
 
     # put all the wafer info into the WaferInfo class.
     wafer_info = wm_info.WaferInfo(die_size,      # Die Size in (X, Y)
@@ -172,8 +164,8 @@ def main():
     from pprint import pprint
     pprint(data)
 
-    print()
-    pprint([_i for _i in data if _i[0] in (17, 18, 19)])
+#    print()
+#    pprint([_i for _i in data if _i[0] in (17, 18, 19)])
 
 
 if __name__ == "__main__":
