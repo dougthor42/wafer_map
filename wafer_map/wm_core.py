@@ -144,23 +144,22 @@ class WaferMapPanel(wx.Panel):
         self.xyd = xyd
         self.wafer_info = wafer_info
         self.center_xy = self.wafer_info.center_xy
-        print("center xy is {}".format(self.center_xy))
         self.die_size = self.wafer_info.die_size
 
-        # Create a die_location variable that stores integer die row/col vals
-        self.die_loc_dict = {}
-
-        # duplicate code from gen_wafer_map
-        self.nX = int(math.ceil(self.wafer_info.dia/self.die_size[0]))
-        print("There are {} X die".format(self.nX))
-        self.nY = int(math.ceil(self.wafer_info.dia/self.die_size[1]))
-        print("There are {} Y die".format(self.nY))
-
-        for (_c, _r, _x, _y, _d) in self.xyd:
-            x_loc = self.nX - (int(_x // self.die_size[0]) + self.center_xy[0])
-            y_loc = self.nY - (self.center_xy[1] - int(_y // self.die_size[1]))
-            xy_str = "x{:03f}y{:03f}".format(x_loc, y_loc)
-            self.die_loc_dict[xy_str] = _d
+#        # Create a die_location variable that stores integer die row/col vals
+#        self.die_loc_dict = {}
+#
+#        # duplicate code from gen_wafer_map
+#        self.nX = int(math.ceil(self.wafer_info.dia/self.die_size[0]))
+#        print("There are {} X die".format(self.nX))
+#        self.nY = int(math.ceil(self.wafer_info.dia/self.die_size[1]))
+#        print("There are {} Y die".format(self.nY))
+#
+#        for (_c, _r, _x, _y, _d) in self.xyd:
+#            x_loc = self.nX - (int(_x // self.die_size[0]) + self.center_xy[0])
+#            y_loc = self.nY - (self.center_xy[1] - int(_y // self.die_size[1]))
+#            xy_str = "x{:03f}y{:03f}".format(x_loc, y_loc)
+#            self.die_loc_dict[xy_str] = _d
 
         self.drag = False
         self.wfr_outline_bool = True
@@ -203,6 +202,9 @@ class WaferMapPanel(wx.Panel):
 
         percentile_95 = float(nanpercentile([_i[4] for _i in self.xyd], 95))
         percentile_05 = float(nanpercentile([_i[4] for _i in self.xyd], 5))
+        
+        max_grid_x = max([_i[0] for _i in self.xyd])
+        max_grid_y = max([_i[1] for _i in self.xyd])
         for die in self.xyd:
             if color_dict is None:
                 color1 = max(50, min(rescale(die[4],
@@ -216,7 +218,20 @@ class WaferMapPanel(wx.Panel):
                 color = (color1, color1, 0)
             else:
                 color = color_dict[die[4]]
-            self.canvas.AddRectangle((die[2], die[3]),
+            grid_xy = (grid_x, grid_y) = (die[0], die[1])
+            
+#            coord_x = (grid_x - int(math.ceil(self.wafer_info.dia/self.die_size[0]))//2) * self.die_size[0] + 0.5 * self.die_size[0]
+#            coord_y = (grid_y - int(math.ceil(self.wafer_info.dia/self.die_size[1]))//2) * self.die_size[1] + 0.5 * self.die_size[1]
+            
+            # These should be the center coordinates, no issue.
+            # however, this assumes ...
+            center_coord_x = self.die_size[0] * (grid_x - self.center_xy[0])
+            center_coord_y = self.die_size[1] * (grid_y - self.center_xy[1])
+            coord = (center_coord_x - self.die_size[0]/2, center_coord_y - self.die_size[1]/2)
+            print("Given: {}\tCalculated Center: {}".format(die[:-1], (grid_xy, coord)))
+#            coord = (die[2], die[3])
+
+            self.canvas.AddRectangle(coord,
                                      self.wafer_info.die_size,
                                      LineWidth=1,
                                      FillColor=color,
@@ -329,10 +344,11 @@ class WaferMapPanel(wx.Panel):
 #                                 - int(event.Coords[1] // self.die_size[1]))
 
         die_coord = "x{:03d}y{:03d}".format(die_coord_x, die_coord_y)
-        try:
-            die_val = self.die_loc_dict[die_coord]
-        except KeyError:
-            die_val = ""
+#        try:
+#            die_val = self.die_loc_dict[die_coord]
+#        except KeyError:
+#            die_val = ""
+        die_val = ""
 
         coord_str = "{x:0.3f}, {y:0.3f}".format(x=event.Coords[0],
                                                 y=event.Coords[1],
