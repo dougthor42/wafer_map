@@ -114,8 +114,58 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     return float(result)
 
 
-# TODO: figure out how to handle discrete data vs continuous data
-# TODO: figure out how to handle row-col coords data vs absolute xy coords
+def coord_to_grid(coord, die_size, grid_center):
+    """
+    Converts a panel coordinate to a grid value.
+    """
+    # FIXME: Only works for case where the wafer center lies on die street.
+    grid_x = int(math.floor((coord[0] / die_size[0]) + math.floor(grid_center[0]))) + 1
+    grid_y = int(math.floor(grid_center[0]) - int(math.floor(coord[1] / die_size[1])))
+
+    return (grid_x, grid_y)
+
+
+def grid_to_rect_coord(grid, die_size, grid_center):
+    """
+    Converts a die's grid value to the origin point of the rectangle to draw.
+
+    Adjusts for the fact that the grid falls on the center of a die by
+    subtracting die_size/2 from the coordinate.
+
+    Adjusts for the fact that Grid +y is down while panel +y is up by
+    taking ``grid_center - grid`` rather than ``grid - grid_center`` as is
+    done in the X case.
+    """
+    coord_die_center_x = die_size[0] * (grid[0] - grid_center[0])
+    # we have to reverse the y coord, hence why it's
+    # ``grid_center[1] - _y`` and not ``_y - grid_center[1]``
+    coord_die_center_y = die_size[1] * (grid_center[1] - grid[1])
+    coord_lower_left_x = coord_die_center_x - die_size[0]/2
+    coord_lower_left_y = coord_die_center_y - die_size[1]/2
+    coord_lower_left = (coord_lower_left_x, coord_lower_left_y)
+    return coord_lower_left
+
+
+def max_dist_sqrd(center, size):
+    """
+    Calcualtes the largest distance from the origin for a rectangle of
+    size (x, y), where the center of the rectangle's coordinates are known.
+    If the rectangle's center is in the Q1, then the upper-right corner is
+    the farthest away from the origin. If in Q2, then the upper-left corner
+    is farthest away. Etc.
+    Returns the magnitude of the largest distance squared.
+    Does not include the Sqrt function for sake of speed.
+    """
+    half_x = size[0]/2.
+    half_y = size[1]/2.
+    if center[0] < 0:
+        half_x = -half_x
+    if center[1] < 0:
+        half_y = -half_y
+    dist = (center[0] + half_x)**2 + (center[1] + half_y)**2
+    return dist
+
+
 class WaferMapPanel(wx.Panel):
     """
     The Canvas that the wafer map resides on.
@@ -143,23 +193,8 @@ class WaferMapPanel(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.xyd = xyd
         self.wafer_info = wafer_info
-        self.center_xy = self.wafer_info.center_xy
+        self.grid_center = self.wafer_info.center_xy
         self.die_size = self.wafer_info.die_size
-
-#        # Create a die_location variable that stores integer die row/col vals
-#        self.die_loc_dict = {}
-#
-#        # duplicate code from gen_wafer_map
-#        self.nX = int(math.ceil(self.wafer_info.dia/self.die_size[0]))
-#        print("There are {} X die".format(self.nX))
-#        self.nY = int(math.ceil(self.wafer_info.dia/self.die_size[1]))
-#        print("There are {} Y die".format(self.nY))
-#
-#        for (_c, _r, _x, _y, _d) in self.xyd:
-#            x_loc = self.nX - (int(_x // self.die_size[0]) + self.center_xy[0])
-#            y_loc = self.nY - (self.center_xy[1] - int(_y // self.die_size[1]))
-#            xy_str = "x{:03f}y{:03f}".format(x_loc, y_loc)
-#            self.die_loc_dict[xy_str] = _d
 
         self.drag = False
         self.wfr_outline_bool = True
@@ -194,20 +229,18 @@ class WaferMapPanel(wx.Panel):
         # if discrete data, generate a list of colors
         # TODO: I'm sure there's a lib for this already...
         if self.data_type == 'discrete':
-            unique_items = {_die[4] for _die in self.xyd}
+            unique_items = {_die[2] for _die in self.xyd}
             col_val = 255/len(unique_items)
             color_dict = {_i: (_n*col_val, _n*col_val, _n*col_val)
                           for _n, _i
                           in enumerate(unique_items)}
+        else:
+            percentile_95 = float(nanpercentile([_i[2] for _i in self.xyd], 95))
+            percentile_05 = float(nanpercentile([_i[2] for _i in self.xyd], 5))
 
-        percentile_95 = float(nanpercentile([_i[4] for _i in self.xyd], 95))
-        percentile_05 = float(nanpercentile([_i[4] for _i in self.xyd], 5))
-        
-        max_grid_x = max([_i[0] for _i in self.xyd])
-        max_grid_y = max([_i[1] for _i in self.xyd])
         for die in self.xyd:
             if color_dict is None:
-                color1 = max(50, min(rescale(die[4],
+                color1 = max(50, min(rescale(die[2],
                                              (percentile_05, percentile_95),
                                              (0, 255)
                                              ),
@@ -217,22 +250,15 @@ class WaferMapPanel(wx.Panel):
                 # black to yellow
                 color = (color1, color1, 0)
             else:
-                color = color_dict[die[4]]
-            grid_xy = (grid_x, grid_y) = (die[0], die[1])
-            
-#            coord_x = (grid_x - int(math.ceil(self.wafer_info.dia/self.die_size[0]))//2) * self.die_size[0] + 0.5 * self.die_size[0]
-#            coord_y = (grid_y - int(math.ceil(self.wafer_info.dia/self.die_size[1]))//2) * self.die_size[1] + 0.5 * self.die_size[1]
-            
-            # These should be the center coordinates, no issue.
-            # however, this assumes ...
-            center_coord_x = self.die_size[0] * (grid_x - self.center_xy[0])
-            center_coord_y = self.die_size[1] * (grid_y - self.center_xy[1])
-            coord = (center_coord_x - self.die_size[0]/2, center_coord_y - self.die_size[1]/2)
-            print("Given: {}\tCalculated Center: {}".format(die[:-1], (grid_xy, coord)))
-#            coord = (die[2], die[3])
+                color = color_dict[die[2]]
 
-            self.canvas.AddRectangle(coord,
-                                     self.wafer_info.die_size,
+            # Determine the die's lower-left coordinate
+            lower_left_coord = grid_to_rect_coord(die[:2],
+                                                  self.die_size,
+                                                  self.grid_center)
+
+            self.canvas.AddRectangle(lower_left_coord,
+                                     self.die_size,
                                      LineWidth=1,
                                      FillColor=color,
                                      )
@@ -330,20 +356,15 @@ class WaferMapPanel(wx.Panel):
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
 
-        die_coord_x = int(event.Coords[0] // self.die_size[0]) + int(math.floor(self.center_xy[0]))
-        # Since FloatCanvas uses Lower-Left as origin, we need to
-        # adjust y-coords. Nuts.
-        # TODO: Adjust displayed coord to account for the fact that the
-        #   die center is the origin of the die. Right now, if you're on the
-        #   left of the die you get X=23 and the right gives X=24
-        die_coord_y = int(math.floor(self.center_xy[1])) - int(event.Coords[1] // self.die_size[1])
-#        die_coord_y = int(event.Coords[1] // self.die_size[1])
-#        die_coord_x = self.nX - (int(event.Coords[0] // self.die_size[0])
-#                                 + self.center_xy[0])
-#        die_coord_y = self.nY - (self.center_xy[1]
-#                                 - int(event.Coords[1] // self.die_size[1]))
+        die_coord_x, die_coord_y = coord_to_grid(event.Coords,
+                                                 self.die_size,
+                                                 self.grid_center,
+                                                 )
 
-        die_coord = "x{:03d}y{:03d}".format(die_coord_x, die_coord_y)
+#        die_coord_x = int(event.Coords[0] // self.die_size[0]) + int(math.floor(self.grid_center[0]))
+#        die_coord_y = int(math.floor(self.grid_center[1])) - int(event.Coords[1] // self.die_size[1])
+
+#        die_coord = "x{:03d}y{:03d}".format(die_coord_x, die_coord_y)
 #        try:
 #            die_val = self.die_loc_dict[die_coord]
 #        except KeyError:
@@ -824,7 +845,9 @@ def plot_wafer_map_wx(rcd, **kwargs):
 
 def main():
     """ Main Code """
-    pass
+    a = coord_to_grid((9, 2.5), (6, 5), (5.5, 5.5))
+    print(a)
+    print(a == (7, 5))
 
 
 if __name__ == "__main__":
