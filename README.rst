@@ -102,8 +102,8 @@ do something stupid).
 
 **Requires: wxPython**
 
-Data is input into the primary class ``WaferMap`` as a list
-of ``(x_coord, y_coord, data)`` tuples.
+Data is input into the primary class ``WaferMapApp``
+or ``WaferMapPanel`` as a list of ``(grid_x, grid_y, data)`` tuples.
 
 Expected capabilities:
 ----------------------
