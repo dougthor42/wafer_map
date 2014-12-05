@@ -24,9 +24,11 @@ print(__file__)
 if 'site-packages' in __file__:
     print("we're being run from site-pkg")
     from wafer_map import wm_info
+    from wafer_map import wm_utils
 else:
     print("running in dev mode")
     import wm_info
+    import wm_utils
 
 
 __author__ = "Douglas Thor"
@@ -36,26 +38,6 @@ __version__ = "v0.1.0"
 # Library Constants
 # Defined by SEMI M1-0302
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
-
-
-def max_dist_sqrd(center, size):
-    """
-    Calcualtes the largest distance from the origin for a rectangle of
-    size (x, y), where the center of the rectangle's coordinates are known.
-    If the rectangle's center is in the Q1, then the upper-right corner is
-    the farthest away from the origin. If in Q2, then the upper-left corner
-    is farthest away. Etc.
-    Returns the magnitude of the largest distance squared.
-    Does not include the Sqrt function for sake of speed.
-    """
-    half_x = size[0]/2.
-    half_y = size[1]/2.
-    if center[0] < 0:
-        half_x = -half_x
-    if center[1] < 0:
-        half_y = -half_y
-    dist = (center[0] + half_x)**2 + (center[1] + half_y)**2
-    return dist
 
 
 def generate_fake_data():
@@ -125,7 +107,7 @@ def generate_fake_data():
             coord_die_center_y = die_y * (grid_center[1] - _y)
             coord_die_center = (coord_die_center_x, coord_die_center_y)
             center_rad_sqrd = coord_die_center_x**2 + coord_die_center_y**2
-            die_max_sqrd = max_dist_sqrd(coord_die_center, die_size)
+            die_max_sqrd = wm_utils.max_dist_sqrd(coord_die_center, die_size)
 #            coord_lower_left_x = coord_die_center_x - die_x/2
             coord_lower_left_y = coord_die_center_y - die_y/2
 #            coord_lower_left = (coord_lower_left_x, coord_lower_left_y)

@@ -74,9 +74,11 @@ print(__file__)
 if 'site-packages' in __file__:
     print("we're being run from site-pkg")
     from wafer_map import wm_legend
+    from wafer_map import wm_utils
 else:
     print("running in dev mode")
     import wm_legend
+    import wm_utils
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
@@ -87,85 +89,6 @@ FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
 __version__ = "v0.6.0"
-
-
-def nanpercentile(a, percentile):
-    """
-    Performs a numpy.percentile(a, percentile) calculation while
-    ignoring NaN values.
-
-    Only works on a 1D array.
-    """
-    if type(a) != np.ndarray:
-        a = np.array(a)
-    return np.percentile(a[np.logical_not(np.isnan(a))], percentile)
-
-
-def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
-    """
-    Rescales x (which was part of scale original_min to original_max)
-    to run over a range new_min to new_max such
-    that the value x maintains position on the new scale new_min to new_max.
-    If x is outside of xRange, then y will be outside of yRange.
-
-    Default new scale range is 0 to 1 inclusive.
-
-    Examples:
-    rescale(5, (10, 20), (0, 1)) = -0.5
-    rescale(27, (0, 200), (0, 5)) = 0.675
-    rescale(1.5, (0, 1), (0, 10)) = 15.0
-    """
-    part_a = x * (new_max - new_min)
-    part_b = original_min * new_max - original_max * new_min
-    denominator = original_max - original_min
-    result = (part_a - part_b)/denominator
-    return float(result)
-
-
-def coord_to_grid(coord, die_size, grid_center):
-    """
-    Converts a panel coordinate to a grid value.
-    """
-    # TODO: seems have a error with negative 0 grid values.
-    grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
-    grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
-    return (grid_x, grid_y)
-
-
-def grid_to_rect_coord(grid, die_size, grid_center):
-    """
-    Converts a die's grid value to the origin point of the rectangle to draw.
-
-    Adjusts for the fact that the grid falls on the center of a die by
-    subtracting die_size/2 from the coordinate.
-
-    Adjusts for the fact that Grid +y is down while panel +y is up by
-    taking ``grid_center - grid`` rather than ``grid - grid_center`` as is
-    done in the X case.
-    """
-    _x = die_size[0] * (grid[0] - grid_center[0] - 0.5)
-    _y = die_size[1] * (grid_center[1] - grid[1] - 0.5)
-    return (_x, _y)
-
-
-def max_dist_sqrd(center, size):
-    """
-    Calcualtes the largest distance from the origin for a rectangle of
-    size (x, y), where the center of the rectangle's coordinates are known.
-    If the rectangle's center is in the Q1, then the upper-right corner is
-    the farthest away from the origin. If in Q2, then the upper-left corner
-    is farthest away. Etc.
-    Returns the magnitude of the largest distance squared.
-    Does not include the Sqrt function for sake of speed.
-    """
-    half_x = size[0]/2.
-    half_y = size[1]/2.
-    if center[0] < 0:
-        half_x = -half_x
-    if center[1] < 0:
-        half_y = -half_y
-    dist = (center[0] + half_x)**2 + (center[1] + half_y)**2
-    return dist
 
 
 class WaferMapPanel(wx.Panel):
@@ -240,15 +163,15 @@ class WaferMapPanel(wx.Panel):
         else:
             # use the 0.5 and .95 percentiles to set the color range
             #   - prevents outliers from overwhelming scale.
-            p_95 = float(nanpercentile([_i[2] for _i in self.xyd], 95))
-            p_05 = float(nanpercentile([_i[2] for _i in self.xyd], 5))
+            p_95 = float(wm_utils.nanpercentile([_i[2] for _i in self.xyd], 95))
+            p_05 = float(wm_utils.nanpercentile([_i[2] for _i in self.xyd], 5))
 
         for die in self.xyd:
             if color_dict is None:
-                color1 = max(50, min(rescale(die[2],
-                                             (p_05, p_95),
-                                             (0, 255)
-                                             ),
+                color1 = max(50, min(wm_utils.rescale(die[2],
+                                                      (p_05, p_95),
+                                                      (0, 255)
+                                                      ),
                                      255)
                              )
 
@@ -258,9 +181,9 @@ class WaferMapPanel(wx.Panel):
                 color = color_dict[die[2]]
 
             # Determine the die's lower-left coordinate
-            lower_left_coord = grid_to_rect_coord(die[:2],
-                                                  self.die_size,
-                                                  self.grid_center)
+            lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
+                                                           self.die_size,
+                                                           self.grid_center)
 
             self.canvas.AddRectangle(lower_left_coord,
                                      self.die_size,
@@ -287,15 +210,17 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.GridOver = self.legend_overlay
 
         # new legend - able to change colors
-        self.legend = wm_legend.Legend(self,
-                                       ["A", "Banana!", "C", "Donut", "E"],
-                                       [(0, 128, 0),
-                                        (0, 0, 255),
-                                        (255, 0, 0),
-                                        (128, 0, 128),
-                                        (0, 128, 128),
-                                        ],
-                                       )
+        legend_labels = ["A", "Banana!", "C", "Donut", "E"]
+        legend_values = [(0, 128, 0),
+                         (0, 0, 255),
+                         (255, 0, 0),
+                         (128, 0, 128),
+                         (0, 128, 128),
+                         ]
+        self.legend = wm_legend.DiscreteLegend(self,
+                                               legend_labels,
+                                               legend_values,
+                                               )
 
         # Bind events to the canvas
         # TODO: Move event binding to method
@@ -358,10 +283,10 @@ class WaferMapPanel(wx.Panel):
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
 
-        die_coord_x, die_coord_y = coord_to_grid(event.Coords,
-                                                 self.die_size,
-                                                 self.grid_center,
-                                                 )
+        die_coord_x, die_coord_y = wm_utils.coord_to_grid(event.Coords,
+                                                          self.die_size,
+                                                          self.grid_center,
+                                                          )
 
         # lookup the die value
         die_coord = "x{}y{}".format(die_coord_x, die_coord_y)
@@ -581,47 +506,6 @@ class WaferMapPanel(wx.Panel):
             dc.DrawBitmapPoint(self.canvas._Buffer, xy_tl)
         dc.EndDrawing()
         #self.Canvas.Update()
-
-
-#class LegendOverlay(FloatCanvas.Text):
-#    """ Demo of drawing overlay - to be used for legend """
-#    def __init__(self,
-#                 String,
-#                 xy,
-#                 Size=24,
-#                 Color="Black",
-#                 BackgroundColor=None,
-#                 Family=wx.MODERN,
-#                 Style=wx.NORMAL,
-#                 Weight=wx.NORMAL,
-#                 Underlined=False,
-#                 Font=None):
-#        FloatCanvas.Text.__init__(self,
-#                                  String,
-#                                  xy,
-#                                  Size=Size,
-#                                  Color=Color,
-#                                  BackgroundColor=BackgroundColor,
-#                                  Family=Family,
-#                                  Style=Style,
-#                                  Weight=Weight,
-#                                  Underlined=Underlined,
-#                                  Font=Font)
-#
-#    # TODO: Change this so that it creates the custom legend
-#    def _Draw(self, dc, Canvas):
-#        """
-#        _Draw method for Overlay
-#         note: this is a differeent signarture than the DrawObject Draw
-#        """
-#        dc.SetFont(self.Font)
-#        dc.SetTextForeground(self.Color)
-#        if self.BackgroundColor:
-#            dc.SetBackgroundMode(wx.SOLID)
-#            dc.SetTextBackground(self.BackgroundColor)
-#        else:
-#            dc.SetBackgroundMode(wx.TRANSPARENT)
-#        dc.DrawTextPoint(self.String, self.XY)
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
