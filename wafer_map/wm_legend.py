@@ -66,7 +66,16 @@ class ContinuousLegend(wx.Panel):
         self.width = 20
         self.height = 500
 
-        self.dc = wx.ClientDC(self)
+#        self.dc = wx.ClientDC(self)
+        self.temp = wx.BufferedDC(None, (self.width, self.height))
+        self.temp.GradientFillLinear((0, 0, self.width, self.height),
+                                     wx.GREEN,
+                                     wx.RED,
+                                     wx.NORTH,
+                                     )
+        self.buffer = self.temp.GetAsBitmap()
+        
+#        self.dc = wx.BufferedPaintDC(self, self.bmp)
 #        self.init_ui()
 
         self.Bind(wx.EVT_PAINT, self.on_paint)
@@ -78,21 +87,19 @@ class ContinuousLegend(wx.Panel):
         """
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-#        self.color_slider = cs.PyColourSlider(self, wx.ID_ANY, wx.RED)
-#        self.color_slider.WIDTH = 400
-#        self.color_slider.HEIGHT = 400
-
-#        self.hbox.Add(self.color_slider, 1, wx.ALIGN_CENTER_VERTICAL)
-
         self.SetSizer(self.hbox)
 
     def on_paint(self, event):
         """ Draw the gradient """
-        self.dc.GradientFillLinear((0, 0, self.width, self.height),
-                                   wx.GREEN,
-                                   wx.RED,
-                                   wx.NORTH,
-                                   )
+        self.dc = wx.BufferedPaintDC(self, self.buffer)
+        
+#        self.dc.GradientFillLinear((0, 0, self.width, self.height),
+#                                   wx.GREEN,
+#                                   wx.RED,
+#                                   wx.NORTH,
+#                                   )
+        self.Refresh()
+
 
     def mouse_move(self, event):
         pos = event.GetPosition()
@@ -107,11 +114,11 @@ class ContinuousLegend(wx.Panel):
         """
         Gets a color from the gradient
         """
-        pxl = int(wm_math.rescale(value, self.plot_range, (0, self.height - 1)))
+        pxl = int(wm_utils.rescale(value, self.plot_range, (0, self.height - 1)))
 #        pxl = value
-        point = (10, pxl)
+        point = (0, pxl)
         # (10, 499) should be (10, 499) (0, 254, 0, 255)
-        color = self.dc.GetPixelPoint(point)
+        color = self.temp.GetPixelPoint(point)
         return color
 
 
@@ -239,8 +246,6 @@ def main():
 
 #            self.panel = DiscreteLegend(self, legend_labels, legend_colors)
             self.panel = ContinuousLegend(self, (0, 1))
-            for _v in [0, 0.2, 0.5, 0.8, 1]:
-                print(self.panel.get_color(_v))
 
         def OnQuit(self, event):
             self.Destroy()
@@ -248,8 +253,8 @@ def main():
     app = wx.App()
     frame = ExampleFrame("Legend Example")
     frame.Show()
-    for _v in [0, 0.2, 0.5, 0.8, 1]:
-        print(frame.panel.get_color(_v))
+    for _i in [0, 0.5, 1]:
+        print(_i, frame.panel.get_color(_i))
     app.MainLoop()
 
 
