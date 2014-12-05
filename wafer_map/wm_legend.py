@@ -18,6 +18,7 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 #from docopt import docopt
 import wx
+import numpy as np
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 import wx.lib.colourchooser.pycolourslider as cs
@@ -54,6 +55,24 @@ class ContinuousLegend(wx.Panel):
     the number of labels.
 
     Initially, it will be fixed to 3 labels: high, mid, low.
+
+    Here's the logic:
+
+    1.  Upon Init of the Legend, create an instance attribute MemoryDC
+        to store the gradient.
+    2.  Create the gradient using the convienent GradientFillLinear method.
+    3.  We now have a buffer that we can access to pull the color values from
+    4.  To actually paint the item, we have to access the paint event.
+
+        a.  Inside the on_paint method, we create a new temporary PaintDC.
+        b.  Get the size of the instance MemoryDC
+        c.  Copy the instance MemoryDC to the temporary PaintDC
+        d.  Exiting out of the on_paint event destroys the PaintDC which
+            actually draws it on the screen.
+
+    5.  We can now access our instance MemoryDC with the GetPixelPoint method.
+
+    For now, I'm leaving on_size disabled. This may change in the future.
     """
     def __init__(self, parent, plot_range):
         """
@@ -63,22 +82,108 @@ class ContinuousLegend(wx.Panel):
         self.parent = parent
         self.plot_range = plot_range
 
+        self.w = 20
+        self.h = 500
+
+        self.mdc = wx.MemoryDC(wx.EmptyBitmap(self.w, self.h))
+        self.mdc.GradientFillLinear((0, 0, self.w, self.h),
+                                    wx.GREEN,
+                                    wx.RED,
+                                    wx.NORTH,
+                                    )
+
+        print(self.mdc.GetPixelPoint((2, self.h/4)))
+#
+        self.Bind(wx.EVT_PAINT, self.on_paint)
+#        self.Bind(wx.EVT_SIZE, self.on_size)
+        self.Bind(wx.EVT_MOTION, self.mouse_move)
+        self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
+
+    def init_ui(self):
+        """
+        build the ui.
+        """
+        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+        self.SetSizer(self.hbox)
+
+#    def on_size(self, event):
+#        w, h = self.GetClientSize()
+#        self.mdc = wx.MemoryDC(wx.EmptyBitmap(w, h))
+#        self.mdc.GradientFillLinear((0, 0, w, h),
+#                                    wx.GREEN,
+#                                    wx.RED,
+#                                    wx.NORTH,
+#                                    )
+#        self.Refresh()
+
+    def on_paint(self, event):
+        """ Draw the gradient """
+        dc = wx.PaintDC(self)
+        w, h = self.mdc.GetSize()
+        dc.Blit(0, 0, w, h, self.mdc, 0, 0)
+
+    def mouse_move(self, event):
+        """ Used for debugging """
+        pass
+#        pos = event.GetPosition()
+#        # only display colors if we're inside the gradient
+#        w, h = self.mdc.GetSize()
+#        if pos[0] < w and pos[1] < h:
+#            a = self.mdc.GetPixelPoint(event.GetPosition())
+#            print(pos, a)
+
+    def left_click(self, event):
+        """ Used for debugging """
+        pos = event.GetPosition()
+        w, h = self.mdc.GetSize()
+        if pos[0] < w and pos[1] < h:
+            val = wm_utils.rescale(pos[1], (0, self.h - 1), self.plot_range)
+            a = self.mdc.GetPixelPoint(event.GetPosition())
+            print("{}\t{}\t{}".format(pos, a, val))
+
+    def get_color(self, value):
+        """
+        Gets a color from the gradient
+        """
+        pxl = int(wm_utils.rescale(value, self.plot_range, (0, self.h - 1)))
+        point = (0, pxl)
+        color = self.mdc.GetPixelPoint(point)
+        return color
+
+
+# DON'T TOUCH! It's kinda working...
+# but not entirely. So screw it.
+class ContinuousLegend_old(wx.Panel):
+    """
+    Legend for continuous values.
+
+    This is a color gradient with a few select labels. At minumum, the high
+    and low values will be labeled. I plan on allowing the user to set
+    the number of labels.
+
+    Initially, it will be fixed to 3 labels: high, mid, low.
+    """
+    def __init__(self, parent, plot_range):
+        """
+        __init__(self, wx.Panel parent, tuple plot_range) -> wx.Panel
+        """
+        wx.Panel.__init__(self, parent)
+        self.parent = parent
+        self.plot_range = plot_range
+        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+
         self.width = 20
         self.height = 500
 
 #        self.dc = wx.ClientDC(self)
-        self.temp = wx.BufferedDC(None, (self.width, self.height))
-        self.temp.GradientFillLinear((0, 0, self.width, self.height),
-                                     wx.GREEN,
-                                     wx.RED,
-                                     wx.NORTH,
-                                     )
-        self.buffer = self.temp.GetAsBitmap()
-        
-#        self.dc = wx.BufferedPaintDC(self, self.bmp)
-#        self.init_ui()
+#        self.dc.GradientFillLinear((0, 0, self.width, self.height),
+#                                   wx.GREEN,
+#                                   wx.RED,
+#                                   wx.NORTH,
+#                                   )
 
         self.Bind(wx.EVT_PAINT, self.on_paint)
+        self.Bind(wx.EVT_SIZE, self.on_size)
         self.Bind(wx.EVT_MOTION, self.mouse_move)
 
     def init_ui(self):
@@ -86,40 +191,44 @@ class ContinuousLegend(wx.Panel):
         build the ui.
         """
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-
         self.SetSizer(self.hbox)
+
+    def on_size(self, event):
+        event.Skip()
+        self.Refresh()
 
     def on_paint(self, event):
         """ Draw the gradient """
-        self.dc = wx.BufferedPaintDC(self, self.buffer)
-        
-#        self.dc.GradientFillLinear((0, 0, self.width, self.height),
-#                                   wx.GREEN,
-#                                   wx.RED,
-#                                   wx.NORTH,
-#                                   )
-        self.Refresh()
-
+        self.w, self.h = w, h = self.GetClientSize()
+        dc = wx.AutoBufferedPaintDC(self)
+        dc.Clear()
+#        dc.DrawLine(0, 0, w, h)
+#        dc.SetPen(wx.Pen(wx.BLACK, 5))
+#        dc.DrawCircle(w / 2, h / 2, 100)
+        dc.GradientFillLinear((0, 0, w, h),
+                              wx.GREEN,
+                              wx.RED,
+                              wx.NORTH,
+                              )
+        self.mdc = wx.MemoryDC(dc.GetAsBitmap())
 
     def mouse_move(self, event):
         pos = event.GetPosition()
         # only display colors if we're inside the gradient
-        if pos[0] < self.width and pos[1] < self.height:
-            a = self.dc.GetPixelPoint(event.GetPosition())
-#            b = self.get_color(pos[1])
+        if pos[0] < self.w and pos[1] < self.h:
+            a = self.mdc.GetPixelPoint(event.GetPosition())
             print(pos, a)
-            
 
     def get_color(self, value):
         """
         Gets a color from the gradient
         """
-        pxl = int(wm_utils.rescale(value, self.plot_range, (0, self.height - 1)))
+#        pxl = int(wm_utils.rescale(value, self.plot_range, (0, self.height - 1)))
 #        pxl = value
-        point = (0, pxl)
-        # (10, 499) should be (10, 499) (0, 254, 0, 255)
-        color = self.temp.GetPixelPoint(point)
-        return color
+#        point = (0, pxl)
+#        color = self.mdc.GetPixelPoint(point)
+#        return color
+#        pass
 
 
 class DiscreteLegend(wx.Panel):
@@ -242,10 +351,14 @@ def main():
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
 
             # Here's where we call the WaferMapPanel
-#            self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+            self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-#            self.panel = DiscreteLegend(self, legend_labels, legend_colors)
-            self.panel = ContinuousLegend(self, (0, 1))
+            self.d_legend = DiscreteLegend(self, legend_labels, legend_colors)
+            self.c_legend = ContinuousLegend(self, (0, 1))
+
+            self.hbox.Add(self.d_legend, 1, wx.EXPAND)
+            self.hbox.Add(self.c_legend, 1, wx.EXPAND)
+            self.SetSizer(self.hbox)
 
         def OnQuit(self, event):
             self.Destroy()
@@ -253,8 +366,8 @@ def main():
     app = wx.App()
     frame = ExampleFrame("Legend Example")
     frame.Show()
-    for _i in [0, 0.5, 1]:
-        print(_i, frame.panel.get_color(_i))
+    for _i in [0, 0.5, 0.75, 1]:
+        print(_i, frame.c_legend.get_color(_i))
     app.MainLoop()
 
 
