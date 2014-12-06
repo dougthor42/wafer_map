@@ -10,7 +10,7 @@ setup(
     author_email="doug.thor@gmail.com",
     url="https://github.com/dougthor42/wafer_map",
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Manufacturing",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
