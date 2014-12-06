@@ -252,7 +252,8 @@ class WaferMapPanel(wx.Panel):
         # Create layout manager and add items
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.hbox.Add(self.legend, 1, wx.EXPAND)
+        self.hbox.Add(self.legend, 0)
+        self.hbox.AddSpacer(5)
         self.hbox.Add(self.canvas, 1, wx.EXPAND)
 
         self.SetSizer(self.hbox)
@@ -407,9 +408,13 @@ class WaferMapPanel(wx.Panel):
     def toggle_legend(self):
         """ Toggles the legend on and off """
         if self.legend_bool:
+            # TODO: Figure out why part of the ContinuousLegend remains
+            #       after turning the legend off. And figure out how to
+            #       get rid of it...
             self.hbox.RemovePos(0)
             self.Layout()       # forces update of layout
-            self.canvas.GridOver = None
+            # To be used if I want to do overlay legend instead
+#            self.canvas.GridOver = None
             self.legend_bool = False
         else:
             self.hbox.Insert(0, self.legend, 0)

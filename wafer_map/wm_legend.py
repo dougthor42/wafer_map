@@ -96,18 +96,22 @@ class ContinuousLegend(wx.Panel):
         # We need to move the gradient down a bit so that the top and bottom
         # labels are not cut off.
         # TODO: Replace these contants with code that finds the sizes
-        self.grad_w = 100           # total gradient width (px)
+        self.grad_w = 30           # total gradient width (px)
         self.grad_h = 500           # total gradient height (px)
         self.text_h = 15            # height of a text element (px)
         self.text_w = 150           # width of longest text element (px)
         self.tick_l = 20            # tick mark length
         self.spacer = 5             # spacer speration between items
-        self.dc_w = self.grad_w + self.spacer + self.tick_l + self.text_w
+        self.dc_w = (self.spacer + self.grad_w + self.spacer
+                     + self.tick_l + self.spacer + self.text_w + self.spacer)
+        print(self.dc_w)
         self.dc_h = self.grad_h + self.text_h   # total bitmap height
-        self.grad_start_x = self.dc_w - self.grad_w
+        self.grad_start_x = self.dc_w - self.spacer - self.grad_w
         self.grad_start_y = self.text_h / 2
-        self.grad_end_x = self.dc_w
+        self.grad_end_x = self.dc_w - self.spacer
         self.grad_end_y = self.grad_start_y + self.grad_h
+        
+        self.init_ui()
 
         # Set some other instance attributes
         self.num_ticks = 11
@@ -118,17 +122,21 @@ class ContinuousLegend(wx.Panel):
 
         # Draw a rectangle to make the background
         # TODO: change the bitmap background to be transparent
-        pen = wx.Pen(wx.WHITE)
+        c = wx.Colour(200, 230, 230)
+        pen = wx.Pen(c)
+        brush = wx.Brush(c)
         self.mdc.SetPen(pen)
+        self.mdc.SetBrush(brush)
         self.mdc.DrawRectangle(0, 0, self.dc_w, self.dc_h)
 
         # Draw the Gradient on a portion of the MemoryDC
-        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
-                                     self.grad_w, self.grad_h),
-                                    wx.GREEN,
-                                    wx.RED,
-                                    wx.NORTH,
-                                    )
+        self.draw_gradient()
+#        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
+#                                     self.grad_w, self.grad_h),
+#                                    wx.BLACK,
+#                                    wx.YELLOW,
+#                                    wx.NORTH,
+#                                    )
 
         # Calculate and draw the tickmarks.
         self.ticks = self.calc_ticks()
@@ -140,28 +148,27 @@ class ContinuousLegend(wx.Panel):
         self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
 
+        
+
     def init_ui(self):
         """
-        build the ui.
+        Add a Sizer that is the same size as the MemoryDC
         """
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+        self.hbox.Add((self.dc_w, self.dc_h))
         self.SetSizer(self.hbox)
 
 #    def on_size(self, event):
 #        w, h = self.GetClientSize()
 #        self.mdc = wx.MemoryDC(wx.EmptyBitmap(w, h))
-#        self.mdc.GradientFillLinear((0, 0, w, h),
-#                                    wx.GREEN,
-#                                    wx.RED,
-#                                    wx.NORTH,
-#                                    )
+#        self.draw_gradient()
 #        self.Refresh()
 
     def on_paint(self, event):
         """ Draw the gradient """
         dc = wx.PaintDC(self)
-        w, h = self.mdc.GetSize()
-        dc.Blit(0, 0, w, h, self.mdc, 0, 0)
+#        w, h = self.mdc.GetSize()
+        dc.Blit(0, 0, self.dc_w, self.dc_h, self.mdc, 0, 0)
 
     def mouse_move(self, event):
         """ Used for debugging """
@@ -209,7 +216,7 @@ class ContinuousLegend(wx.Panel):
 
         ticks = []
         for tick in tick_values:
-            string = "{:.3g}".format(tick)
+            string = "{:.3f}".format(tick)
             value = tick,
             pixel = wm_utils.rescale(tick,
                                      self.plot_range,
@@ -237,6 +244,15 @@ class ContinuousLegend(wx.Panel):
             text_x = tick_start - self.spacer - text_w
             text_y = tick[2] - self.text_h / 2
             self.mdc.DrawText(tick[0], text_x, text_y)
+
+    def draw_gradient(self):
+        """ Draws the Gradient """
+        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
+                                     self.grad_w, self.grad_h),
+                                    wx.BLACK,
+                                    wx.YELLOW,
+                                    wx.SOUTH,
+                                    )
 
 
 # DON'T TOUCH! It's working.
@@ -470,8 +486,8 @@ def main():
             self.d_legend = DiscreteLegend(self, legend_labels, legend_colors)
             self.c_legend = ContinuousLegend(self, (10, 50))
 
-            self.hbox.Add(self.d_legend, 0, wx.EXPAND)
-            self.hbox.Add(self.c_legend, 1, wx.EXPAND)
+            self.hbox.Add(self.d_legend, 0)
+            self.hbox.Add(self.c_legend, 0)
             self.SetSizer(self.hbox)
 
         def OnQuit(self, event):
