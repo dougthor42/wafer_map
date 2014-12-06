@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @name:          wafer_map.py
-@vers:          0.6.0
+@vers:          1.0.0
 @author:        dthor
 @created:       Tue Nov 11 15:08:43 2014
 @descr:         A new file
@@ -16,49 +16,7 @@ Options:
 Changelog
 =========
 
-* **0.6.0 / 2014-12-04**
-
-  + Closed issues #1, 2, 3, 4, and 6 in the tracker.
-  + Updated gen_fake_data to use better algorithm and actually output
-    correct data.
-  + Updated wm_core.WaferMapPanel so that the status bar text displays
-    the correct grid values. Verified working with all sorts of
-    grid_center values.
-  + **Last Update before release, yay!** All that's left is to get the
-    legend working.
-
-* **0.5.0 / 2014-12-02**
-
-  + renamed wafer_map.py to wm_core.py.
-  + Finally figured out the imports for running in development from my
-    own dev directory vs running in "production" from the site-packages
-    directory.
-
-* **0.4.0 / 2014-12-02**
-
-  + Massive change to package hierarchy - separated app, frame, info, and fake
-    data into individual modules.
-
-* **0.3.0 / 2014-12-01**
-
-  + Added kb shortcuts and menu items for display toggle
-    of wafer outline and crosshairs.
-  + Added placeholder for legend and kb shortcut for display toggle.
-  + Added option for plotting discrete data.
-
-* **0.2.0 / 2014-11-26**
-
-  + Made it so a wafer map can be plotted with a single
-    command.
-  + Updated example.py to demo single-command usage.
-
-* **0.1.0 / 2014-11-25**
-
-  + First working code. Added example file.
-
-* **0.0.1 / 2014-11-25**
-
-  + Project Creation
+See README.rst
 
 """
 
@@ -88,7 +46,7 @@ else:
 FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 __author__ = "Douglas Thor"
-__version__ = "v0.6.0"
+__version__ = "v1.0.0"
 
 
 class WaferMapPanel(wx.Panel):

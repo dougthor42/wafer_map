@@ -8,3 +8,4 @@ wafer_map\wm_core.py
 wafer_map\wm_frame.py
 wafer_map\wm_info.py
 wafer_map\wm_legend.py
+wafer_map\wm_utils.py

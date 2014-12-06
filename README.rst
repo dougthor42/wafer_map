@@ -24,24 +24,67 @@ Install from PyPI.
 Usage
 =====
 
-Since I'm still making the package, the usage will change. Since no
-no documentation is better than wrong documentation, I'm leaving this section
-mostly barren until I hash things out.
+<I still need to fill this out in detail.>
 
-What I can show you is the example.py file. Navigate to the wafer_map
-directory in your python installtion (``../Lib/site-packages/wafer_map``) and
-run example.py in your cmd prompt or terminal:
+The easiest way to use this to to:
 
-    >>> python example.py
+0. Import the ``wm_app`` module:
+
+    >>> import wm_app
+
+1.  Set up your data as a list of (grid_x, grid_y, value) tuples:
+
+    >>> data = [(grid_x_1, grid_y_1, data_1),       # 1st die
+    ...         (grid_x_2, grid_y_2, data_2),       # 2nd die
+    ...         (grid_x_3, grid_y_3, data_3)        # 3rd die and so on
+    ...         ]
+
+2.  Call ``wm_app.WaferMapApp``.
+
+    >>> wm_app.WaferMapApp(data,
+    ...                    die_size,
+    ...                    center_xy,
+    ...                    dia,
+    ...                    edge_excl,
+    ...                    flat_excl)
+
+    The input parameters for WaferMapApp are:
+
+      :die_size:    The die size in (x, y). Units are mm. 
+      :center_xy:   The grid (x, y) coordinate that represents the physical
+                    center of the wafer.
+      :dia:         The wafer diameter. Units are in mm.
+      :edge_excl:   The exclusion distance measured from the edge of the
+                    wafer. Units are in mm.
+      :flat_excl:   The exclusion distance measured from the wafer flat.
+                    Units are in mm. Cannot be less than ``edge_excl``.
+
+3.  An image should appear. Yay! Play around with it: middle-click+drag to 
+    pan, scroll wheel to zoom. See "Keyboard Shortcuts and Mouse Usage"
+    section.
+
+
+Example
+-------
+
+There is an example file which somewhat demonstrates how to use this package.
+At the very least, you can run the example file and see how this wafer
+mapping software looks.
+
+Navigate to the wafer_map directory in your python installtion
+(``../Lib/site-packages/wafer_map``) and run example.py in your cmd prompt
+or terminal:
+
+    ``python example.py``
 
 Example.py generates a fake data set and then displays it in 3 different ways:
 
-1. As a standalone app. This requires only calling a single function in
-   your code.
-2. As a panel added to your own wx.Frame object. This allows you to add
-   the wafer map to your own wxPython app.
-3. As a panel added to your own wx.Frame object, but this time plotting
-   discrete (rather than continuous) data.
+1.  As a standalone app. This requires only calling a single function in
+    your code.
+2.  As a panel added to your own wx.Frame object. This allows you to add
+    the wafer map to your own wxPython app.
+3.  As a standalone app, but this time plotting discrete (rather
+    than continuous) data.
 
 
 Nomenclature
@@ -53,11 +96,10 @@ values representing the absolute postion of a die) and a die's grid location
 (integer row-column or x-y values that are sometimes printed on die).
 
 :coordinate:    Floating-point value representing the exact location of
-                a die on the wafer.
+                a die on the wafer. Also sometimes called 'coord'
 
                 The coordinate origin is the center of the wafer and the
                 center of the FloatCanvas panel.
-:loc:           Alias for ``coordinate``.
 :grid:          Integer value representing the printed die. Can only be mapped
                 to a coordinate if a grid_center is defined.
 
@@ -89,23 +131,19 @@ will zoom in and out.
 Notes
 =====
 
-**Currently in Alpha phase.**
+This package has been released to version 1.0.0. What this means is that it
+*should* be usable in an engineering-type environment. I'm starting to use
+it heavily myself. It's not very customizable yet, but I don't need that
+capability yet. You can see the roadmap at:
+``https://github.com/dougthor42/wafer_map/milestones``
 
-This package is currently undergoing a lot of modification. I'm using this
-to learn how to distribute things on PyPI and GitHub, so there will be a
-lot of quick updates. Sometimes it won't work. Sometimes I'll break things.
-Sometimes I'll completely change the API.
-
-This package is not attempting to modify any files or write any data, so using
-it in alpha phase should not cause any computer harm or data loss (unless I
-do something stupid).
+There's still a fair amount of code cleanup and refactoring to do, especially
+on the wm_legend.py module (as that was made last). So please do judge my
+coding style too harshly (though constructive criticism is much appreciated!)
 
 **Requires: wxPython**
 
-Data is input into the primary class ``WaferMapApp``
-or ``WaferMapPanel`` as a list of ``(grid_x, grid_y, data)`` tuples.
-
-Expected capabilities:
+Current capabilities:
 ----------------------
 
 1. Draw wafer outline and flat or notch.
@@ -114,10 +152,16 @@ Expected capabilities:
 4. Accept continuous or discrete data and color accordingly.
 5. Provide zoom and pan capabilities.
 6. Mouse-over to display die coordinate and value
+7. Legend Display for both continuous and discrete data
 
 
 Changelog
 =========
+
+* **1.0.0 / 2014-12-05**
+
+  + Official release.
+  + The Legend should now work as intended.
 
 * **0.6.0 / 2014-12-04**
 
