@@ -92,7 +92,7 @@ def main():
     discrete = False
     dtype = 'continuous'
 
-#    discrete = True         # uncomment this line to use discrete data
+    discrete = True         # uncomment this line to use discrete data
     if discrete:
         xyd = discrete_xyd
         dtype = 'discrete'

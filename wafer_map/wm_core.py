@@ -157,7 +157,11 @@ class WaferMapPanel(wx.Panel):
         if self.data_type == 'discrete':
             unique_items = {_die[2] for _die in self.xyd}
             col_val = 255/len(unique_items)
-            color_dict = {_i: (_n*col_val, _n*col_val, _n*col_val)
+            import random
+            random.randint(0, 255)
+            color_dict = {_i: (random.randint(0, 255),
+                               random.randint(0, 255),
+                               random.randint(0, 255))
                           for _n, _i
                           in enumerate(unique_items)}
         else:
@@ -210,18 +214,16 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.GridOver = self.legend_overlay
 
         # new legend - able to change colors
-        legend_labels = ["A", "Banana!", "C", "Donut", "E"]
-        legend_values = [(0, 128, 0),
-                         (0, 0, 255),
-                         (255, 0, 0),
-                         (128, 0, 128),
-                         (0, 128, 128),
-                         ]
 
         if self.data_type == "discrete":
+            legend_labels = []
+            legend_colors = []
+            for _k, _v in color_dict.items():
+                legend_labels.append(str(_k))
+                legend_colors.append(_v)
             self.legend = wm_legend.DiscreteLegend(self,
                                                    legend_labels,
-                                                   legend_values,
+                                                   legend_colors,
                                                    )
         else:
             self.legend = wm_legend.ContinuousLegend(self,
@@ -253,7 +255,7 @@ class WaferMapPanel(wx.Panel):
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
         self.hbox.Add(self.legend, 0)
-        self.hbox.AddSpacer(5)
+#        self.hbox.AddSpacer(5)
         self.hbox.Add(self.canvas, 1, wx.EXPAND)
 
         self.SetSizer(self.hbox)

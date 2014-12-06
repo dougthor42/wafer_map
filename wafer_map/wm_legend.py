@@ -82,6 +82,9 @@ class ContinuousLegend(wx.Panel):
         self.parent = parent
         self.plot_range = plot_range
 
+        # Set some other instance attributes
+        self.num_ticks = 11
+
         # We need to set some parameters before making the bitmap. How do?
         # Create the MemoryDC now - we'll add the bitmap later.
         self.mdc = wx.MemoryDC()
@@ -96,25 +99,31 @@ class ContinuousLegend(wx.Panel):
         # We need to move the gradient down a bit so that the top and bottom
         # labels are not cut off.
         # TODO: Replace these contants with code that finds the sizes
-        self.grad_w = 30           # total gradient width (px)
+        # These are in a specific order. Do not change!
+        # First determine some fixed items
+        self.text_h = self.mdc.GetTextExtent("A")[1]
+        self.grad_w = 30            # total gradient width (px)
         self.grad_h = 500           # total gradient height (px)
-        self.text_h = 15            # height of a text element (px)
-        self.text_w = 150           # width of longest text element (px)
-        self.tick_l = 20            # tick mark length
+        self.tick_w = 20            # tick mark length
         self.spacer = 5             # spacer speration between items
-        self.dc_w = (self.spacer + self.grad_w + self.spacer
-                     + self.tick_l + self.spacer + self.text_w + self.spacer)
-        print(self.dc_w)
-        self.dc_h = self.grad_h + self.text_h   # total bitmap height
-        self.grad_start_x = self.dc_w - self.spacer - self.grad_w
         self.grad_start_y = self.text_h / 2
-        self.grad_end_x = self.dc_w - self.spacer
         self.grad_end_y = self.grad_start_y + self.grad_h
-        
-        self.init_ui()
 
-        # Set some other instance attributes
-        self.num_ticks = 11
+        # Now that the widths are defined, I can calculate some other things
+        self.ticks = self.calc_ticks()
+        self.text_w = self.get_max_text_w(self.ticks)
+
+        # back to sizes...
+        # Note: I'm intentionally listing every spacer manually rather than
+        #       multiplying by how many there are. This makes it easier
+        #       to see where they are.
+        self.tick_start_x = self.spacer + self.text_w + self.spacer
+        self.grad_start_x = self.tick_start_x + self.tick_w + self.spacer
+        self.grad_end_x = self.grad_start_x + self.grad_w
+        self.dc_w = self.grad_end_x + self.spacer
+        self.dc_h = self.grad_h + self.text_h   # total bitmap height
+
+        self.init_ui()
 
         # Create the MemoryDC where we do all of the drawing.
 #        self.mdc = wx.MemoryDC(wx.EmptyBitmap(self.w, self.h))
@@ -139,7 +148,7 @@ class ContinuousLegend(wx.Panel):
 #                                    )
 
         # Calculate and draw the tickmarks.
-        self.ticks = self.calc_ticks()
+
         self.print_ticks(self.ticks)
 
         # Bind various events
@@ -148,7 +157,7 @@ class ContinuousLegend(wx.Panel):
         self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
 
-        
+
 
     def init_ui(self):
         """
@@ -235,7 +244,7 @@ class ContinuousLegend(wx.Panel):
         for tick in ticks:
             # Sorry, everything is measured from right to left...
             tick_end = self.grad_start_x - self.spacer
-            tick_start = tick_end - self.tick_l
+            tick_start = tick_end - self.tick_w
             self.mdc.DrawLine(tick_start, tick[2],
                               tick_end, tick[2])
 
@@ -253,6 +262,10 @@ class ContinuousLegend(wx.Panel):
                                     wx.YELLOW,
                                     wx.SOUTH,
                                     )
+
+    def get_max_text_w(self, ticks):
+        """ Get the maximum label sizes. There's probably a better way... """
+        return max([self.mdc.GetTextExtent(i[0])[0] for i in ticks])
 
 
 # DON'T TOUCH! It's working.
