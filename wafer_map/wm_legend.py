@@ -82,6 +82,200 @@ class ContinuousLegend(wx.Panel):
         self.parent = parent
         self.plot_range = plot_range
 
+        # We need to set some parameters before making the bitmap. How do?
+        # Create the MemoryDC now - we'll add the bitmap later.
+        self.mdc = wx.MemoryDC()
+        self.mdc.SetFont(wx.Font(9, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+                                 wx.FONTWEIGHT_NORMAL))
+
+        # Set various sizes, some of which are based on things like the
+        # text height:
+        #       self.mdc.GetTextExtent("Longest String")
+        # or the client size:
+        #       self.GetClientSize().
+        # We need to move the gradient down a bit so that the top and bottom
+        # labels are not cut off.
+        # TODO: Replace these contants with code that finds the sizes
+        self.grad_w = 100           # total gradient width (px)
+        self.grad_h = 500           # total gradient height (px)
+        self.text_h = 15            # height of a text element (px)
+        self.text_w = 150           # width of longest text element (px)
+        self.tick_l = 20            # tick mark length
+        self.spacer = 5             # spacer speration between items
+        self.dc_w = self.grad_w + self.spacer + self.tick_l + self.text_w
+        self.dc_h = self.grad_h + self.text_h   # total bitmap height
+        self.grad_start_x = self.dc_w - self.grad_w
+        self.grad_start_y = self.text_h / 2
+        self.grad_end_x = self.dc_w
+        self.grad_end_y = self.grad_start_y + self.grad_h
+
+        # Set some other instance attributes
+        self.num_ticks = 11
+
+        # Create the MemoryDC where we do all of the drawing.
+#        self.mdc = wx.MemoryDC(wx.EmptyBitmap(self.w, self.h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+
+        # Draw a rectangle to make the background
+        # TODO: change the bitmap background to be transparent
+        pen = wx.Pen(wx.WHITE)
+        self.mdc.SetPen(pen)
+        self.mdc.DrawRectangle(0, 0, self.dc_w, self.dc_h)
+
+        # Draw the Gradient on a portion of the MemoryDC
+        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
+                                     self.grad_w, self.grad_h),
+                                    wx.GREEN,
+                                    wx.RED,
+                                    wx.NORTH,
+                                    )
+
+        # Calculate and draw the tickmarks.
+        self.ticks = self.calc_ticks()
+        self.print_ticks(self.ticks)
+
+        # Bind various events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
+#        self.Bind(wx.EVT_SIZE, self.on_size)
+        self.Bind(wx.EVT_MOTION, self.mouse_move)
+        self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
+
+    def init_ui(self):
+        """
+        build the ui.
+        """
+        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+        self.SetSizer(self.hbox)
+
+#    def on_size(self, event):
+#        w, h = self.GetClientSize()
+#        self.mdc = wx.MemoryDC(wx.EmptyBitmap(w, h))
+#        self.mdc.GradientFillLinear((0, 0, w, h),
+#                                    wx.GREEN,
+#                                    wx.RED,
+#                                    wx.NORTH,
+#                                    )
+#        self.Refresh()
+
+    def on_paint(self, event):
+        """ Draw the gradient """
+        dc = wx.PaintDC(self)
+        w, h = self.mdc.GetSize()
+        dc.Blit(0, 0, w, h, self.mdc, 0, 0)
+
+    def mouse_move(self, event):
+        """ Used for debugging """
+        pass
+#        pos = event.GetPosition()
+#        # only display colors if we're inside the gradient
+#        w, h = self.mdc.GetSize()
+#        if pos[0] < w and pos[1] < h:
+#            a = self.mdc.GetPixelPoint(event.GetPosition())
+#            print(pos, a)
+
+    def left_click(self, event):
+        """ Used for debugging """
+        pos = event.GetPosition()
+        w, h = self.mdc.GetSize()
+        if pos[0] < w and pos[1] < h:
+            val = wm_utils.rescale(pos[1],
+                                   (self.grad_start_y, self.grad_end_y - 1),
+                                   self.plot_range)
+            a = self.mdc.GetPixelPoint(event.GetPosition())
+            print("{}\t{}\t{}".format(pos, a, val))
+
+    def get_color(self, value):
+        """
+        Gets a color from the gradient
+        """
+        pxl = int(wm_utils.rescale(value,
+                                   self.plot_range,
+                                   (self.grad_start_y, self.grad_end_y - 1)))
+        point = (0, pxl)
+        color = self.mdc.GetPixelPoint(point)
+        return color
+
+    def calc_ticks(self):
+        """
+        Calculates the tick marks' display string, value, and pixel value.
+        """
+        # First we need to determine the values for the ticks.
+        pr = self.plot_range[1] - self.plot_range[0]
+        spacing = pr / (self.num_ticks - 1)
+
+        tick_values = wm_utils.frange(self.plot_range[0],
+                                      self.plot_range[1] + 1,
+                                      spacing)
+
+        ticks = []
+        for tick in tick_values:
+            string = "{:.3g}".format(tick)
+            value = tick,
+            pixel = wm_utils.rescale(tick,
+                                     self.plot_range,
+                                     (self.grad_start_y, self.grad_end_y - 1))
+            ticks.append((string, value, pixel))
+
+        return ticks
+
+    def print_ticks(self, ticks):
+        """
+        prints the tickmarks. ticks is a list of (string, value, pixel) tuples
+        """
+        pen = wx.Pen(wx.BLACK)
+        self.mdc.SetPen(pen)
+        text_w = max([self.mdc.GetTextExtent(_i[0])[0] for _i in ticks])
+        for tick in ticks:
+            # Sorry, everything is measured from right to left...
+            tick_end = self.grad_start_x - self.spacer
+            tick_start = tick_end - self.tick_l
+            self.mdc.DrawLine(tick_start, tick[2],
+                              tick_end, tick[2])
+
+            # Text origin is top left of bounding box.
+            # Text is currently left-aligned. Maybe Change?
+            text_x = tick_start - self.spacer - text_w
+            text_y = tick[2] - self.text_h / 2
+            self.mdc.DrawText(tick[0], text_x, text_y)
+
+
+# DON'T TOUCH! It's working.
+class ContinuousLegend_save(wx.Panel):
+    """
+    Legend for continuous values.
+
+    This is a color gradient with a few select labels. At minumum, the high
+    and low values will be labeled. I plan on allowing the user to set
+    the number of labels.
+
+    Initially, it will be fixed to 3 labels: high, mid, low.
+
+    Here's the logic:
+
+    1.  Upon Init of the Legend, create an instance attribute MemoryDC
+        to store the gradient.
+    2.  Create the gradient using the convienent GradientFillLinear method.
+    3.  We now have a buffer that we can access to pull the color values from
+    4.  To actually paint the item, we have to access the paint event.
+
+        a.  Inside the on_paint method, we create a new temporary PaintDC.
+        b.  Get the size of the instance MemoryDC
+        c.  Copy the instance MemoryDC to the temporary PaintDC
+        d.  Exiting out of the on_paint event destroys the PaintDC which
+            actually draws it on the screen.
+
+    5.  We can now access our instance MemoryDC with the GetPixelPoint method.
+
+    For now, I'm leaving on_size disabled. This may change in the future.
+    """
+    def __init__(self, parent, plot_range):
+        """
+        __init__(self, wx.Panel parent, tuple plot_range) -> wx.Panel
+        """
+        wx.Panel.__init__(self, parent)
+        self.parent = parent
+        self.plot_range = plot_range
+
         self.w = 20
         self.h = 500
 
@@ -151,86 +345,6 @@ class ContinuousLegend(wx.Panel):
         return color
 
 
-# DON'T TOUCH! It's kinda working...
-# but not entirely. So screw it.
-class ContinuousLegend_old(wx.Panel):
-    """
-    Legend for continuous values.
-
-    This is a color gradient with a few select labels. At minumum, the high
-    and low values will be labeled. I plan on allowing the user to set
-    the number of labels.
-
-    Initially, it will be fixed to 3 labels: high, mid, low.
-    """
-    def __init__(self, parent, plot_range):
-        """
-        __init__(self, wx.Panel parent, tuple plot_range) -> wx.Panel
-        """
-        wx.Panel.__init__(self, parent)
-        self.parent = parent
-        self.plot_range = plot_range
-        self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-
-        self.width = 20
-        self.height = 500
-
-#        self.dc = wx.ClientDC(self)
-#        self.dc.GradientFillLinear((0, 0, self.width, self.height),
-#                                   wx.GREEN,
-#                                   wx.RED,
-#                                   wx.NORTH,
-#                                   )
-
-        self.Bind(wx.EVT_PAINT, self.on_paint)
-        self.Bind(wx.EVT_SIZE, self.on_size)
-        self.Bind(wx.EVT_MOTION, self.mouse_move)
-
-    def init_ui(self):
-        """
-        build the ui.
-        """
-        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-        self.SetSizer(self.hbox)
-
-    def on_size(self, event):
-        event.Skip()
-        self.Refresh()
-
-    def on_paint(self, event):
-        """ Draw the gradient """
-        self.w, self.h = w, h = self.GetClientSize()
-        dc = wx.AutoBufferedPaintDC(self)
-        dc.Clear()
-#        dc.DrawLine(0, 0, w, h)
-#        dc.SetPen(wx.Pen(wx.BLACK, 5))
-#        dc.DrawCircle(w / 2, h / 2, 100)
-        dc.GradientFillLinear((0, 0, w, h),
-                              wx.GREEN,
-                              wx.RED,
-                              wx.NORTH,
-                              )
-        self.mdc = wx.MemoryDC(dc.GetAsBitmap())
-
-    def mouse_move(self, event):
-        pos = event.GetPosition()
-        # only display colors if we're inside the gradient
-        if pos[0] < self.w and pos[1] < self.h:
-            a = self.mdc.GetPixelPoint(event.GetPosition())
-            print(pos, a)
-
-    def get_color(self, value):
-        """
-        Gets a color from the gradient
-        """
-#        pxl = int(wm_utils.rescale(value, self.plot_range, (0, self.height - 1)))
-#        pxl = value
-#        point = (0, pxl)
-#        color = self.mdc.GetPixelPoint(point)
-#        return color
-#        pass
-
-
 class DiscreteLegend(wx.Panel):
     """
     Legend for discrete values
@@ -259,7 +373,7 @@ class DiscreteLegend(wx.Panel):
 
         # Add layout management
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-        self.fgs = wx.FlexGridSizer(rows=self.n_items, cols=2, vgap=2, hgap=2)
+        self.fgs = wx.FlexGridSizer(rows=self.n_items, cols=2, vgap=0, hgap=2)
 
         # Create items to add
         for key, value in zip(self.labels, self.colors):
@@ -345,7 +459,7 @@ def main():
                               None,                         # Window Parent
                               wx.ID_ANY,                    # id
                               title=title,                  # Window Title
-                              size=(200 + 16, 550 + 38),    # Size in px
+                              size=(300 + 16, 550 + 38),    # Size in px
                               )
 
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
@@ -354,9 +468,9 @@ def main():
             self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
             self.d_legend = DiscreteLegend(self, legend_labels, legend_colors)
-            self.c_legend = ContinuousLegend(self, (0, 1))
+            self.c_legend = ContinuousLegend(self, (10, 50))
 
-            self.hbox.Add(self.d_legend, 1, wx.EXPAND)
+            self.hbox.Add(self.d_legend, 0, wx.EXPAND)
             self.hbox.Add(self.c_legend, 1, wx.EXPAND)
             self.SetSizer(self.hbox)
 

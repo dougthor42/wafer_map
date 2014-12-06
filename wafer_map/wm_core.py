@@ -217,10 +217,16 @@ class WaferMapPanel(wx.Panel):
                          (128, 0, 128),
                          (0, 128, 128),
                          ]
-        self.legend = wm_legend.DiscreteLegend(self,
-                                               legend_labels,
-                                               legend_values,
-                                               )
+
+        if self.data_type == "discrete":
+            self.legend = wm_legend.DiscreteLegend(self,
+                                                   legend_labels,
+                                                   legend_values,
+                                                   )
+        else:
+            self.legend = wm_legend.ContinuousLegend(self,
+                                                     (p_05, p_95),
+                                                     )
 
         # Bind events to the canvas
         # TODO: Move event binding to method
@@ -246,7 +252,7 @@ class WaferMapPanel(wx.Panel):
         # Create layout manager and add items
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.hbox.Add(self.legend, 0, )
+        self.hbox.Add(self.legend, 1, wx.EXPAND)
         self.hbox.Add(self.canvas, 1, wx.EXPAND)
 
         self.SetSizer(self.hbox)
@@ -717,7 +723,7 @@ def plot_wafer_map_wx(rcd, **kwargs):
 
     if color_dict is None:
         # use black to yellow
-        color1 = max(0, min(rescale(data[2], (plot_range), (0, 1)), 1))
+        color1 = max(0, min(wm_utils.rescale(data[2], (plot_range), (0, 1)), 1))
         color = (color1, color1, 0)
     else:
         color = color_dict[data[2]]
@@ -725,7 +731,7 @@ def plot_wafer_map_wx(rcd, **kwargs):
 
 def main():
     """ Main Code """
-    a = coord_to_grid((9, 2.5), (6, 5), (5.5, 5.5))
+    a = wm_utils.coord_to_grid((9, 2.5), (6, 5), (5.5, 5.5))
     print(a)
     print(a == (7, 5))
 

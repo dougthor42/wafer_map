@@ -20,6 +20,14 @@ import numpy as np
 import math
 
 
+def frange(start, stop, step):
+    """ Generator that creates an arbitrary-stepsize range. """
+    r = start
+    while r < stop:
+        yield r
+        r += step
+
+
 def coord_to_grid(coord, die_size, grid_center):
     """
     Converts a panel coordinate to a grid value.
