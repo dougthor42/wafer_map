@@ -207,6 +207,8 @@ class WaferMapPanel(wx.Panel):
 
         # Zoom to the entire image by default
         # TODO: Figure out why this isn't working on init.
+        # This isn't working because the canvas hasn't been drawn on
+        # yet.
         self.zoom_fill()
 
         # Create layout manager and add items
@@ -329,18 +331,20 @@ class WaferMapPanel(wx.Panel):
             O:      Toggle wafer outline
             C:      Toggle wafer crosshairs
         """
-#        pass
+        # TODO: Decide if I want to move this to a class attribute
+        keycodes = {wx.WXK_HOME: self.zoom_fill,      # "Home
+                    79: self.toggle_outline,          # "O"
+                    67: self.toggle_crosshairs,       # "C"
+                    76: self.toggle_legend,           # "L"
+                    }
+
         print("panel event!")
         key = event.GetKeyCode()
-        print("KeyCode: {}".format(key))
-        if key == wx.WXK_HOME:
-            self.zoom_fill()
-        if key == 79:               # "O"
-            self.toggle_outline()
-        if key == 67:               # "C"
-            self.toggle_crosshairs()
-        if key == 76:               # "L"
-            self.toggle_legend()
+
+        if key in keycodes.keys():
+            keycodes[key]()
+        else:
+            print("KeyCode: {}".format(key))
 
     def zoom_fill(self):
         self.canvas.ZoomToBB()
@@ -699,6 +703,7 @@ def main():
     a = wm_utils.coord_to_grid((9, 2.5), (6, 5), (5.5, 5.5))
     print(a)
     print(a == (7, 5))
+    raise RuntimeError("This module is not meant to be run by itself.")
 
 
 if __name__ == "__main__":

@@ -44,7 +44,7 @@ class WaferMapWindow(wx.Frame):
                  title,
                  xyd,
                  wafer_info,
-                 size=(800, 800),
+                 size=(800, 600),
                  data_type='continuous',
                  ):
         """
