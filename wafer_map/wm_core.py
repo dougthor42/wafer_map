@@ -172,7 +172,6 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.GridOver = self.legend_overlay
 
         # new legend - able to change colors
-
         if self.data_type == "discrete":
             legend_labels = []
             legend_colors = []
@@ -194,6 +193,7 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
+        self.canvas.Bind(wx.EVT_PAINT, self.on_first_paint)
         self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
         self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
         # note that key-down is bound again - this allows hotkeys to work
@@ -205,20 +205,21 @@ class WaferMapPanel(wx.Panel):
         # for more info.
         self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
 
-        # Zoom to the entire image by default
-        # TODO: Figure out why this isn't working on init.
-        # This isn't working because the canvas hasn't been drawn on
-        # yet.
-        self.zoom_fill()
-
         # Create layout manager and add items
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
         self.hbox.Add(self.legend, 0)
-#        self.hbox.AddSpacer(5)
         self.hbox.Add(self.canvas, 1, wx.EXPAND)
 
         self.SetSizer(self.hbox)
+
+    def on_first_paint(self, event):
+        """ Zoom to fill on the first paint event """
+        # disable the handler for futre paint events
+        self.canvas.Bind(wx.EVT_PAINT, None)
+
+        #TODO: Fix a flicker-type event that occurs on this call
+        self.zoom_fill()
 
     def mouse_wheel(self, event):
         """ Mouse wheel event for Zooming """
@@ -416,71 +417,6 @@ class WaferMapPanel(wx.Panel):
         """ actually move the image? """
         self.move_timer.Start(300, oneShot=True)
 #        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
-
-    def MoveImage(self, event):
-        """
-        This is taken from the FloatCanvas.GUIMode module
-        and is *supposed* to reduce flicker, but doesn't seem to. Perhpas I
-        have something else wrong.
-        """
-        #xy1 = N.array( event.GetPosition() )
-        xy1 = self.end_move_loc
-        wh = self.canvas.PanelSize
-        xy_tl = xy1 - self.start_move_loc
-        dc = wx.ClientDC(self.canvas)
-        dc.BeginDrawing()
-        x1, y1 = self.prev_move_loc
-        x2, y2 = xy_tl
-        w, h = self.canvas.PanelSize
-        ##fixme: This sure could be cleaner!
-        ##   This is all to fill in the background with the background color
-        ##   without flashing as the image moves.
-        if x2 > x1 and y2 > y1:
-            xa = xb = x1
-            ya = yb = y1
-            wa = w
-            ha = y2 - y1
-            wb = x2 - x1
-            hb = h
-        elif x2 > x1 and y2 <= y1:
-            xa = x1
-            ya = y1
-            wa = x2 - x1
-            ha = h
-            xb = x1
-            yb = y2 + h
-            wb = w
-            hb = y1 - y2
-        elif x2 <= x1 and y2 > y1:
-            xa = x1
-            ya = y1
-            wa = w
-            ha = y2 - y1
-            xb = x2 + w
-            yb = y1
-            wb = x1 - x2
-            hb = h - y2 + y1
-        elif x2 <= x1 and y2 <= y1:
-            xa = x2 + w
-            ya = y1
-            wa = x1 - x2
-            ha = h
-            xb = x1
-            yb = y2 + h
-            wb = w
-            hb = y1 - y2
-
-        dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.SetBrush(self.canvas.BackgroundBrush)
-        dc.DrawRectangle(xa, ya, wa, ha)
-        dc.DrawRectangle(xb, yb, wb, hb)
-        self.prev_move_loc = xy_tl
-        if self.canvas._ForeDrawList:
-            dc.DrawBitmapPoint(self.canvas._ForegroundBuffer, xy_tl)
-        else:
-            dc.DrawBitmapPoint(self.canvas._Buffer, xy_tl)
-        dc.EndDrawing()
-        #self.Canvas.Update()
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
