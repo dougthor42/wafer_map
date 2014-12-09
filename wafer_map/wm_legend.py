@@ -398,6 +398,7 @@ class DiscreteLegend(wx.Panel):
             self.colors = self.create_colors(self.n_items)
         else:
             self.colors = colors
+        self.color_dict = self.create_color_dict()
 
         self.init_ui()
 
@@ -464,6 +465,9 @@ class DiscreteLegend(wx.Panel):
         colors = colors[::2] + colors[1::2]
         return colors
 
+    def create_color_dict(self):
+        """ Takes the value and color lists and creates a dict from them """
+        return dict(zip(self.labels, self.colors))
 
 class LegendOverlay(FloatCanvas.Text):
     """ Demo of drawing overlay - to be used for legend """
