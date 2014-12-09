@@ -172,6 +172,8 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.GridOver = self.legend_overlay
 
         # new legend - able to change colors
+        # TODO: Move this up earlier so that we can pull the colors from it.
+        # Let the legend program determine the colors.
         if self.data_type == "discrete":
             legend_labels = []
             legend_colors = []
@@ -180,7 +182,7 @@ class WaferMapPanel(wx.Panel):
                 legend_colors.append(_v)
             self.legend = wm_legend.DiscreteLegend(self,
                                                    legend_labels,
-                                                   legend_colors,
+                                                   None,
                                                    )
         else:
             self.legend = wm_legend.ContinuousLegend(self,

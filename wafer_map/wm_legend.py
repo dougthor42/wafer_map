@@ -385,7 +385,7 @@ class DiscreteLegend(wx.Panel):
     def __init__(self,
                  parent,
                  labels,
-                 colors,
+                 colors=None,
                  ):
         """
         __init__(self, wx.Panel parent, list labels, list colors) -> wx.Panel
@@ -393,8 +393,11 @@ class DiscreteLegend(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.parent = parent
         self.labels = labels
-        self.colors = colors
         self.n_items = len(self.labels)
+        if colors is None:
+            self.colors = self.create_colors(self.n_items)
+        else:
+            self.colors = colors
 
         self.init_ui()
 
@@ -426,6 +429,40 @@ class DiscreteLegend(wx.Panel):
         # Add our items to the layout manager and set the sizer.
         self.hbox.Add(self.fgs)
         self.SetSizer(self.hbox)
+
+    def create_colors(self, n):
+        """
+        Create the colors based on how many legend items there are (n).
+
+        The idea is to start off with one color, assign it to the 1st legend
+        value, then find that color's complement and assign it to the 2nd
+        legend value. Then, move around the color wheel by some degree,
+        probably like so:
+
+          <insert math>
+
+        We are limited to only using 1/2 of the circle
+        because we use the other half for the complements.
+
+        1.  Split the circle into n parts.
+        2.  reorganize into alternations
+            1 2 3 4 5 6 7 8  -->
+            1 3 5 7 2 4 6 8
+        3. Those are the colors
+
+        """
+        spacing = 360 / n
+        colors = []
+        for val in wm_utils.frange(0, 360, spacing):
+            hsl = (val/360, 1, 1)
+            colors.append(colorsys.hsv_to_rgb(*hsl))
+
+        # convert from 0-1 to 0-255 and return
+        colors = [[i*255 for i in color] for color in colors]
+
+        # Alternate colors
+        colors = colors[::2] + colors[1::2]
+        return colors
 
 
 class LegendOverlay(FloatCanvas.Text):
@@ -473,6 +510,7 @@ def main():
     """ Display the Legend when module is run directly """
 
     legend_labels = ["A", "Banana!", "C", "Donut", "E"]
+    legend_labels = [str(_i) for _i in range(10)]
 
     legend_colors = [(0, 128, 0),
                      (0, 0, 255),
@@ -480,6 +518,7 @@ def main():
                      (128, 0, 128),
                      (0, 128, 128),
                      ]
+    legend_colors = None
 
     class ExampleFrame(wx.Frame):
         """ Base Frame """
