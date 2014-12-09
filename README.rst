@@ -158,6 +158,11 @@ Current capabilities:
 Changelog
 =========
 
+* **1.0.1 / 2014-12-08**
+
+  + 
+
+
 * **1.0.0 / 2014-12-05**
 
   + Official release.

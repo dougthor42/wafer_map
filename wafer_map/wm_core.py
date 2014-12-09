@@ -119,52 +119,46 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.GridOver = self.legend_overlay
 
         # new legend - able to change colors
-        # TODO: Move this up earlier so that we can pull the colors from it.
-        # Let the legend program determine the colors.
         if self.data_type == "discrete":
-            unique_items = list({str(_die[2]) for _die in self.xyd})
+            unique_items = list({_die[2] for _die in self.xyd})
             self.legend = wm_legend.DiscreteLegend(self,
                                                    labels=unique_items,
                                                    colors=None,
                                                    )
         else:
-            p_95 = float(wm_utils.nanpercentile([_i[2] for _i in self.xyd], 95))
-            p_05 = float(wm_utils.nanpercentile([_i[2] for _i in self.xyd], 5))
+            p_95 = float(wm_utils.nanpercentile([_i[2]
+                                                for _i
+                                                in self.xyd], 95))
+            p_05 = float(wm_utils.nanpercentile([_i[2]
+                                                for _i
+                                                in self.xyd], 5))
             self.legend = wm_legend.ContinuousLegend(self,
                                                      (p_05, p_95),
                                                      )
 
         # Add the die
         color_dict = None
-        # if discrete data, generate a list of colors
-        # TODO: I'm sure there's a lib for this already...
-#        if self.data_type == 'discrete':
-#            unique_items = {_die[2] for _die in self.xyd}
-#            col_val = 255/len(unique_items)
-#            import random
-#            random.randint(0, 255)
-#            color_dict = {_i: (random.randint(0, 255),
-#                               random.randint(0, 255),
-#                               random.randint(0, 255))
-#                          for _n, _i
-#                          in enumerate(unique_items)}
-#        else:
-            # use the 0.5 and .95 percentiles to set the color range
-            #   - prevents outliers from overwhelming scale.
-            
-
         for die in self.xyd:
+            # define the die color
             if self.data_type == 'discrete':
                 color_dict = self.legend.color_dict
                 color = color_dict[die[2]]
             else:
-                color = self.legend.get_color(die[2])
+#                color = self.legend.get_color(die[2])      # doesn't work :-(
+                color = wm_utils.rescale_clip(die[2],
+                                              (p_05, p_95),
+                                              (0, 255),
+                                              )
+
+                # yellow to almost-black
+                color = (color, color, 0)
 
             # Determine the die's lower-left coordinate
             lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
                                                            self.die_size,
                                                            self.grid_center)
 
+            # Draw the die on the canvas
             self.canvas.AddRectangle(lower_left_coord,
                                      self.die_size,
                                      LineWidth=1,
@@ -178,8 +172,6 @@ class WaferMapPanel(wx.Panel):
         self.canvas.AddObject(self.wafer_outline)
         self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
-
-
 
         # Bind events to the canvas
         # TODO: Move event binding to method
@@ -275,10 +267,8 @@ class WaferMapPanel(wx.Panel):
         # If we're dragging, actually move the image.
         if self.drag:
             self.end_move_loc = np.array(event.GetPosition())
-#            self.MoveImage(event)
             self.diff_loc = self.mid_move_loc - self.end_move_loc
             self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
-#            self.MoveImageDoug()
             self.mid_move_loc = self.end_move_loc
 
             # doesn't appear to do anything...
