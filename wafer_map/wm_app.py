@@ -114,8 +114,8 @@ def main():
                 wafer_info.edge_excl,
                 wafer_info.flat_excl,
                 data_type=dtype,
-                high_color=(0, 255, 255),
-                low_color=(0, 0, 50),
+                high_color=(0, 255, 100),
+                low_color=(100, 0, 255),
                 )
 
 

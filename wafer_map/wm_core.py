@@ -139,7 +139,8 @@ class WaferMapPanel(wx.Panel):
                                                 in self.xyd], 5))
             self.p_05 = p_05
             self.legend = wm_legend.ContinuousLegend(self,
-                                                     (p_05, p_95),
+#                                                     (p_05, p_95),
+                                                     (0, (self.wafer_info.dia/2)**2),
                                                      self.high_color,
                                                      self.low_color,
                                                      )
@@ -187,22 +188,7 @@ class WaferMapPanel(wx.Panel):
                 color_dict = self.legend.color_dict
                 color = color_dict[die[2]]
             else:
-                # TODO: pull the color from the legend instead of calc here.
-#                color = self.legend.get_color(die[2])      # doesn't work :-(
-#                color = wm_utils.rescale_clip(die[2],
-#                                              (self.p_05, self.p_95),
-#                                              (50, 255),
-#                                              )
-#
-#                # yellow to almost-black
-#                color = (color, color, 0)
-                val = wm_utils.rescale_clip(die[2],
-                                            (self.p_05, self.p_95),
-                                            (0, 99),
-                                            )
-                color = wm_utils.gradient_value(self.low_color,
-                                                self.high_color,
-                                                val)
+                color = self.legend.get_color(die[2])
 
             # Determine the die's lower-left coordinate
             lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
@@ -241,7 +227,7 @@ class WaferMapPanel(wx.Panel):
 
     def on_first_paint(self, event):
         """ Zoom to fill on the first paint event """
-        # disable the handler for futre paint events
+        # disable the handler for future paint events
         self.canvas.Bind(wx.EVT_PAINT, None)
 
         #TODO: Fix a flicker-type event that occurs on this call

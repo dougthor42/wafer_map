@@ -188,24 +188,24 @@ class ContinuousLegend(wx.Panel):
 
     def mouse_move(self, event):
         """ Used for debugging """
-        pass
-#        pos = event.GetPosition()
-#        # only display colors if we're inside the gradient
-#        w, h = self.mdc.GetSize()
-#        if pos[0] < w and pos[1] < h:
-#            a = self.mdc.GetPixelPoint(event.GetPosition())
-#            print(pos, a)
+        print(event.GetPosition())
+#        pt = self.mdc.GetPixelPoint(event.GetPosition())
+#        print(pt)
 
     def left_click(self, event):
         """ Used for debugging """
         pos = event.GetPosition()
-        w, h = self.mdc.GetSize()
+        w, h = self.mdc.GetSize()       # change to gradient area
         if pos[0] < w and pos[1] < h:
             val = wm_utils.rescale(pos[1],
                                    (self.grad_start_y, self.grad_end_y - 1),
                                    reversed(self.plot_range))
             a = self.mdc.GetPixelPoint(event.GetPosition())
             print("{}\t{}\t{}".format(pos, a, val))
+
+    def mouse_wheel(self, event):
+        print("mouse wheel!")
+#        self.left_click(event)
 
     def get_color(self, value):
         """
@@ -218,7 +218,7 @@ class ContinuousLegend(wx.Panel):
                                    self.plot_range,
                                    (self.grad_end_y - 1, self.grad_start_y)))
 
-        x_pt = (self.grad_end_x - self.grad_start_x) // 2
+        x_pt = (self.grad_end_x - self.grad_start_x) // 2 + self.grad_start_x
         point = (x_pt, pxl)
         color = self.mdc.GetPixelPoint(point)
         return color
@@ -454,6 +454,8 @@ def main():
                      ]
     legend_colors = None
 
+    continuous_range = (10, 50)
+
     class ExampleFrame(wx.Frame):
         """ Base Frame """
         def __init__(self, title):
@@ -470,7 +472,7 @@ def main():
             self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
             self.d_legend = DiscreteLegend(self, legend_labels, legend_colors)
-            self.c_legend = ContinuousLegend(self, (10, 50))
+            self.c_legend = ContinuousLegend(self, continuous_range)
 
             self.hbox.Add(self.d_legend, 0)
             self.hbox.Add(self.c_legend, 0)
@@ -482,8 +484,8 @@ def main():
     app = wx.App()
     frame = ExampleFrame("Legend Example")
     frame.Show()
-#    for _i in [10, 0.5, 0.75, 25, 50]:
-#        print(_i, frame.c_legend.get_color(_i))
+    for _i in xrange(continuous_range[0], continuous_range[1], 10):
+        print(_i, frame.c_legend.get_color(_i))
     app.MainLoop()
 
 
