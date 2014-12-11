@@ -26,15 +26,15 @@ import math
 import numpy as np
 import wx
 from wx.lib.floatcanvas import FloatCanvas
+import wx.lib.colourselect as csel
 
-# check to see if we can import local, otherwise import absolute
-print(__file__)
+# check to see if we can import from the dev folder, otherwise import
+# from the standard install folder, site-packages
 if 'site-packages' in __file__:
-    print("we're being run from site-pkg")
     from wafer_map import wm_legend
     from wafer_map import wm_utils
 else:
-    print("running in dev mode")
+    print("Running wm_core from Development Location")
     import wm_legend
     import wm_utils
 
@@ -63,6 +63,8 @@ class WaferMapPanel(wx.Panel):
                  wafer_info,
                  data_type='continuous',
                  coord_type='absolute',
+                 high_color=(255, 255, 0),
+                 low_color=(50, 50, 0),
                  ):
         """
         __init__(self,
@@ -86,6 +88,8 @@ class WaferMapPanel(wx.Panel):
         self.legend_bool = True
         self.data_type = data_type
         self.coord_type = coord_type
+        self.high_color = high_color
+        self.low_color = low_color
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -129,49 +133,20 @@ class WaferMapPanel(wx.Panel):
             p_95 = float(wm_utils.nanpercentile([_i[2]
                                                 for _i
                                                 in self.xyd], 95))
+            self.p_95 = p_95
             p_05 = float(wm_utils.nanpercentile([_i[2]
                                                 for _i
                                                 in self.xyd], 5))
+            self.p_05 = p_05
             self.legend = wm_legend.ContinuousLegend(self,
                                                      (p_05, p_95),
+                                                     self.high_color,
+                                                     self.low_color,
                                                      )
 
-        # Add the die
-        color_dict = None
-        for die in self.xyd:
-            # define the die color
-            if self.data_type == 'discrete':
-                color_dict = self.legend.color_dict
-                color = color_dict[die[2]]
-            else:
-#                color = self.legend.get_color(die[2])      # doesn't work :-(
-                color = wm_utils.rescale_clip(die[2],
-                                              (p_05, p_95),
-                                              (0, 255),
-                                              )
-
-                # yellow to almost-black
-                color = (color, color, 0)
-
-            # Determine the die's lower-left coordinate
-            lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
-                                                           self.die_size,
-                                                           self.grid_center)
-
-            # Draw the die on the canvas
-            self.canvas.AddRectangle(lower_left_coord,
-                                     self.die_size,
-                                     LineWidth=1,
-                                     FillColor=color,
-                                     )
-
-        # Add the wafer outline and crosshairs (or center dot)
-        self.wafer_outline = draw_wafer_outline(self.wafer_info.dia,
-                                                self.wafer_info.edge_excl,
-                                                self.wafer_info.flat_excl)
-        self.canvas.AddObject(self.wafer_outline)
-        self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
-        self.canvas.AddObject(self.crosshairs)
+        # Draw the die and wafer objects (outline, crosshairs) on the canvas
+        self.add_die()
+        self.add_wafer_objects()
 
         # Bind events to the canvas
         # TODO: Move event binding to method
@@ -191,6 +166,8 @@ class WaferMapPanel(wx.Panel):
         # for more info.
         self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
 
+        self.Bind(csel.EVT_COLOURSELECT, self.on_color_change)
+
         # Create layout manager and add items
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -198,6 +175,69 @@ class WaferMapPanel(wx.Panel):
         self.hbox.Add(self.canvas, 1, wx.EXPAND)
 
         self.SetSizer(self.hbox)
+
+    def add_die(self):
+        """ Draws the die on the canvas """
+        # Add the die
+        # TODO: Move to method
+        color_dict = None
+        for die in self.xyd:
+            # define the die color
+            if self.data_type == 'discrete':
+                color_dict = self.legend.color_dict
+                color = color_dict[die[2]]
+            else:
+                # TODO: pull the color from the legend instead of calc here.
+#                color = self.legend.get_color(die[2])      # doesn't work :-(
+#                color = wm_utils.rescale_clip(die[2],
+#                                              (self.p_05, self.p_95),
+#                                              (50, 255),
+#                                              )
+#
+#                # yellow to almost-black
+#                color = (color, color, 0)
+                val = wm_utils.rescale_clip(die[2],
+                                            (self.p_05, self.p_95),
+                                            (0, 99),
+                                            )
+                color = wm_utils.gradient_value(self.low_color,
+                                                self.high_color,
+                                                val)
+
+            # Determine the die's lower-left coordinate
+            lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
+                                                           self.die_size,
+                                                           self.grid_center)
+
+            # Draw the die on the canvas
+            self.canvas.AddRectangle(lower_left_coord,
+                                     self.die_size,
+                                     LineWidth=1,
+                                     FillColor=color,
+                                     )
+
+    def add_wafer_objects(self):
+        """ Add the various wafer objects
+        """
+        self.wafer_outline = draw_wafer_outline(self.wafer_info.dia,
+                                                self.wafer_info.edge_excl,
+                                                self.wafer_info.flat_excl)
+        self.canvas.AddObject(self.wafer_outline)
+        self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
+        self.canvas.AddObject(self.crosshairs)
+
+    def _clear_canvas(self):
+        """ Clears the canvas """
+        self.canvas.ClearAll(ResetBB=False)
+
+    def on_color_change(self, event):
+        """ Update the wafer map canvas with the new color """
+        self._clear_canvas()
+        self.add_die()
+        self.add_wafer_objects()
+        self.canvas.Draw(True)
+#        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
+#        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
 
     def on_first_paint(self, event):
         """ Zoom to fill on the first paint event """
@@ -559,63 +599,6 @@ def draw_wafer_notch(rad):
                              LineWidth=2,
                              )
     return notch
-
-
-# TODO: Finish this function
-def plot_wafer_map_wx(rcd, **kwargs):
-                   #wafer=(150, 5, 4.5),
-                   #die_xy=(2.43, 3.3),
-                   #center_rc=(24, 31.5),
-                   #plot_range=(10, 20)),
-                   #wafer_outline=True,
-                   #exclusion_outline=True,
-                   #color_dict={0: (0, 0, 0),
-                   #            1: (0, 0, 0),
-                   #            2: (0, 0, 0)}
-    """
-    Plots a wafer map with outline and edge exclusion, with die color defined
-    by the die data value.
-
-    Same as plot_wafer_map but uses wxPython.
-
-    Req'd Inputs:
-    rcd: list of tuples of (row_coord, col_coord, value)
-
-    Optional Inputs (must be named):
-    wafer: tuple of wafer info: (diameter, edge_exclusion, flat_exclusion)
-    die_xy: tuple of (die_x, die_y) sizes
-    center_rc: tuple of (center_row, center_col)
-    plot_range: tuple of (min, max) plot values
-    color_dict: dictionary of {value: color} that overrides default plot colors
-    """
-
-    DEFAULT_KWARGS = {'wafer': (150, 5, 4.5),
-                      'die_xy': (2.43, 3.3),
-                      'center_rc': (24, 31.5),
-                      'plot_range': (0, 1),
-                      'draw_wfr': True,
-                      'draw_excl': True,
-                      'color_dict': None}
-
-    # parse the keyword arguements, asigning defaults if not found.
-    for key in DEFAULT_KWARGS:
-        if key not in kwargs:
-            kwargs[key] = DEFAULT_KWARGS[key]
-
-    wafer = kwargs['wafer']
-    die_xy = kwargs['die_xy']
-    center_rc = kwargs['center_rc']
-    plot_range = kwargs['plot_range']
-    draw_wfr = kwargs['draw_wfr']
-    draw_excl = kwargs['draw_excl']
-    color_dict = kwargs['color_dict']
-
-    if color_dict is None:
-        # use black to yellow
-        color1 = max(0, min(wm_utils.rescale(data[2], (plot_range), (0, 1)), 1))
-        color = (color1, color1, 0)
-    else:
-        color = color_dict[data[2]]
 
 
 def main():

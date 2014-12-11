@@ -84,7 +84,7 @@ def main():
 
     # Example showing how discrete data looks
     import random
-    discrete_xyd = [(_x, _y, random.randint(1, 6))
+    discrete_xyd = [(_x, _y, random.randint(1, random.randint(2, 10)))
                     for _x, _y, _
                     in xyd]
 

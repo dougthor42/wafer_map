@@ -18,13 +18,12 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import wx
 
-# check to see if we can import local, otherwise import absolute
-print(__file__)
+# check to see if we can import from the dev folder, otherwise import
+# from the standard install folder, site-packages
 if 'site-packages' in __file__:
-    print("we're being run from site-pkg")
     from wafer_map import wm_core
 else:
-    print("running in dev mode")
+    print("Running wm_frame from Development Location")
     import wm_core
 
 
@@ -46,6 +45,8 @@ class WaferMapWindow(wx.Frame):
                  wafer_info,
                  size=(800, 600),
                  data_type='continuous',
+                 high_color=(255, 255, 0),
+                 low_color=(50, 50, 0),
                  ):
         """
         __init__(self,
@@ -65,6 +66,8 @@ class WaferMapWindow(wx.Frame):
         self.xyd = xyd
         self.wafer_info = wafer_info
         self.data_type = data_type
+        self.high_color = high_color
+        self.low_color = low_color
         self.init_ui()
 
     def init_ui(self):
@@ -98,6 +101,8 @@ class WaferMapWindow(wx.Frame):
                                                self.xyd,
                                                self.wafer_info,
                                                data_type=self.data_type,
+                                               high_color=self.high_color,
+                                               low_color=self.low_color,
                                                )
 
     # TODO: There's gotta be a more scalable way to make menu items

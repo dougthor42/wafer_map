@@ -18,20 +18,17 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 #from docopt import docopt
 import wx
-import numpy as np
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
-import wx.lib.colourchooser.pycolourslider as cs
 #from colour import Color
 import colorsys
 
-# check to see if we can import local, otherwise import absolute
-print(__file__)
+# check to see if we can import from the dev folder, otherwise import
+# from the standard install folder, site-packages
 if 'site-packages' in __file__:
-    print("we're being run from site-pkg")
     from wafer_map import wm_utils
 else:
-    print("running in dev mode")
+    print("Running wm_legend from Development Location")
     import wm_utils
 
 __author__ = "Douglas Thor"
@@ -78,16 +75,28 @@ class ContinuousLegend(wx.Panel):
 
     For now, I'm leaving on_size disabled. This may change in the future.
     """
-    def __init__(self, parent, plot_range):
+    def __init__(self,
+                 parent,
+                 plot_range,
+                 high_color=(255, 255, 255),
+                 low_color=(50, 50, 0),
+                 num_ticks=11,
+                 ):
         """
-        __init__(self, wx.Panel parent, tuple plot_range) -> wx.Panel
+        __init__(self,
+                 wx.Panel parent,
+                 tuple plot_range,
+                 color tuple high_color=(255, 255, 255),
+                 color tuple low_color=(0, 0, 0),
+                 int num_ticks=11,
+                 ) -> wx.Panel
         """
         wx.Panel.__init__(self, parent)
         self.parent = parent
         self.plot_range = plot_range
-
-        # Set some other instance attributes
-        self.num_ticks = 11
+        self.high_color = high_color
+        self.low_color = low_color
+        self.num_ticks = num_ticks
 
         # We need to set some parameters before making the bitmap. How do?
         # Create the MemoryDC now - we'll add the bitmap later.
@@ -108,6 +117,7 @@ class ContinuousLegend(wx.Panel):
         # labels are not cut off.
         # TODO: Replace these contants with code that finds the sizes
         # These are in a specific order. Do not change!
+
         # First determine some fixed items
         self.text_h = self.mdc.GetTextExtent("A")[1]
         self.grad_w = 30            # total gradient width (px)
@@ -121,25 +131,21 @@ class ContinuousLegend(wx.Panel):
         self.ticks = self.calc_ticks()
         self.text_w = self.get_max_text_w(self.ticks)
 
-        # back to sizes...
         # Note: I'm intentionally listing every spacer manually rather than
         #       multiplying by how many there are. This makes it easier
-        #       to see where they are.
+        #       to see where I'm placing them.
         self.tick_start_x = self.spacer + self.text_w + self.spacer
         self.grad_start_x = self.tick_start_x + self.tick_w + self.spacer
         self.grad_end_x = self.grad_start_x + self.grad_w
-        self.dc_w = self.grad_end_x + self.spacer
-        self.dc_h = self.grad_h + self.text_h   # total bitmap height
+        self.dc_w = self.grad_end_x + self.spacer   # total bitmap width
+        self.dc_h = self.grad_h + self.text_h       # total bitmap height
 
-        self.init_ui()
-
-        # Create the MemoryDC where we do all of the drawing.
-#        self.mdc = wx.MemoryDC(wx.EmptyBitmap(self.w, self.h))
+        # Create EmptyBitmap in our MemoryDC where we'll do all our drawing.
         self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
 
         # Draw a rectangle to make the background
         # TODO: change the bitmap background to be transparent
-        c = wx.Colour(200, 230, 230)
+        c = wx.Colour(200, 230, 230, 0)
         pen = wx.Pen(c)
         brush = wx.Brush(c)
         self.mdc.SetPen(pen)
@@ -148,12 +154,6 @@ class ContinuousLegend(wx.Panel):
 
         # Draw the Gradient on a portion of the MemoryDC
         self.draw_gradient()
-#        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
-#                                     self.grad_w, self.grad_h),
-#                                    wx.BLACK,
-#                                    wx.YELLOW,
-#                                    wx.NORTH,
-#                                    )
 
         # Calculate and draw the tickmarks.
         self.print_ticks(self.ticks)
@@ -163,6 +163,8 @@ class ContinuousLegend(wx.Panel):
 #        self.Bind(wx.EVT_SIZE, self.on_size)
         self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
+
+        self.init_ui()
 
     def init_ui(self):
         """
@@ -201,24 +203,31 @@ class ContinuousLegend(wx.Panel):
         if pos[0] < w and pos[1] < h:
             val = wm_utils.rescale(pos[1],
                                    (self.grad_start_y, self.grad_end_y - 1),
-                                   self.plot_range)
+                                   reversed(self.plot_range))
             a = self.mdc.GetPixelPoint(event.GetPosition())
             print("{}\t{}\t{}".format(pos, a, val))
 
     def get_color(self, value):
         """
-        Gets a color from the gradient
+        Gets a color from the gradient.
+
+        Still doesn't work like I want it to. It will only work after the
+        paint event.
         """
         pxl = int(wm_utils.rescale(value,
                                    self.plot_range,
-                                   (self.grad_start_y, self.grad_end_y - 1)))
-        point = (0, pxl)
+                                   (self.grad_end_y - 1, self.grad_start_y)))
+
+        x_pt = (self.grad_end_x - self.grad_start_x) // 2
+        point = (x_pt, pxl)
         color = self.mdc.GetPixelPoint(point)
         return color
 
     def calc_ticks(self):
         """
         Calculates the tick marks' display string, value, and pixel value.
+
+        High values are at the top of the scale, low at the bottom.
         """
         # First we need to determine the values for the ticks.
         pr = self.plot_range[1] - self.plot_range[0]
@@ -232,9 +241,12 @@ class ContinuousLegend(wx.Panel):
         for tick in tick_values:
             string = "{:.3f}".format(tick)
             value = tick,
+            # `grad_end_y - 1` so that the bottom tick is aligned correctly.
             pixel = wm_utils.rescale(tick,
                                      self.plot_range,
-                                     (self.grad_start_y, self.grad_end_y - 1))
+                                     (self.grad_end_y - 1, self.grad_start_y))
+            # Putting gradient_end_y as the "low" for rescale makes the
+            # high value be at the north end and the low value at the south.
             ticks.append((string, value, pixel))
 
         return ticks
@@ -260,11 +272,11 @@ class ContinuousLegend(wx.Panel):
             self.mdc.DrawText(tick[0], text_x, text_y)
 
     def draw_gradient(self):
-        """ Draws the Gradient """
+        """ Draws the Gradient, painted from North (high) to South (low) """
         self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
                                      self.grad_w, self.grad_h),
-                                    wx.BLACK,
-                                    wx.YELLOW,
+                                    self.high_color,
+                                    self.low_color,
                                     wx.SOUTH,
                                     )
 
@@ -297,7 +309,7 @@ class DiscreteLegend(wx.Panel):
             self.colors = self.create_colors(self.n_items)
         else:
             self.colors = colors
-        self.color_dict = dict(self.create_color_dict())
+        self.create_color_dict()
 
         self.init_ui()
 
@@ -308,20 +320,23 @@ class DiscreteLegend(wx.Panel):
         self.fgs = wx.FlexGridSizer(rows=self.n_items, cols=2, vgap=0, hgap=2)
 
         # Create items to add
-        for key, value in zip(self.labels, self.colors):
+        for _i, (key, value) in enumerate(zip(self.labels, self.colors)):
             self.label = wx.StaticText(self,
                                        label=str(key),
-                                       style=wx.ALIGN_LEFT# | wx.SIMPLE_BORDER,
+                                       style=wx.ALIGN_LEFT,
                                        )
 
             # I can use the csel.ColourSelect built-in with ease...
             #   This takes care of the colorbox stuff automaticlaly.
             self.colorbox = csel.ColourSelect(self,
-                                              wx.ID_ANY,
+                                              _i,
+#                                              wx.ID_ANY,
                                               "",
                                               tuple(value),
                                               style=wx.NO_BORDER,
                                               size=(20, 20))
+
+            self.Bind(csel.EVT_COLOURSELECT, self.on_color_pick, id=_i)
 
             self.fgs.Add(self.label, flag=wx.ALIGN_CENTER_VERTICAL)
             self.fgs.Add(self.colorbox)
@@ -363,8 +378,25 @@ class DiscreteLegend(wx.Panel):
         return colors
 
     def create_color_dict(self):
-        """ Takes the value and color lists and creates a dict from them """
-        return dict(zip(self.labels, self.colors))
+        """
+        Takes the value and color lists and creates a dict from them.
+
+        This may eventually become a public function with two inputs:
+        lables, colors.
+        """
+        # TODO: Determine if I want this to be a public callable method
+        self.color_dict = dict(zip(self.labels, self.colors))
+        return self.color_dict
+
+    def on_color_pick(self, event):
+        """
+        Recreate the label: color dictionary and send the event to the
+        parent panel.
+        """
+        self.colors[event.GetId()] = event.GetValue().Get()
+        self.create_color_dict()
+        # Send the event to the parent:
+        wx.PostEvent(self.parent, event)
 
 
 class LegendOverlay(FloatCanvas.Text):
@@ -412,7 +444,7 @@ def main():
     """ Display the Legend when module is run directly """
 
     legend_labels = ["A", "Banana!", "C", "Donut", "E"]
-    legend_labels = [str(_i) for _i in range(10)]
+#    legend_labels = [str(_i) for _i in range(10)]
 
     legend_colors = [(0, 128, 0),
                      (0, 0, 255),
@@ -450,8 +482,8 @@ def main():
     app = wx.App()
     frame = ExampleFrame("Legend Example")
     frame.Show()
-    for _i in [0, 0.5, 0.75, 1]:
-        print(_i, frame.c_legend.get_color(_i))
+#    for _i in [10, 0.5, 0.75, 25, 50]:
+#        print(_i, frame.c_legend.get_color(_i))
     app.MainLoop()
 
 
