@@ -60,6 +60,7 @@ class WaferMapPanel(wx.Panel):
                  coord_type='absolute',
                  high_color=wm_HIGH_COLOR,
                  low_color=wm_LOW_COLOR,
+                 plot_range=None,
                  ):
         """
         __init__(self,
@@ -85,6 +86,7 @@ class WaferMapPanel(wx.Panel):
         self.coord_type = coord_type
         self.high_color = high_color
         self.low_color = low_color
+        self.plot_range = plot_range
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -165,18 +167,21 @@ class WaferMapPanel(wx.Panel):
                                                    colors=None,
                                                    )
         else:
-            p_98 = float(wm_utils.nanpercentile([_i[2]
-                                                for _i
-                                                in self.xyd], 98))
-            p_02 = float(wm_utils.nanpercentile([_i[2]
-                                                for _i
-                                                in self.xyd], 2))
+            if self.plot_range == None:
+                p_98 = float(wm_utils.nanpercentile([_i[2]
+                                                    for _i
+                                                    in self.xyd], 98))
+                p_02 = float(wm_utils.nanpercentile([_i[2]
+                                                    for _i
+                                                    in self.xyd], 2))
+    
+                data_min = min([die[2] for die in self.xyd])
+                data_max = max([die[2] for die in self.xyd])
+                self.plot_range = (p_02, p_98)
 
-            data_min = min([die[2] for die in self.xyd])
-            data_max = max([die[2] for die in self.xyd])
             self.legend = wm_legend.ContinuousLegend(self,
 #                                                     (data_min, data_max),
-                                                     (p_02, p_98),
+                                                     self.plot_range,
                                                      self.high_color,
                                                      self.low_color,
                                                      )

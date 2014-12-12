@@ -49,6 +49,7 @@ class WaferMapWindow(wx.Frame):
                  data_type='continuous',
                  high_color=wm_HIGH_COLOR,
                  low_color=wm_LOW_COLOR,
+                 plot_range=None,
                  ):
         """
         __init__(self,
@@ -70,6 +71,7 @@ class WaferMapWindow(wx.Frame):
         self.data_type = data_type
         self.high_color = high_color
         self.low_color = low_color
+        self.plot_range = plot_range
         self.init_ui()
 
     def init_ui(self):
@@ -105,6 +107,7 @@ class WaferMapWindow(wx.Frame):
                                                data_type=self.data_type,
                                                high_color=self.high_color,
                                                low_color=self.low_color,
+                                               plot_range=self.plot_range,
                                                )
 
     # TODO: There's gotta be a more scalable way to make menu items

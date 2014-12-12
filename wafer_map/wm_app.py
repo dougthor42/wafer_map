@@ -51,6 +51,7 @@ class WaferMapApp(object):
                  data_type='continuous',
                  high_color=wm_HIGH_COLOR,
                  low_color=wm_LOW_COLOR,
+                 plot_range=None,
                  ):
         """
         __init__(self,
@@ -76,13 +77,16 @@ class WaferMapApp(object):
         self.data_type = data_type
         self.high_color = high_color
         self.low_color = low_color
+        self.plot_range = plot_range
 
         self.frame = wm_frame.WaferMapWindow("Wafer Map",
                                              self.xyd,
                                              self.wafer_info,
                                              data_type=self.data_type,
                                              high_color=self.high_color,
-                                             low_color=self.low_color)
+                                             low_color=self.low_color,
+                                             plot_range=self.plot_range,
+                                             )
 
         self.frame.Show()
         self.app.MainLoop()
