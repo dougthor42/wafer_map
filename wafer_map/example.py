@@ -19,7 +19,6 @@ Description:
 
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
-#from docopt import docopt
 import wx
 
 # check to see if we can import local, otherwise import absolute

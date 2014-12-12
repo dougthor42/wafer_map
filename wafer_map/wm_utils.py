@@ -17,7 +17,6 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import numpy as np
-import math
 
 
 def frange(start, stop, step):

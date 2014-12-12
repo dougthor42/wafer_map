@@ -33,20 +33,15 @@ import wx.lib.colourselect as csel
 if 'site-packages' in __file__:
     from wafer_map import wm_legend
     from wafer_map import wm_utils
+    from wafer_map.wm_constants import *
 else:
     print("Running wm_core from Development Location")
     import wm_legend
     import wm_utils
+    from wm_constants import *
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
-
-# Library Constants
-# Defined by SEMI M1-0302
-FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
-
-__author__ = "Douglas Thor"
-__version__ = "v1.0.0"
 
 
 class WaferMapPanel(wx.Panel):
@@ -63,8 +58,8 @@ class WaferMapPanel(wx.Panel):
                  wafer_info,
                  data_type='continuous',
                  coord_type='absolute',
-                 high_color=(255, 255, 0),
-                 low_color=(50, 50, 0),
+                 high_color=wm_HIGH_COLOR,
+                 low_color=wm_LOW_COLOR,
                  ):
         """
         __init__(self,
@@ -109,20 +104,60 @@ class WaferMapPanel(wx.Panel):
                                               BackgroundColor="BLACK",
                                               )
 
-        # Work on the canvas
-        self.canvas.InitAll()       # Needs to come before adding items!
+        # Initialize the FloatCanvas. Needs to come before adding items!
+        self.canvas.InitAll()
 
-        # Old legend - static using overlay
-#        self.legend_overlay = wm_legend.LegendOverlay(
-#            "Legend Placeholder",
-#            (20, 20),
-#            Size=18,
-#            Color="Black",
-#            BackgroundColor='Pink',
-#            )
-#        self.canvas.GridOver = self.legend_overlay
+        # Create the legend
+        self._create_legend()
 
-        # new legend - able to change colors
+        # Draw the die and wafer objects (outline, crosshairs) on the canvas
+        self.draw_die()
+        self.draw_wafer_objects()
+
+        # Bind events to the canvas
+        self._bind_events()
+
+        # Create layout manager and add items
+        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.hbox.Add(self.legend, 0)
+        self.hbox.Add(self.canvas, 1, wx.EXPAND)
+
+        self.SetSizer(self.hbox)
+
+    def _bind_events(self):
+        """
+        Bind panel and canvas events.
+
+        Note that key-down is bound again - this allws hotkeys to work
+        even if the main Frame, which defines hotkeys in menus, is not
+        present. wx sents the EVT_KEY_DOWN up the chain and, if the Frame
+        and hotkeys are present, executes those instead.
+        At least I think that's how that works...
+        See http://wxpython.org/Phoenix/docs/html/events_overview.html
+        for more info.
+        """
+        # Canvas Events
+        self.canvas.Bind(FloatCanvas.EVT_MOTION, self.mouse_move)
+        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
+        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
+        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
+        self.canvas.Bind(wx.EVT_PAINT, self.on_first_paint)
+        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
+        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
+        self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
+
+        # Panel Events
+        self.Bind(csel.EVT_COLOURSELECT, self.on_color_change)
+
+    def _create_legend(self):
+        """
+        Create the legend.
+
+        For Continuous data, uses min(data) and max(data) for plot range.
+
+        Might change to 5th percentile and 95th percentile.
+        """
         if self.data_type == "discrete":
             unique_items = list({_die[2] for _die in self.xyd})
             self.legend = wm_legend.DiscreteLegend(self,
@@ -133,54 +168,21 @@ class WaferMapPanel(wx.Panel):
             p_95 = float(wm_utils.nanpercentile([_i[2]
                                                 for _i
                                                 in self.xyd], 95))
-            self.p_95 = p_95
             p_05 = float(wm_utils.nanpercentile([_i[2]
                                                 for _i
                                                 in self.xyd], 5))
-            self.p_05 = p_05
+
+            data_min = min([die[2] for die in self.xyd])
+            data_max = max([die[2] for die in self.xyd])
             self.legend = wm_legend.ContinuousLegend(self,
-#                                                     (p_05, p_95),
-                                                     (0, (self.wafer_info.dia/2)**2),
+#                                                     (data_min, data_max),
+                                                     (p_05, p_95),
                                                      self.high_color,
                                                      self.low_color,
                                                      )
 
-        # Draw the die and wafer objects (outline, crosshairs) on the canvas
-        self.add_die()
-        self.add_wafer_objects()
-
-        # Bind events to the canvas
-        # TODO: Move event binding to method
-        self.canvas.Bind(FloatCanvas.EVT_MOTION, self.mouse_move)
-        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
-        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
-        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
-        self.canvas.Bind(wx.EVT_PAINT, self.on_first_paint)
-        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
-        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
-        # note that key-down is bound again - this allows hotkeys to work
-        # even if the main Frame, which defines hotkeys in menus, is not
-        # present. wx sents the EVT_KEY_DOWN up the chain and, if the Frame
-        # and hotkeys are present, executes those instead.
-        # At least I think that's how that works...
-        # See http://wxpython.org/Phoenix/docs/html/events_overview.html
-        # for more info.
-        self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
-
-        self.Bind(csel.EVT_COLOURSELECT, self.on_color_change)
-
-        # Create layout manager and add items
-        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.hbox.Add(self.legend, 0)
-        self.hbox.Add(self.canvas, 1, wx.EXPAND)
-
-        self.SetSizer(self.hbox)
-
-    def add_die(self):
-        """ Draws the die on the canvas """
-        # Add the die
-        # TODO: Move to method
+    def draw_die(self):
+        """ Draws and add the die on the canvas """
         color_dict = None
         for die in self.xyd:
             # define the die color
@@ -202,8 +204,9 @@ class WaferMapPanel(wx.Panel):
                                      FillColor=color,
                                      )
 
-    def add_wafer_objects(self):
-        """ Add the various wafer objects
+    def draw_wafer_objects(self):
+        """
+        Draw and Add the various wafer objects
         """
         self.wafer_outline = draw_wafer_outline(self.wafer_info.dia,
                                                 self.wafer_info.edge_excl,
@@ -219,8 +222,8 @@ class WaferMapPanel(wx.Panel):
     def on_color_change(self, event):
         """ Update the wafer map canvas with the new color """
         self._clear_canvas()
-        self.add_die()
-        self.add_wafer_objects()
+        self.draw_die()
+        self.draw_wafer_objects()
         self.canvas.Draw(True)
 #        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
 #        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
@@ -242,7 +245,7 @@ class WaferMapPanel(wx.Panel):
         #   Allows for zoom acceleration: fast wheel move = large zoom.
         #   factor < 0: zoom out. factor > 0: zoom in
         sign = abs(speed) / speed
-        factor = (abs(speed) * 1.1 / 120)**sign
+        factor = (abs(speed) * wm_ZOOM_FACTOR)**sign
 
         self.canvas.Zoom(factor,
                          center=event.Position,
@@ -277,6 +280,7 @@ class WaferMapPanel(wx.Panel):
         except KeyError:
             die_val = "N/A"
 
+        # create the status bar string
         coord_str = "{x:0.3f}, {y:0.3f}".format(x=event.Coords[0],
                                                 y=event.Coords[1],
                                                 )
@@ -341,6 +345,7 @@ class WaferMapPanel(wx.Panel):
             HOME:   Zoom to fill window
             O:      Toggle wafer outline
             C:      Toggle wafer crosshairs
+            L:      Toggle the legend
         """
         # TODO: Decide if I want to move this to a class attribute
         keycodes = {wx.WXK_HOME: self.zoom_fill,      # "Home
@@ -383,19 +388,12 @@ class WaferMapPanel(wx.Panel):
     def toggle_legend(self):
         """ Toggles the legend on and off """
         if self.legend_bool:
-            # TODO: Figure out why part of the ContinuousLegend remains
-            #       after turning the legend off. And figure out how to
-            #       get rid of it...
             self.hbox.RemovePos(0)
             self.Layout()       # forces update of layout
-            # To be used if I want to do overlay legend instead
-#            self.canvas.GridOver = None
             self.legend_bool = False
         else:
             self.hbox.Insert(0, self.legend, 0)
             self.Layout()
-            # To be used if I want to do overlay legend instead
-#            self.canvas.GridOver = self.legend_overlay
             self.legend_bool = True
         self.canvas.Draw(Force=True)
 
@@ -423,11 +421,6 @@ class WaferMapPanel(wx.Panel):
         """
         print("Right mouse up!")
 
-    def MoveImageDoug(self):
-        """ actually move the image? """
-        self.move_timer.Start(300, oneShot=True)
-#        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
-
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
     """
@@ -448,9 +441,9 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
         flat = excl
 
     # TODO: There's a lot of duplicate code here. I should try and change that.
-    if dia in FLAT_LENGTHS:
+    if dia in wm_FLAT_LENGTHS:
         # A flat is defined, so we draw it.
-        flat_size = FLAT_LENGTHS[dia]
+        flat_size = wm_FLAT_LENGTHS[dia]
         x = flat_size/2
         y = -math.sqrt(rad**2 - x**2)
 
@@ -462,7 +455,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
                               )
 
         # actually a wafer flat, but called notch
-        notch = draw_wafer_flat(rad, FLAT_LENGTHS[dia])
+        notch = draw_wafer_flat(rad, wm_FLAT_LENGTHS[dia])
     else:
         # Flat not defined, so use a notch to denote wafer orientation.
         ang = 2.5
@@ -487,7 +480,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
     if excl != 0:
         exclRad = 0.5 * (dia - 2.0 * excl)
 
-        if dia in FLAT_LENGTHS:
+        if dia in wm_FLAT_LENGTHS:
             # Define the arc angle based on the flat exclusion, not the edge
             # exclusion. Find the flat exclusion X and Y coords.
             FSSflatY = y + flat

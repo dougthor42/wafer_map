@@ -22,9 +22,11 @@ import wx
 # from the standard install folder, site-packages
 if 'site-packages' in __file__:
     from wafer_map import wm_core
+    from wafer_map.wm_constants import *
 else:
     print("Running wm_frame from Development Location")
     import wm_core
+    from wm_constants import *
 
 
 __author__ = "Douglas Thor"
@@ -45,8 +47,8 @@ class WaferMapWindow(wx.Frame):
                  wafer_info,
                  size=(800, 600),
                  data_type='continuous',
-                 high_color=(255, 255, 0),
-                 low_color=(50, 50, 0),
+                 high_color=wm_HIGH_COLOR,
+                 low_color=wm_LOW_COLOR,
                  ):
         """
         __init__(self,

@@ -17,7 +17,6 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import wx
-import wx.lib.mixins.inspection as wit
 
 # check to see if we can import from the dev folder, otherwise import
 # from the standard install folder, site-packages
@@ -25,11 +24,13 @@ if 'site-packages' in __file__:
     from wafer_map import wm_frame
     from wafer_map import wm_info
     from wafer_map import gen_fake_data
+    from wafer_map.wm_constants import *
 else:
     print("Running wm_app from Development Location")
     import wm_frame
     import wm_info
     import gen_fake_data
+    from wm_constants import *
 
 
 __author__ = "Douglas Thor"
@@ -48,8 +49,8 @@ class WaferMapApp(object):
                  edge_excl=5,
                  flat_excl=5,
                  data_type='continuous',
-                 high_color=(255, 255, 0),
-                 low_color=(50, 50, 0),
+                 high_color=wm_HIGH_COLOR,
+                 low_color=wm_LOW_COLOR,
                  ):
         """
         __init__(self,
@@ -102,7 +103,7 @@ def main():
     discrete = False
     dtype = 'continuous'
 
-#    discrete = True         # uncomment this line to use discrete data
+    discrete = True         # uncomment this line to use discrete data
     if discrete:
         xyd = discrete_xyd
         dtype = 'discrete'
@@ -114,8 +115,6 @@ def main():
                 wafer_info.edge_excl,
                 wafer_info.flat_excl,
                 data_type=dtype,
-                high_color=(0, 255, 100),
-                low_color=(100, 0, 255),
                 )
 
 

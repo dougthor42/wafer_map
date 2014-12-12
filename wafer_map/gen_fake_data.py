@@ -16,7 +16,6 @@ Options:
 
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
-from docopt import docopt
 import math
 
 # check to see if we can import local, otherwise import absolute
@@ -25,19 +24,12 @@ if 'site-packages' in __file__:
     print("we're being run from site-pkg")
     from wafer_map import wm_info
     from wafer_map import wm_utils
+    from wafer_map.wm_constants import *
 else:
     print("running in dev mode")
     import wm_info
     import wm_utils
-
-
-__author__ = "Douglas Thor"
-__version__ = "v0.1.0"
-
-
-# Library Constants
-# Defined by SEMI M1-0302
-FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
+    from wm_constants import *
 
 
 def generate_fake_data():
@@ -80,9 +72,9 @@ def generate_fake_data():
 
     # Determine where our wafer edge is for the flat area
     flat_y = -dia/2     # assume wafer edge at first
-    if dia in FLAT_LENGTHS:
+    if dia in wm_FLAT_LENGTHS:
         # A flat is defined by SEMI M1-0302, so we calcualte where it is
-        flat_y = -math.sqrt((dia/2)**2 - (FLAT_LENGTHS[dia] * 0.5)**2)
+        flat_y = -math.sqrt((dia/2)**2 - (wm_FLAT_LENGTHS[dia] * 0.5)**2)
 
     # calculate the exclusion radius^2
     excl_sqrd = (dia/2)**2 + (edge_excl**2) - (dia * edge_excl)
@@ -141,7 +133,6 @@ def generate_fake_data():
 
 def main():
     """ Main Code """
-    docopt(__doc__, version=__version__)
     wafer, data = generate_fake_data()
     from pprint import pprint
     pprint(data)

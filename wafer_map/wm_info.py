@@ -17,9 +17,6 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 
-__author__ = "Douglas Thor"
-__version__ = "v0.1.0"
-
 
 class WaferInfo(object):
     """
