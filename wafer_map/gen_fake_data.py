@@ -88,6 +88,7 @@ def generate_fake_data():
     x_offset = random.choice([0, 0.5, -2, 0.24])
     y_offset = random.choice([0, 0.5, -2, 0.24])
     grid_center = (grid_max_x/2 + x_offset, grid_max_y/2 + y_offset)
+    print("Offsets: {}".format((x_offset, y_offset)))
 
     # This could be more efficient
     grid_points = []
