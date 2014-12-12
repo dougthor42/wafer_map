@@ -165,18 +165,18 @@ class WaferMapPanel(wx.Panel):
                                                    colors=None,
                                                    )
         else:
-            p_95 = float(wm_utils.nanpercentile([_i[2]
+            p_98 = float(wm_utils.nanpercentile([_i[2]
                                                 for _i
-                                                in self.xyd], 95))
-            p_05 = float(wm_utils.nanpercentile([_i[2]
+                                                in self.xyd], 98))
+            p_02 = float(wm_utils.nanpercentile([_i[2]
                                                 for _i
-                                                in self.xyd], 5))
+                                                in self.xyd], 2))
 
             data_min = min([die[2] for die in self.xyd])
             data_max = max([die[2] for die in self.xyd])
             self.legend = wm_legend.ContinuousLegend(self,
 #                                                     (data_min, data_max),
-                                                     (p_05, p_95),
+                                                     (p_02, p_98),
                                                      self.high_color,
                                                      self.low_color,
                                                      )
@@ -437,6 +437,12 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
 
     rad = float(dia)/2.0
 
+    circ = FloatCanvas.Circle((0, 0),
+                              dia,
+                              LineColor=wx.YELLOW,
+                              LineWidth=1,
+                              )
+
     if flat == 0:
         flat = excl
 
@@ -474,7 +480,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
         notch = draw_wafer_notch(rad)
 
     # Group the outline arc and the orientation (flat / notch) together
-    group = FloatCanvas.Group([arc, notch])
+    group = FloatCanvas.Group([circ, arc, notch])
 
     # if an exclusion is defined: create it and add to group
     if excl != 0:
@@ -514,7 +520,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
                                        )
 
             excl_notch = draw_wafer_notch(exclRad)
-        group = FloatCanvas.Group([arc, notch, excl_arc, excl_notch])
+        group = FloatCanvas.Group([circ, arc, notch, excl_arc, excl_notch])
     return group
 
 
