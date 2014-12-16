@@ -131,7 +131,6 @@ class ContinuousLegend(wx.Panel):
         ###==================================================================
         ### Remainder of __init__
         ###==================================================================
-
         # Create the MemoryDC now - we'll add the bitmap later.
         self.mdc = wx.MemoryDC()
         self.mdc.SetFont(wx.Font(9,
@@ -166,6 +165,8 @@ class ContinuousLegend(wx.Panel):
 
     def on_size(self, event):
         """ Redraw everything with the new sizes. """
+        # TODO: Also reduce number of ticks when text starts to overlap
+        #       or add ticks when there's extra space.
         self.set_sizes()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
@@ -252,7 +253,7 @@ class ContinuousLegend(wx.Panel):
 
         return ticks
 
-    def print_ticks(self, ticks):
+    def draw_ticks(self, ticks):
         """
         prints the tickmarks. ticks is a list of (string, value, pixel) tuples
         """
@@ -358,7 +359,7 @@ class ContinuousLegend(wx.Panel):
         self.draw_gradient()
 
         # Calculate and draw the tickmarks.
-        self.print_ticks(self.ticks)
+        self.draw_ticks(self.ticks)
 
     def draw_gradient(self):
         """ Draws the Gradient, painted from North (high) to South (low) """
