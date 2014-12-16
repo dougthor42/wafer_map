@@ -97,6 +97,7 @@ class ContinuousLegend(wx.Panel):
         self.num_ticks = num_ticks
         self.oor_high_color = oor_high_color
         self.oor_low_color = oor_low_color
+        self.invalid_color = wm_INVALID_COLOR
 
         # We need to set some parameters before making the bitmap. How do?
         # Create the MemoryDC now - we'll add the bitmap later.
@@ -239,14 +240,18 @@ class ContinuousLegend(wx.Panel):
         elif value < self.plot_range[0]:
             color = self.oor_low_color
         else:
-            pxl = int(wm_utils.rescale(value,
-                                       self.plot_range,
-                                       (self.grad_end_y - 1,
-                                        self.grad_start_y)))
+            try:
+                pxl = int(wm_utils.rescale(value,
+                                           self.plot_range,
+                                           (self.grad_end_y - 1,
+                                            self.grad_start_y)))
 
-            x_pt = self.grad_w // 2 + self.grad_start_x
-            point = (x_pt, pxl)
-            color = self.mdc.GetPixelPoint(point)
+                x_pt = self.grad_w // 2 + self.grad_start_x
+                point = (x_pt, pxl)
+                color = self.mdc.GetPixelPoint(point)
+            except ValueError:
+#                print("nan found")
+                color = self.invalid_color
         return color
 
     def calc_ticks(self):

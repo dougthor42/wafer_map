@@ -14,6 +14,7 @@ wm_OOR_LOW_COLOR = wx.Colour(255, 128, 0, 255)
 wm_HIGH_COLOR = wx.Colour(0, 255, 128, 255)
 #wm_LOW_COLOR = wx.Colour(0, 192, 0, 255)
 wm_LOW_COLOR = wx.Colour(128, 0, 255, 255)
+wm_INVALID_COLOR = wx.Colour(255, 255, 255, 255)
 wm_TICK_COUNT = 11
 
 # Continuous Data Gradient sizez in px.
