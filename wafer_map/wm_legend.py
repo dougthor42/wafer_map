@@ -90,6 +90,10 @@ class ContinuousLegend(wx.Panel):
                  ) -> wx.Panel
         """
         wx.Panel.__init__(self, parent)
+
+        ###==================================================================
+        ### Inputs
+        ###==================================================================
         self.parent = parent
         self.plot_range = plot_range
         self.high_color = high_color
@@ -99,7 +103,35 @@ class ContinuousLegend(wx.Panel):
         self.oor_low_color = oor_low_color
         self.invalid_color = wm_INVALID_COLOR
 
-        # We need to set some parameters before making the bitmap. How do?
+        ###==================================================================
+        ### Initialize Size Attributes
+        ###==================================================================
+        # These get set in set_sizes(), but are here to remind me that
+        # the instance attribute exists and what they are.
+        # Values are in px.
+        self.text_h = None          # text height
+        self.text_w = None          # Length of longest tick label
+        self.grad_w = None          # gradient width
+        self.grad_h = None          # gradient height
+        self.spacer = None          # spacer speration between items
+        self.grad_start_y = None    # top of gradient pixel coord
+        self.grad_end_y = None      # bottom of gradient pixel coord
+        self.grad_start_x = None    # gradient left pixel coord
+        self.grad_end_x = None      # gradient right pixel coord
+        self.tick_w = None          # tick mark length
+        self.tick_start_x = None    # tick label left pixel coord
+        self.dc_w = None            # total bitmap width
+        self.dc_h = None            # total bitmap height
+
+        ###==================================================================
+        ### Other Instance Attributes
+        ###==================================================================
+        self.ticks = None
+
+        ###==================================================================
+        ### Remainder of __init__
+        ###==================================================================
+
         # Create the MemoryDC now - we'll add the bitmap later.
         self.mdc = wx.MemoryDC()
         self.mdc.SetFont(wx.Font(9,
@@ -108,81 +140,17 @@ class ContinuousLegend(wx.Panel):
                                  wx.FONTWEIGHT_NORMAL,
                                  ))
 
-        # Set various sizes, some of which are based on things like the
-        # text height:
-        #       self.mdc.GetTextExtent("Longest String")
-        # or the client size:
-        #       self.GetClientSize().
-        # We need to move the gradient down a bit so that the top and bottom
-        # labels are not cut off.
-        # TODO: Replace these contants with code that finds the sizes
-        # These are in a specific order. Do not change!
-
-        # First determine some fixed items
-        self.text_h = self.mdc.GetTextExtent("A")[1]
-        self.grad_w = 30            # total gradient width (px)
-        self.grad_h = 500           # total gradient height (px)
-        self.tick_w = 20            # tick mark length
-        self.spacer = 5             # spacer speration between items
-        self.grad_start_y = self.text_h / 2
-        self.grad_end_y = self.grad_start_y + self.grad_h
-
-        # Now that the widths are defined, I can calculate some other things
-        self.ticks = self.calc_ticks()
-        self.text_w = self.get_max_text_w(self.ticks)
-
-        # Note: I'm intentionally listing every spacer manually rather than
-        #       multiplying by how many there are. This makes it easier
-        #       to see where I'm placing them.
-        self.tick_start_x = self.spacer + self.text_w + self.spacer
-        self.grad_start_x = self.tick_start_x + self.tick_w + self.spacer
-        self.grad_end_x = self.grad_start_x + self.grad_w
-        self.dc_w = self.grad_end_x + self.spacer   # total bitmap width
-        self.dc_h = self.grad_h + self.text_h       # total bitmap height
+        self.set_sizes()
 
         # Create EmptyBitmap in our MemoryDC where we'll do all our drawing.
         self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
 
-        # Draw a rectangle to make the background
-        # TODO: change the bitmap background to be transparent
-        c = wx.Colour(200, 230, 230, 0)
-        c = wx.Colour(255, 255, 255, 0)
-        pen = wx.Pen(c)
-        brush = wx.Brush(c)
-        self.mdc.SetPen(pen)
-        self.mdc.SetBrush(brush)
-        self.mdc.DrawRectangle(0, 0, self.dc_w, self.dc_h)
-
-        # Draw the out-of-range high and low rectangles
-        c = self.oor_high_color
-        pen = wx.Pen(c)
-        brush = wx.Brush(c)
-        self.mdc.SetPen(pen)
-        self.mdc.SetBrush(brush)
-        self.mdc.DrawRectangle(self.grad_start_x,
-                               2,
-                               self.grad_w,
-                               self.grad_start_y - 2)
-
-        c = self.oor_low_color
-        pen = wx.Pen(c)
-        brush = wx.Brush(c)
-        self.mdc.SetPen(pen)
-        self.mdc.SetBrush(brush)
-        self.mdc.DrawRectangle(self.grad_start_x,
-                               self.grad_end_y,
-                               self.grad_w,
-                               self.dc_h - self.grad_end_y - 2)
-
-        # Draw the Gradient on a portion of the MemoryDC
-        self.draw_gradient()
-
-        # Calculate and draw the tickmarks.
-        self.print_ticks(self.ticks)
+        # Draw the entire thing
+        self.draw_scale()
 
         # Bind various events
         self.Bind(wx.EVT_PAINT, self.on_paint)
-#        self.Bind(wx.EVT_SIZE, self.on_size)
+        self.Bind(wx.EVT_SIZE, self.on_size)
 #        self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
 
@@ -196,16 +164,18 @@ class ContinuousLegend(wx.Panel):
         self.hbox.Add((self.dc_w, self.dc_h))
         self.SetSizer(self.hbox)
 
-#    def on_size(self, event):
-#        w, h = self.GetClientSize()
-#        self.mdc = wx.MemoryDC(wx.EmptyBitmap(w, h))
-#        self.draw_gradient()
-#        self.Refresh()
+    def on_size(self, event):
+        """ Redraw everything with the new sizes. """
+        self.set_sizes()
+        self.hbox.Remove(0)
+        self.hbox.Add((self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.draw_scale()
+        self.Refresh()
 
     def on_paint(self, event):
-        """ Draw the gradient """
+        """ Push the MemoryDC bitmap to the displayed PaintDC """
         dc = wx.PaintDC(self)
-#        w, h = self.mdc.GetSize()
         dc.Blit(0, 0, self.dc_w, self.dc_h, self.mdc, 0, 0)
 
     def mouse_move(self, event):
@@ -301,6 +271,94 @@ class ContinuousLegend(wx.Panel):
             text_x = tick_start - self.spacer - text_w
             text_y = tick[2] - self.text_h / 2
             self.mdc.DrawText(tick[0], text_x, text_y)
+
+    def set_sizes(self):
+        """
+        Sets various instance attributes for item sizes and locations.
+        """
+        # Set various sizes, some of which are based on things like the
+        # text height:
+        #       self.mdc.GetTextExtent("Longest String")
+        # or the client size:
+        #       self.GetClientSize().
+        # We need to move the gradient down a bit so that the top and bottom
+        # labels are not cut off.
+        # TODO: Replace these contants with code that finds the sizes
+        # These are in a specific order. Do not change!
+        
+        # First determine some fixed items
+        self.text_h = self.mdc.GetTextExtent("A")[1]
+        self.grad_w = 30            # total gradient width (px)
+#        self.grad_h = 500           # total gradient height (px)
+        self.grad_h = self.parent.GetClientSize()[1] - self.text_h
+        self.tick_w = 20            # tick mark length
+        self.spacer = 5             # spacer speration between items
+        self.grad_start_y = self.text_h / 2
+        self.grad_end_y = self.grad_start_y + self.grad_h
+
+        # Now that the widths are defined, I can calculate some other things
+        self.ticks = self.calc_ticks()
+        self.text_w = self.get_max_text_w(self.ticks)
+
+        # Note: I'm intentionally listing every spacer manually rather than
+        #       multiplying by how many there are. This makes it easier
+        #       to see where I'm placing them.
+        self.tick_start_x = self.spacer + self.text_w + self.spacer
+        self.grad_start_x = self.tick_start_x + self.tick_w + self.spacer
+        self.grad_end_x = self.grad_start_x + self.grad_w
+        self.dc_w = self.grad_end_x + self.spacer   # total bitmap width
+        self.dc_h = self.grad_h + self.text_h       # total bitmap height
+
+    def draw_background(self):
+        """
+        Draws the background box. If I don't do this, then the background is
+        black.
+
+        Could I change wx.EmptyBitmap() so that it defaults to white rather
+        than black?
+        """
+        # TODO: change the bitmap background to be transparent
+        c = wx.Colour(200, 230, 230, 0)
+        c = wx.Colour(255, 255, 255, 0)
+        pen = wx.Pen(c)
+        brush = wx.Brush(c)
+        self.mdc.SetPen(pen)
+        self.mdc.SetBrush(brush)
+        self.mdc.DrawRectangle(0, 0, self.dc_w, self.dc_h)
+
+    def draw_scale(self):
+        """
+        Draws the entire scale area: background, gradient, OOR colors,
+        ticks, and labels.
+        """
+        self.draw_background()
+
+        # Draw the out-of-range high and low rectangles
+        c = self.oor_high_color
+        pen = wx.Pen(c)
+        brush = wx.Brush(c)
+        self.mdc.SetPen(pen)
+        self.mdc.SetBrush(brush)
+        self.mdc.DrawRectangle(self.grad_start_x,
+                               2,
+                               self.grad_w,
+                               self.grad_start_y - 2)
+
+        c = self.oor_low_color
+        pen = wx.Pen(c)
+        brush = wx.Brush(c)
+        self.mdc.SetPen(pen)
+        self.mdc.SetBrush(brush)
+        self.mdc.DrawRectangle(self.grad_start_x,
+                               self.grad_end_y,
+                               self.grad_w,
+                               self.dc_h - self.grad_end_y - 2)
+
+        # Draw the Gradient on a portion of the MemoryDC
+        self.draw_gradient()
+
+        # Calculate and draw the tickmarks.
+        self.print_ticks(self.ticks)
 
     def draw_gradient(self):
         """ Draws the Gradient, painted from North (high) to South (low) """

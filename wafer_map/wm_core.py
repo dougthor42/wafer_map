@@ -122,7 +122,7 @@ class WaferMapPanel(wx.Panel):
         # Create layout manager and add items
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.hbox.Add(self.legend, 0)
+        self.hbox.Add(self.legend, 0, wx.EXPAND)
         self.hbox.Add(self.canvas, 1, wx.EXPAND)
 
         self.SetSizer(self.hbox)
