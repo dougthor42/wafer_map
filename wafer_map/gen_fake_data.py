@@ -17,6 +17,7 @@ Options:
 from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import math
+import random
 
 # check to see if we can import local, otherwise import absolute
 print(__file__)
@@ -32,8 +33,51 @@ else:
     from wm_constants import *
 
 
-def generate_fake_data():
+def generate_fake_data(**kwargs):
     """
+    Generates fake data for wafer_map.
+
+    Keyword Arguments:
+    ------------------
+
+    - die_x:        Die x size in mm
+    - die_y:        Die y size in mm
+    - dia:          Wafer diameter in mm
+    - edge_excl:    Edge exclusion in mm
+    - flat_excl:    Wafer Flat exclusion in mm
+    - x_offset:     The center die's x offset.
+
+                    (0-1), where 0.5 means that the center of the
+                    wafer is located on a vertical street (edge of a die).
+    - y_offset:     The center die's y offset.
+
+                    (0-1), where 0.5 means that the center of the
+                    wafer is located on a horizontal street (edge of a die).
+
+    Examples of Offsets:
+    --------------------
+    
+    The ``X`` denotes the center of the wafer::
+    
+      x_offset = 0          x_offset = 0
+      y_offset = 0          y_offset = 0.5
+      |-----------|         |-----------|
+      |           |         |           |
+      |     X     |         |           |
+      |           |         |           |
+      |-----------|         |-----X-----|
+      
+      x_offset = 0.5        x_offset = 0.5
+      y_offset = 0          y_offset = 0.5
+      |-----------|         |-----------|
+      |           |         |           |
+      X           |         |           |
+      |           |         |           |
+      |-----------|         X-----------|
+
+    Notes:
+    ------
+
     Another rewrite, this time starting from the top. We will not look at
     the wafer map until I'm satisfied with the numerical values.
 
@@ -61,14 +105,32 @@ def generate_fake_data():
     5. Calculate the lower-left coordinate of each of those die
     6. Complete.
     """
-    # Generate random wafer attributes
-    import random
-    die_x = random.uniform(5, 10)
-    die_y = random.uniform(5, 10)
-    dia = random.choice([100, 150, 200, 210])
+    dia_list = [100, 150, 200, 210]
+    excl_list = [0, 2.5, 5, 10]
+    offset_list = [0, 0.5, -2, 0.24]
+    DEFAULT_KWARGS = {'die_x': random.uniform(5, 10),
+                      'die_y': random.uniform(5, 10),
+                      'dia': random.choice(dia_list),
+                      'edge_excl': random.choice(excl_list),
+                      'flat_excl': random.choice(excl_list),
+                      'x_offset': random.choice(offset_list),
+                      'y_offset': random.choice(offset_list),
+                      }
+
+    # parse the keyword arguements, asigning defaults if not found.
+    for key in DEFAULT_KWARGS:
+        if key not in kwargs:
+            kwargs[key] = DEFAULT_KWARGS[key]
+
+    die_x = kwargs['die_x']
+    die_y = kwargs['die_y']
+    dia = kwargs['dia']
+    edge_excl = kwargs['edge_excl']
+    flat_excl = kwargs['flat_excl']
+    x_offset = kwargs['x_offset']
+    y_offset = kwargs['y_offset']
+
     die_size = (die_x, die_y)
-    edge_excl = random.choice([0, 2.5, 5, 10])
-    flat_excl = random.choice([i for i in [0, 2.5, 5, 10] if i >= edge_excl])
 
     # Determine where our wafer edge is for the flat area
     flat_y = -dia/2     # assume wafer edge at first
@@ -84,9 +146,7 @@ def generate_fake_data():
     grid_max_x = 2 * int(math.ceil(dia / die_x))
     grid_max_y = 2 * int(math.ceil(dia / die_y))
 
-    # 2. Choose arbitraty center point
-    x_offset = random.choice([0, 0.5, -2, 0.24])
-    y_offset = random.choice([0, 0.5, -2, 0.24])
+    # 2. Determine the centerpoint
     grid_center = (grid_max_x/2 + x_offset, grid_max_y/2 + y_offset)
     print("Offsets: {}".format((x_offset, y_offset)))
 

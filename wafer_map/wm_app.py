@@ -95,7 +95,14 @@ class WaferMapApp(object):
 def main():
     """ Main Code """
 #    raise RuntimeError("This module is not meant to be run by itself.")
-    wafer_info, xyd = gen_fake_data.generate_fake_data()
+    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=5.4,
+                                                       die_y=3.6,
+                                                       dia=150,
+                                                       edge_excl=5,
+                                                       flat_excl=5,
+                                                       x_offset=0.5,
+                                                       y_offset=0.5,
+                                                       )
 
     import random
     num_discrete_values = random.randint(2, 10)

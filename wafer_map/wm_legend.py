@@ -566,8 +566,6 @@ def main():
     app = wx.App()
     frame = ExampleFrame("Legend Example")
     frame.Show()
-#    for _i in xrange(continuous_range[0]-10, continuous_range[1] + 11, 10):
-#        print(_i, frame.c_legend.get_color(_i))
     app.MainLoop()
 
 
