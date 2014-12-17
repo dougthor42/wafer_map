@@ -127,6 +127,8 @@ class ContinuousLegend(wx.Panel):
         ### Other Instance Attributes
         ###==================================================================
         self.ticks = None
+        self.gradient = wm_utils.LinearGradient(self.low_color,
+                                                self.high_color)
 
         ###==================================================================
         ### Remainder of __init__
@@ -238,9 +240,10 @@ class ContinuousLegend(wx.Panel):
                 pxl = wm_utils.rescale(value,
                                        self.plot_range,
                                        (0, 1))
-                color = wm_utils.linear_gradient(self.low_color,
-                                                 self.high_color,
-                                                 pxl)
+                color = self.gradient.get_color(pxl)
+#                color = wm_utils.linear_gradient(self.low_color,
+#                                                 self.high_color,
+#                                                 pxl)
                 color = wx.Colour(*color)
             except ValueError:
                 color = self.invalid_color
@@ -409,9 +412,10 @@ class ContinuousLegend(wx.Panel):
             val = wm_utils.rescale(y,
                                    (self.grad_start_y, self.grad_end_y),
                                    (1, 0))
-            color = wm_utils.linear_gradient(self.low_color,
-                                             self.high_color,
-                                             val)
+            color = self.gradient.get_color(val)
+#            color = wm_utils.linear_gradient(self.low_color,
+#                                             self.high_color,
+#                                             val)
             self.mdc.SetPen(wx.Pen(color))
             self.mdc.SetBrush(wx.Brush(color))
             self.mdc.DrawRectangle(self.grad_start_x,

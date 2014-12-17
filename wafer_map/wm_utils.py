@@ -19,12 +19,62 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 
 
+class Gradient(object):
+    """
+    Base class for all gradients
+    """
+    pass
+
+
+class LinearGradient(Gradient):
+    """
+    Linear gradient between two colors
+    """
+    def __init__(self, initial_color, dest_color):
+        self.initial_color = initial_color
+        self.dest_color = dest_color
+
+    def get_color(self, value):
+        """ Gets a color along the gradient. Value = 0 to 1 inclusive"""
+        return linear_gradient(self.initial_color, self.dest_color, value)
+
+
+class PolylinearGradient(Gradient):
+    """
+    Polylinear Gradient between n colors.
+
+    Acts as a LinearGradient if n == 2
+    """
+    def __init__(self, *colors):
+        self.colors = colors
+        self.initial_color = self.colors[0]
+        self.dest_color = self.colors[-1]
+
+    def get_color(self, value):
+        """ Gets a color value """
+        return polylinear_gradient(self.colors, value)
+
+
+class BeizerGradient(Gradient):
+    """
+    Beizer curve gradient between 3 colors.
+    """
+    def __init__(self, initial_color, arc_color, dest_color):
+        self.initial_color = initial_color
+        self.arc_color = arc_color
+        self.dest_color = dest_color
+
+    def get_color(self, value):
+        """ Gets a color """
+        pass
+
+
 def linear_gradient(initial_color, dest_color, value):
     """
     Find the color that is value between initial and dest.
 
     Colors are either 3-tuples or 4-tuples.
-    
+
     value ranges from 0 to 1 inclusive.
     """
     if value <= 0:
