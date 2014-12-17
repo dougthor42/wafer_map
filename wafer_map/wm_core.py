@@ -167,20 +167,20 @@ class WaferMapPanel(wx.Panel):
                                                    colors=None,
                                                    )
         else:
-            if self.plot_range == None:
+            if self.plot_range is None:
                 p_98 = float(wm_utils.nanpercentile([_i[2]
                                                     for _i
                                                     in self.xyd], 98))
                 p_02 = float(wm_utils.nanpercentile([_i[2]
                                                     for _i
                                                     in self.xyd], 2))
-    
+
                 data_min = min([die[2] for die in self.xyd])
                 data_max = max([die[2] for die in self.xyd])
+                self.plot_range = (data_min, data_max)
                 self.plot_range = (p_02, p_98)
 
             self.legend = wm_legend.ContinuousLegend(self,
-#                                                     (data_min, data_max),
                                                      self.plot_range,
                                                      self.high_color,
                                                      self.low_color,
@@ -593,9 +593,6 @@ def draw_wafer_notch(rad):
 
 def main():
     """ Main Code """
-    a = wm_utils.coord_to_grid((9, 2.5), (6, 5), (5.5, 5.5))
-    print(a)
-    print(a == (7, 5))
     raise RuntimeError("This module is not meant to be run by itself.")
 
 

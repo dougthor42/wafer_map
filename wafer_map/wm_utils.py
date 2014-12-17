@@ -19,6 +19,198 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 
 
+def linear_gradient(initial_color, dest_color, value):
+    """
+    Find the color that is value between initial and dest.
+
+    Colors are either 3-tuples or 4-tuples.
+    
+    value ranges from 0 to 1 inclusive.
+    """
+    if value <= 0:
+        return initial_color
+    elif value >= 1:
+        return dest_color
+
+    r1 = initial_color[0]
+    g1 = initial_color[1]
+    b1 = initial_color[2]
+
+    r2 = dest_color[0]
+    g2 = dest_color[1]
+    b2 = dest_color[2]
+
+    r = int(rescale(value, (0, 1), (r1, r2)))
+    g = int(rescale(value, (0, 1), (g1, g2)))
+    b = int(rescale(value, (0, 1), (b1, b2)))
+
+    return (r, g, b)
+
+
+def polylinear_gradient(colors, value):
+    """
+    colors is a list or tuple of length 2 or more. If length 2, then it's
+    the same as LinearGradient
+    Value is the 0-1 value between colors[0] and colors[-1].
+    Assumes uniform spacing between all colors.
+    """
+    n = len(colors)
+    if n == 2:
+        return linear_gradient(colors[0], colors[1], value)
+
+    if value >= 1:
+        return colors[-1]
+    elif value <= 0:
+        return colors[0]
+
+    # divide up our range into n - 1 segments, where n is the number of colors
+    l = 1 / (n - 1)     # float division
+
+    # figure out which segment we're in - determines start and end colors
+    m = int(value // l)      # Note floor division
+
+    low = m * l
+    high = (m + 1) * l
+
+    # calculate where our value lies within that particular gradient
+    v2 = rescale(value, (low, high), (0, 1))
+
+    return linear_gradient(colors[m], colors[m + 1], v2)
+
+
+def beizer_gradient(initial_color, arc_color, dest_color, value):
+    """
+    Calculates the color value along a Beizer Cuve who's control colors are
+    defined by initial_color, arc_color, and final_color.
+    """
+    pass
+
+
+def _GradientFillLinear(rect,
+                        intial_color,
+                        dest_color,
+                        direction,
+                        ):
+    """
+    Reimplements the ``wxDCImpl::DoGradientFillLinear`` algorithm found in
+    wxWidgets-3.0.2\src\common\dcbase.cpp, line 862.
+
+    wxWidgets uses the native MS Windows (msw) function if it can:
+        wxMSIMG32DLL.GetSymbol(wxT("GradientFill")
+
+    See function ``wxMSWDCImpl::DoGradientFillLinear`` in
+    wxWidgets-3.0.2\src\msw\dc.cpp, line 2870
+
+    Allows user to put in a value from 0 (intial_color) to 1 (dest_color).
+
+    What will this function return? I do not know yet.
+
+    There's not really a struct for a "continuous gradient"...
+
+    I think that perhaps this function will just calculate the color for
+    a given 0-1 value between initial_color and dest_color on the fly.
+    
+    I'm an idiot! This is just linear algebra, I can solve this!
+    """
+    pass
+"""
+    void wxDCImpl::DoGradientFillLinear(const wxRect& rect,
+                                        const wxColour& initialColour,
+                                        const wxColour& destColour,
+                                        wxDirection nDirection)
+    {
+        // save old pen
+        wxPen oldPen = m_pen;
+        wxBrush oldBrush = m_brush;
+
+        wxUint8 nR1 = initialColour.Red();
+        wxUint8 nG1 = initialColour.Green();
+        wxUint8 nB1 = initialColour.Blue();
+        wxUint8 nR2 = destColour.Red();
+        wxUint8 nG2 = destColour.Green();
+        wxUint8 nB2 = destColour.Blue();
+        wxUint8 nR, nG, nB;
+
+        if ( nDirection == wxEAST || nDirection == wxWEST )
+        {
+            wxInt32 x = rect.GetWidth();
+            wxInt32 w = x;              // width of area to shade
+            wxInt32 xDelta = w/256;     // height of one shade bend
+            if (xDelta < 1)
+                xDelta = 1;   # max of 255 points - fractional colors are not defined.
+
+            while (x >= xDelta)
+            {
+                x -= xDelta;
+                if (nR1 > nR2)
+                    nR = nR1 - (nR1-nR2)*(w-x)/w;
+                else
+                    nR = nR1 + (nR2-nR1)*(w-x)/w;
+
+                if (nG1 > nG2)
+                    nG = nG1 - (nG1-nG2)*(w-x)/w;
+                else
+                    nG = nG1 + (nG2-nG1)*(w-x)/w;
+
+                if (nB1 > nB2)
+                    nB = nB1 - (nB1-nB2)*(w-x)/w;
+                else
+                    nB = nB1 + (nB2-nB1)*(w-x)/w;
+
+                wxColour colour(nR,nG,nB);
+                SetPen(wxPen(colour, 1, wxPENSTYLE_SOLID));
+                SetBrush(wxBrush(colour));
+                if(nDirection == wxEAST)
+                    DoDrawRectangle(rect.GetRight()-x-xDelta+1, rect.GetTop(),
+                            xDelta, rect.GetHeight());
+                else //nDirection == wxWEST
+                    DoDrawRectangle(rect.GetLeft()+x, rect.GetTop(),
+                            xDelta, rect.GetHeight());
+            }
+        }
+        else  // nDirection == wxNORTH || nDirection == wxSOUTH
+        {
+            wxInt32 y = rect.GetHeight();
+            wxInt32 w = y;              // height of area to shade
+            wxInt32 yDelta = w/255;     // height of one shade bend
+            if (yDelta < 1)
+                yDelta = 1;  # max of 255 points - fractional colors are not defined.
+
+            while (y > 0)
+            {
+                y -= yDelta;
+                if (nR1 > nR2)
+                    nR = nR1 - (nR1-nR2)*(w-y)/w;
+                else
+                    nR = nR1 + (nR2-nR1)*(w-y)/w;
+
+                if (nG1 > nG2)
+                    nG = nG1 - (nG1-nG2)*(w-y)/w;
+                else
+                    nG = nG1 + (nG2-nG1)*(w-y)/w;
+
+                if (nB1 > nB2)
+                    nB = nB1 - (nB1-nB2)*(w-y)/w;
+                else
+                    nB = nB1 + (nB2-nB1)*(w-y)/w;
+
+                wxColour colour(nR,nG,nB);
+                SetPen(wxPen(colour, 1, wxPENSTYLE_SOLID));
+                SetBrush(wxBrush(colour));
+                if(nDirection == wxNORTH)
+                    DoDrawRectangle(rect.GetLeft(), rect.GetTop()+y,
+                            rect.GetWidth(), yDelta);
+                else //nDirection == wxSOUTH
+                    DoDrawRectangle(rect.GetLeft(), rect.GetBottom()-y-yDelta+1,
+                            rect.GetWidth(), yDelta);
+            }
+        }
+
+        SetPen(oldPen);
+        SetBrush(oldBrush);
+}"""
+
+
 def frange(start, stop, step):
     """ Generator that creates an arbitrary-stepsize range. """
     r = start
@@ -124,3 +316,28 @@ def rescale_clip(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
         return new_min
     else:
         return result
+
+print("Dev file!")
+
+if __name__ == "__main__":
+    print("0 and 1")
+    print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0))
+    print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 1))
+    
+    print("\n0.5:")
+    print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0.5))
+    
+    print("\n0.25")
+    print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0.25))
+    print("\n0.75")
+    print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0.75))
+
+    print("\n4 colors")
+    print(polylinear_gradient([(0, 0, 0),
+                               (255, 0, 0),
+                               (0, 255, 0),
+                               (0, 0, 255),
+                               ],
+                              0.5))
+    
+    print(linear_gradient((0, 0, 0), (255, 255, 255), 1.5))

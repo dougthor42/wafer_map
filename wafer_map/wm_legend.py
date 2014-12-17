@@ -152,6 +152,7 @@ class ContinuousLegend(wx.Panel):
         self.Bind(wx.EVT_SIZE, self.on_size)
 #        self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
+        self.Bind(wx.EVT_RIGHT_DOWN, self.right_click)
 
         self.init_ui()
 
@@ -186,6 +187,7 @@ class ContinuousLegend(wx.Panel):
 
     def left_click(self, event):
         """ Used for debugging """
+        print("Left-click - color from self.mdc.GetPixelPoint.")
         pos = event.GetPosition()
         w, h = self.mdc.GetSize()       # change to gradient area
         if pos[0] < w and pos[1] < h:
@@ -195,6 +197,18 @@ class ContinuousLegend(wx.Panel):
             a = self.mdc.GetPixelPoint(event.GetPosition())
             print("{}\t{}\t{}".format(pos, a, val))
 
+    def right_click(self, event):
+        """ Used for debugging """
+        print("Right-click - color from get_color()")
+        pos = event.GetPosition()
+        w, h = self.mdc.GetSize()       # change to gradient area
+        if pos[0] < w and pos[1] < h:
+            val = wm_utils.rescale(pos[1],
+                                   (self.grad_start_y, self.grad_end_y - 1),
+                                   reversed(self.plot_range))
+            a = self.get_color(val)
+            print("{}\t{}\t{}".format(pos, a, val))
+
     def mouse_wheel(self, event):
         print("mouse wheel!")
 #        self.left_click(event)
@@ -202,26 +216,33 @@ class ContinuousLegend(wx.Panel):
     def get_color(self, value):
         """
         Gets a color from the gradient.
-
-        Still doesn't work like I want it to. It will only work after the
-        paint event.
         """
+        # TODO: determine how wxPython's GradientFillLinear works and use that
+        # instead of grabbing the color from the gradient.
         if value > self.plot_range[1]:
             color = self.oor_high_color
         elif value < self.plot_range[0]:
             color = self.oor_low_color
         else:
             try:
-                pxl = int(wm_utils.rescale(value,
-                                           self.plot_range,
-                                           (self.grad_end_y - 1,
-                                            self.grad_start_y)))
-
-                x_pt = self.grad_w // 2 + self.grad_start_x
-                point = (x_pt, pxl)
-                color = self.mdc.GetPixelPoint(point)
+#                pxl = int(wm_utils.rescale(value,
+#                                           self.plot_range,
+#                                           (self.grad_end_y - 1,
+#                                            self.grad_start_y)))
+#
+#                x_pt = self.grad_w // 2 + self.grad_start_x
+#                point = (x_pt, pxl)
+#                color = self.mdc.GetPixelPoint(point)
+            
+                # New Method
+                pxl = wm_utils.rescale(value,
+                                       self.plot_range,
+                                       (0, 1))
+                color = wm_utils.linear_gradient(self.low_color,
+                                                 self.high_color,
+                                                 pxl)
+                color = wx.Colour(*color)
             except ValueError:
-#                print("nan found")
                 color = self.invalid_color
         return color
 

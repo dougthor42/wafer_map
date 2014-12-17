@@ -86,6 +86,7 @@ class MainPanel(wx.Panel):
 #        self.draw_wafer_objects()
         self.canvas.Draw(True)
 
+print("test.py loaded")
 
 def main():
     """ Main Code """
