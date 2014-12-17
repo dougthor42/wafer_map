@@ -294,7 +294,10 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     part_a = x * (new_max - new_min)
     part_b = original_min * new_max - original_max * new_min
     denominator = original_max - original_min
-    result = (part_a - part_b)/denominator
+    try:
+        result = (part_a - part_b)/denominator
+    except ZeroDivisionError:
+        result = 0
     return float(result)
 
 

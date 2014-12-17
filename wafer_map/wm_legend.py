@@ -355,6 +355,9 @@ class ContinuousLegend(wx.Panel):
         """
         self.draw_background()
 
+        # Draw the Gradient on a portion of the MemoryDC
+        self.draw_gradient()
+
         # Draw the out-of-range high and low rectangles
         c = self.oor_high_color
         pen = wx.Pen(c)
@@ -376,20 +379,49 @@ class ContinuousLegend(wx.Panel):
                                self.grad_w,
                                self.dc_h - self.grad_end_y - 2)
 
-        # Draw the Gradient on a portion of the MemoryDC
-        self.draw_gradient()
+
 
         # Calculate and draw the tickmarks.
         self.draw_ticks(self.ticks)
 
     def draw_gradient(self):
         """ Draws the Gradient, painted from North (high) to South (low) """
-        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
-                                     self.grad_w, self.grad_h),
-                                    self.high_color,
-                                    self.low_color,
-                                    wx.SOUTH,
-                                    )
+#        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
+#                                     self.grad_w, self.grad_h),
+#                                    self.high_color,
+#                                    self.low_color,
+#                                    wx.SOUTH,
+#                                    )
+
+        # Remake of the wx.DC.GradientFillLinear wx core function, but uses
+        # my own algorithm for determining the colors.
+        # Doing so ensures that both the gradient and the die colors match.
+
+        # Save the old pen colors
+        old_pen = self.mdc.GetPen()
+        old_brush = self.mdc.GetBrush()
+        delta = self.grad_h / 255           # height of one shade box
+        if delta < 1:
+            delta = 1       # max of 255 pts - fractional colors not defined.
+
+        y = self.grad_start_y
+        while y <= self.grad_end_y:
+            val = wm_utils.rescale(y,
+                                   (self.grad_start_y, self.grad_end_y),
+                                   (1, 0))
+            color = wm_utils.linear_gradient(self.low_color,
+                                             self.high_color,
+                                             val)
+            self.mdc.SetPen(wx.Pen(color))
+            self.mdc.SetBrush(wx.Brush(color))
+            self.mdc.DrawRectangle(self.grad_start_x,
+                                   y,
+                                   self.grad_w, delta + 1)
+            y += delta
+
+        # Set the pen and brush back to what they were
+        self.mdc.SetPen(old_pen)
+        self.mdc.SetBrush(old_brush)
 
     def get_max_text_w(self, ticks):
         """ Get the maximum label sizes. There's probably a better way... """
