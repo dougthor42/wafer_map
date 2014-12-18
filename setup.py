@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map"],
-    version="1.0.2",
+    version="1.0.3",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -184,6 +184,32 @@ Current capabilities:
 
 Changelog
 =========
+
+* **1.0.3 / 2014-12-17**
+
+  + Fixed Issue #9: Users can now change the high and low colors for
+    continuous data by passing in arguements or by using the app menu:
+    ``Options --> Set High Color`` or ``Set Low Color``
+  + Fixed Issue #26
+  + Fixed Issue #25: Continuous data now generates colors from a single
+    algorithm.
+  + Fixed Issue #14: Discrete Data now uses an acceptable algorithm for
+    determining colors.
+  + Fixed Issue #16: The plot now zooms to fit upon first draw. However,
+    this created issue #21.
+  + Started to add unit tests
+  + Updated fake data generator to accept parameter inputs. Any missing
+    parameter is randomly generated.
+  + The legend for continuous data now fills the entire available vertical
+    area.
+  + Added a color for invalid data points such as NaN or Inf.
+  + Plot range can now be set manually. If it's not set, then it uses the 
+    2nd and 98th percentiles.
+  + Added yellow circle representing the wafer as if the flat did not exist.
+  + Created wm_constants.py to contain various default values such as colors.
+  + Some other changes that I can't remember and foolishly didn't write
+    down.
+
 
 * **1.0.0 / 2014-12-05**
 
