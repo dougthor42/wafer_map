@@ -46,30 +46,65 @@ class Legend(object):
 class ContinuousLegend(wx.Panel):
     """
     Legend for continuous values.
+    
+    Creates a color scale for plotting. The scale fills all available
+    vertical space. By default, 11 ticks are printed.
+    
+    Inputs:
+    -------
+    
+    parent: wxWindow
+        The parent window that the legend belongs to.
+    plot_range: tuple of length 2
+        The plot range that the legend should cover. (min, max). Anything
+        outside this range will be plotted using different colors.
+    high_color: wxColour (wm_HIGH_COLOR)
+        The color that values closer to +inf should be. 
+    low_color: wxColour (wm_LOW_COLOR)
+        The color that values closer to -inf should be.
+    num_ticks: int (wm_TICK_COUNT)
+        How many ticks should be plotted. Minimum of 2.
+    oor_high_color: wxColour (wm_OOR_HIGH_COLOR)
+        This is the color that should be used for any values that are
+        greater than plot_range[1].
+    oor_low_color: wxColour (wm_OOR_LOW_COLOR)
+        This is the color that should be used for any values that are
+        lesser than plot_range[0].
+    
+    
+    Bound Events:
+    -------------
+    
+    EVT_PAINT:
+        Copy MemoryDC buffer to screen.
+    EVT_SIZE:
+        Makes the scale fit to the resized window
+    EVT_LEFT_DOWN:
+        Used for debugging. Prints the pixel and color of the mouse click.
+        Uses the GetPixelPoint() method to grab the color.
+    EVT_RIGHT_DOWN:
+        Used for debugging. Prints the pixel and color of the mouse
+        click. Uses the get_color() method
+    
+    Logic Overview:
+    ---------------
 
-    This is a color gradient with a few select labels. At minumum, the high
-    and low values will be labeled. I plan on allowing the user to set
-    the number of labels.
-
-    Initially, it will be fixed to 3 labels: high, mid, low.
-
-    Here's the logic:
-
-    1.  Upon Init of the Legend, create an instance attribute MemoryDC
-        to store the gradient.
-    2.  Create the gradient using the convienent GradientFillLinear method.
-    3.  We now have a buffer that we can access to pull the color values from
-    4.  To actually paint the item, we have to access the paint event.
-
-        a.  Inside the on_paint method, we create a new temporary PaintDC.
-        b.  Get the size of the instance MemoryDC
-        c.  Copy the instance MemoryDC to the temporary PaintDC
-        d.  Exiting out of the on_paint event destroys the PaintDC which
-            actually draws it on the screen.
-
-    5.  We can now access our instance MemoryDC with the GetPixelPoint method.
-
-    For now, I'm leaving on_size disabled. This may change in the future.
+    1.  Create a wx.MemoryDC and initialize it with an empty bitmap that's
+        the size of the window.
+    2.  Draw items to the MemoryDC.
+    3.  On paint, Blit (copy) the MemoryDC to a PaintDC. At the end of the
+        paint event handler, the PaintDC is destroyed and it's contents
+        are displayed on the screen.
+    4.  Any time an outside function needs to get a color for a value,
+        we access the Gradient class (currently found in wm_utils) - this
+        class calculates the color directly.
+            Previously, I'd get the color by figuring out which pixel the
+            value would be on and then get the pixel's color.
+        
+            This has issues because it limits things like dynamic color
+            changing or multi-color scales.
+    5.  ???
+    6.  Profit.
     """
     def __init__(self,
                  parent,
@@ -82,12 +117,14 @@ class ContinuousLegend(wx.Panel):
                  ):
         """
         __init__(self,
-                 wx.Panel parent,
+                 wxPanel parent,
                  tuple plot_range,
-                 color tuple high_color=(255, 255, 255),
-                 color tuple low_color=(0, 0, 0),
-                 int num_ticks=11,
-                 ) -> wx.Panel
+                 wxColour high_color=wm_HIGH_COLOR,
+                 wxColour low_color=wm_LOW_COLOR,
+                 int num_ticks=wm_TICK_COUNT,
+                 wxColour oor_high_color=wm_OOR_HIGH_COLOR,
+                 wxColour oor_low_color=wm_OOR_LOW_COLOR,
+                 ) -> wxPanel
         """
         wx.Panel.__init__(self, parent)
 
