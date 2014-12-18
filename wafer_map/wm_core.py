@@ -227,6 +227,9 @@ class WaferMapPanel(wx.Panel):
     def on_color_change(self, event):
         """ Update the wafer map canvas with the new color """
         self._clear_canvas()
+        if self.data_type == "continuous":
+            # call the continuous legend on_color_change() code
+            self.legend.on_color_change(event)
         self.draw_die()
         self.draw_wafer_objects()
         self.canvas.Draw(True)
@@ -425,7 +428,7 @@ class WaferMapPanel(wx.Panel):
         Stop making the zoom-out box and execute the zoom
         """
         print("Right mouse up!")
-
+    
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
     """

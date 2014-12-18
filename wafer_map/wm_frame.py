@@ -176,6 +176,16 @@ class WaferMapWindow(wx.Frame):
                                    "&Test",
                                    "Nothing",
                                    )
+        self.mo_high_color = wx.MenuItem(self.mopts,
+                                         wx.ID_ANY,
+                                         "Set &High Color",
+                                         "Choose the color for high values",
+                                         )
+        self.mo_low_color = wx.MenuItem(self.mopts,
+                                        wx.ID_ANY,
+                                        "Set &Low Color",
+                                        "Choose the color for low values",
+                                        )
 
     def _add_menu_items(self):
         """ Appends MenuItems to each menu """
@@ -194,6 +204,8 @@ class WaferMapWindow(wx.Frame):
         self.mview.AppendItem(self.mv_legend)
 
         self.mopts.AppendItem(self.mo_test)
+        self.mopts.AppendItem(self.mo_high_color)
+        self.mopts.AppendItem(self.mo_low_color)
 
     def _add_menus(self):
         """ Appends each menu to the menu bar """
@@ -209,6 +221,8 @@ class WaferMapWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.toggle_crosshairs, self.mv_crosshairs)
         self.Bind(wx.EVT_MENU, self.toggle_outline, self.mv_outline)
         self.Bind(wx.EVT_MENU, self.toggle_legend, self.mv_legend)
+        self.Bind(wx.EVT_MENU, self.change_high_color, self.mo_high_color)
+        self.Bind(wx.EVT_MENU, self.change_low_color, self.mo_low_color)
 
         # If I define an ID to the menu item, then I can use that instead of
         #   and event source:
@@ -242,6 +256,34 @@ class WaferMapWindow(wx.Frame):
     def toggle_legend(self, event):
         """ Call the WaferMapPanel.toggle_legend() method """
         self.panel.toggle_legend()
+
+    def change_high_color(self, event):
+        print("High color menu item clicked!")
+        cd = wx.ColourDialog(self)
+        cd.GetColourData().SetChooseFull(True)
+
+        if cd.ShowModal() == wx.ID_OK:
+            new_color = cd.GetColourData().Colour
+            print("The color {} was chosen!".format(new_color))
+            self.panel.on_color_change({'high': new_color, 'low': None})
+            self.panel.Refresh()
+        else:
+            print("no color chosen :-(")
+        cd.Destroy()
+
+    def change_low_color(self, event):
+        print("Low Color menu item clicked!")
+        cd = wx.ColourDialog(self)
+        cd.GetColourData().SetChooseFull(True)
+
+        if cd.ShowModal() == wx.ID_OK:
+            new_color = cd.GetColourData().Colour
+            print("The color {} was chosen!".format(new_color))
+            self.panel.on_color_change({'high': None, 'low': new_color})
+            self.panel.Refresh()
+        else:
+            print("no color chosen :-(")
+        cd.Destroy()
 
 
 def main():

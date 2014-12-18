@@ -215,6 +215,25 @@ class ContinuousLegend(wx.Panel):
         print("mouse wheel!")
 #        self.left_click(event)
 
+    def on_color_change(self, event):
+        """
+        Change the plot colors by updating self.gradient and by calling
+        self.draw_scale()
+        """
+        if event['low'] is not None:
+            self.low_color = event['low']
+        if event['high'] is not None:
+            self.high_color = event['high']
+        self.gradient = wm_utils.LinearGradient(self.low_color,
+                                                self.high_color)
+
+#        self._clear_scale()
+        self.hbox.Remove(0)
+        self.hbox.Add((self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+
+        self.draw_scale()
+
     def get_color(self, value):
         """
         Gets a color from the gradient.
