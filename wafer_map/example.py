@@ -62,7 +62,7 @@ def main():
                               None,                         # Window Parent
                               wx.ID_ANY,                    # id
                               title=title,                  # Window Title
-                              size=(800 + 16, 600 + 38),    # Size in px
+                              size=(600 + 16, 500 + 38),    # Size in px
                               )
             self.xyd = xyd
             self.wafer_info = wafer_info
@@ -83,7 +83,8 @@ def main():
 
     # Example showing how discrete data looks
     import random
-    discrete_xyd = [(_x, _y, random.randint(1, random.randint(2, 10)))
+    bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
+    discrete_xyd = [(_x, _y, random.choice(bins))
                     for _x, _y, _
                     in xyd]
 
@@ -94,7 +95,7 @@ def main():
                               None,                         # Window Parent
                               wx.ID_ANY,                    # id
                               title=title,                  # Window Title
-                              size=(800 + 16, 600 + 38),    # Size in px
+                              size=(600 + 16, 500 + 38),    # Size in px
                               )
             self.xyd = xyd
             self.wafer_info = wafer_info

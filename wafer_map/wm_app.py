@@ -86,6 +86,7 @@ class WaferMapApp(object):
                                              high_color=self.high_color,
                                              low_color=self.low_color,
                                              plot_range=self.plot_range,
+                                             size=(600, 500)
                                              )
 
         self.frame.Show()

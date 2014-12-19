@@ -10,7 +10,12 @@ Features
 
 - Mouse and keyboard shortcuts!
 - Knows SEMI M1-0302 wafer sizes!
-- Something else!
+- You can change the colors!
+- Zoom in and out!
+- Use it in your own wxPython apps!
+- View the die grid coords, absolute coords, and die value! (but only
+  if you use the standalone app or if your app has a status bar).
+- Center your map on the wafer however you want!
 
 
 Installation
@@ -19,6 +24,25 @@ Installation
 Install from PyPI.
 
 ``pip install wafer_map``
+
+
+What's it Look Like?
+====================
+
+I know that I wouldn't want to use this if I didn't like how it looked, so
+here ya go. Take a look and decide for yourself if you like it.
+
+**Continuous Data being plotted as a stand-alone app:**
+  .. image:: ./img/wm_app_cont.png
+     :scale: 75 %
+
+**Continuous Data as its own panel:**
+  .. image:: ./img/wm_panel_cont.png
+     :scale: 75 %
+
+**Discrete Data as its own panel:**
+  .. figure:: ./img/wm_panel_discrete.png
+     :scale: 75 %
 
 
 Usage

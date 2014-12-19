@@ -46,20 +46,20 @@ class Legend(object):
 class ContinuousLegend(wx.Panel):
     """
     Legend for continuous values.
-    
+
     Creates a color scale for plotting. The scale fills all available
     vertical space. By default, 11 ticks are printed.
-    
+
     Inputs:
     -------
-    
+
     parent: wxWindow
         The parent window that the legend belongs to.
-    plot_range: tuple of length 2
-        The plot range that the legend should cover. (min, max). Anything
+    plot_range: tuple, length 2
+        The plot range that the legend should cover: (min, max). Anything
         outside this range will be plotted using different colors.
     high_color: wxColour (wm_HIGH_COLOR)
-        The color that values closer to +inf should be. 
+        The color that values closer to +inf should be.
     low_color: wxColour (wm_LOW_COLOR)
         The color that values closer to -inf should be.
     num_ticks: int (wm_TICK_COUNT)
@@ -70,11 +70,10 @@ class ContinuousLegend(wx.Panel):
     oor_low_color: wxColour (wm_OOR_LOW_COLOR)
         This is the color that should be used for any values that are
         lesser than plot_range[0].
-    
-    
+
     Bound Events:
     -------------
-    
+
     EVT_PAINT:
         Copy MemoryDC buffer to screen.
     EVT_SIZE:
@@ -85,7 +84,7 @@ class ContinuousLegend(wx.Panel):
     EVT_RIGHT_DOWN:
         Used for debugging. Prints the pixel and color of the mouse
         click. Uses the get_color() method
-    
+
     Logic Overview:
     ---------------
 
@@ -100,7 +99,7 @@ class ContinuousLegend(wx.Panel):
         class calculates the color directly.
             Previously, I'd get the color by figuring out which pixel the
             value would be on and then get the pixel's color.
-        
+
             This has issues because it limits things like dynamic color
             changing or multi-color scales.
     5.  ???
@@ -291,15 +290,12 @@ class ContinuousLegend(wx.Panel):
 #                x_pt = self.grad_w // 2 + self.grad_start_x
 #                point = (x_pt, pxl)
 #                color = self.mdc.GetPixelPoint(point)
-            
+
                 # New Method
                 pxl = wm_utils.rescale(value,
                                        self.plot_range,
                                        (0, 1))
                 color = self.gradient.get_color(pxl)
-#                color = wm_utils.linear_gradient(self.low_color,
-#                                                 self.high_color,
-#                                                 pxl)
                 color = wx.Colour(*color)
             except ValueError:
                 color = self.invalid_color
@@ -356,24 +352,16 @@ class ContinuousLegend(wx.Panel):
     def set_sizes(self):
         """
         Sets various instance attributes for item sizes and locations.
-        """
-        # Set various sizes, some of which are based on things like the
-        # text height:
-        #       self.mdc.GetTextExtent("Longest String")
-        # or the client size:
-        #       self.GetClientSize().
-        # We need to move the gradient down a bit so that the top and bottom
-        # labels are not cut off.
-        # TODO: Replace these contants with code that finds the sizes
-        # These are in a specific order. Do not change!
         
+        Uses the current client size and Text Height to set set some items.
+        """
+        # These are in a specific order. Do not change!
         # First determine some fixed items
         self.text_h = self.mdc.GetTextExtent("A")[1]
-        self.grad_w = 30            # total gradient width (px)
-#        self.grad_h = 500           # total gradient height (px)
+        self.grad_w = 30
         self.grad_h = self.parent.GetClientSize()[1] - self.text_h
-        self.tick_w = 20            # tick mark length
-        self.spacer = 5             # spacer speration between items
+        self.tick_w = 20
+        self.spacer = 5
         self.grad_start_y = self.text_h / 2
         self.grad_end_y = self.grad_start_y + self.grad_h
 
@@ -438,8 +426,6 @@ class ContinuousLegend(wx.Panel):
                                self.grad_w,
                                self.dc_h - self.grad_end_y - 2)
 
-
-
         # Calculate and draw the tickmarks.
         self.draw_ticks(self.ticks)
 
@@ -469,9 +455,6 @@ class ContinuousLegend(wx.Panel):
                                    (self.grad_start_y, self.grad_end_y),
                                    (1, 0))
             color = self.gradient.get_color(val)
-#            color = wm_utils.linear_gradient(self.low_color,
-#                                             self.high_color,
-#                                             val)
             self.mdc.SetPen(wx.Pen(color))
             self.mdc.SetBrush(wx.Brush(color))
             self.mdc.DrawRectangle(self.grad_start_x,
@@ -625,7 +608,6 @@ class LegendOverlay(FloatCanvas.Text):
                                   Underlined=Underlined,
                                   Font=Font)
 
-    # TODO: Change this so that it creates the custom legend
     def _Draw(self, dc, Canvas):
         """
         _Draw method for Overlay
