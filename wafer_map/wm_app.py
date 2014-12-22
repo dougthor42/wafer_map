@@ -65,7 +65,6 @@ class WaferMapApp(object):
                  ) -> object
         """
         self.app = wx.App()
-#        self.app = wit.InspectableApp()
 
         self.wafer_info = wm_info.WaferInfo(die_size,
                                             center_xy,
@@ -95,21 +94,19 @@ class WaferMapApp(object):
 
 def main():
     """ Main Code """
-#    raise RuntimeError("This module is not meant to be run by itself.")
     wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=5.4,
                                                        die_y=3.6,
                                                        dia=150,
                                                        edge_excl=5,
                                                        flat_excl=5,
-                                                       x_offset=0.5,
+                                                       x_offset=0,
                                                        y_offset=0.5,
                                                        )
 
     import random
-    num_discrete_values = random.randint(2, 10)
-#    num_discrete_values = 3
-    discrete_xyd = [(grid_x, grid_y, random.randint(1, num_discrete_values))
-                    for grid_x, grid_y, _
+    bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
+    discrete_xyd = [(_x, _y, random.choice(bins))
+                    for _x, _y, _
                     in xyd]
 
     discrete = False
@@ -127,6 +124,7 @@ def main():
                 wafer_info.edge_excl,
                 wafer_info.flat_excl,
                 data_type=dtype,
+#                plot_range=(0.0, 75.0**2),
                 )
 
 

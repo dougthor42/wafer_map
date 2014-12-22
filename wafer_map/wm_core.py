@@ -90,6 +90,7 @@ class WaferMapPanel(wx.Panel):
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
+        # TODO: Convert PyTimer to Timer and wx.EVT_TIMER. See wxPytho demo.
         self.move_timer = wx.PyTimer(self.on_move_timer)
         self.init_ui()
 
@@ -140,6 +141,7 @@ class WaferMapPanel(wx.Panel):
         for more info.
         """
         # Canvas Events
+        print("Binding events...")
         self.canvas.Bind(FloatCanvas.EVT_MOTION, self.mouse_move)
         self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
@@ -248,6 +250,11 @@ class WaferMapPanel(wx.Panel):
         """ Mouse wheel event for Zooming """
         # Get the event position and how far the wheel moved
         speed = event.GetWheelRotation()
+        pos = event.GetPosition()
+
+        # If the mouse is outside the floatcanvas area, do nothing
+        if pos[0] < 0 or pos[1] < 0:
+            return
 
         # calculate a zoom factor based on the wheel movement
         #   Allows for zoom acceleration: fast wheel move = large zoom.
@@ -256,9 +263,12 @@ class WaferMapPanel(wx.Panel):
         factor = (abs(speed) * wm_ZOOM_FACTOR)**sign
 
         self.canvas.Zoom(factor,
-                         center=event.Position,
+                         center=pos,
                          centerCoords="pixel",
+#                         center=event.GetCoords(),
+#                         centerCoords="world",
                          keepPointInPlace=True,
+#                         keepPointInPlace=False,
                          )
 
     def on_move_timer(self, event=None):
@@ -428,7 +438,7 @@ class WaferMapPanel(wx.Panel):
         Stop making the zoom-out box and execute the zoom
         """
         print("Right mouse up!")
-    
+
 
 def draw_wafer_outline(dia=150, excl=5, flat=5):
     """
