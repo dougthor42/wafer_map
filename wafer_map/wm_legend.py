@@ -576,7 +576,7 @@ class DiscreteLegend(wx.Panel):
         Recreate the label: color dictionary and send the event to the
         parent panel.
         """
-        print(event.GetId())
+#        print(event.GetId())
         self.colors[event.GetId()] = event.GetValue().Get()
         self.create_color_dict()
         # Send the event to the parent:

@@ -72,6 +72,7 @@ class WaferMapPanel(wx.Panel):
                  ) -> wx.Panel
         """
         wx.Panel.__init__(self, parent)
+        self.parent = parent
         self.xyd = xyd
         self.xyd_dict = self.xyd_to_dict(self.xyd)      # data duplication!
         self.wafer_info = wafer_info
@@ -141,13 +142,17 @@ class WaferMapPanel(wx.Panel):
         for more info.
         """
         # Canvas Events
-        print("Binding events...")
         self.canvas.Bind(FloatCanvas.EVT_MOTION, self.mouse_move)
         self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
         self.canvas.Bind(wx.EVT_PAINT, self.on_first_paint)
-        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
+        # XXX: Binding the EVT_LEFT_DOWN seems to cause Issue #24.
+        #      What seems to happen is: If I bind EVT_LEFT_DOWN, then the
+        #      parent panel or application can't set focus to this
+        #      panel, which prevents the EVT_MOUSEWHEEL event from firing
+        #      properly.
+#        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
         self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
         self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
 
@@ -248,12 +253,12 @@ class WaferMapPanel(wx.Panel):
 
     def mouse_wheel(self, event):
         """ Mouse wheel event for Zooming """
-        # Get the event position and how far the wheel moved
         speed = event.GetWheelRotation()
         pos = event.GetPosition()
+        x, y, w, h = self.canvas.GetClientRect()
 
-        # If the mouse is outside the floatcanvas area, do nothing
-        if pos[0] < 0 or pos[1] < 0:
+        # If the mouse is outside the FloatCanvas area, do nothing
+        if pos[0] < 0 or pos[1] < 0 or pos[0] > x + w or pos[1] > y + h:
             return
 
         # calculate a zoom factor based on the wheel movement
@@ -268,7 +273,6 @@ class WaferMapPanel(wx.Panel):
 #                         center=event.GetCoords(),
 #                         centerCoords="world",
                          keepPointInPlace=True,
-#                         keepPointInPlace=False,
                          )
 
     def on_move_timer(self, event=None):
@@ -420,6 +424,8 @@ class WaferMapPanel(wx.Panel):
         Start making the zoom-to-box box.
         """
         print("Left mouse down!")
+        parent = wx.GetTopLevelParent(self)
+        wx.PostEvent(self.parent, event)
 
     def mouse_left_up(self, event):
         """

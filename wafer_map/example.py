@@ -82,18 +82,17 @@ def add_to_existing_app(xyd, wafer_info):
             self.wafer_info = wafer_info
 
             # Add a status bar if you want to
-#            self.CreateStatusBar()
+            self.CreateStatusBar()
 
             # Bind events
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
-#            self.Bind(wx.EVT_MOUSEWHEEL, self.temp)
 
             # Create some other dummy stuff for the example
-#            self.listbox = wx.ListBox(self,
-#                                      wx.ID_ANY,
-#                                      choices=['A', 'B', 'C', 'D'],
-#                                      )
-#            self.button = wx.Button(self, wx.ID_ANY, label="Big Button!")
+            self.listbox = wx.ListBox(self,
+                                      wx.ID_ANY,
+                                      choices=['A', 'B', 'C', 'D'],
+                                      )
+            self.button = wx.Button(self, wx.ID_ANY, label="Big Button!")
 
             # Create the wafer map
             self.panel = wm_core.WaferMapPanel(self,
@@ -101,23 +100,17 @@ def add_to_existing_app(xyd, wafer_info):
                                                self.wafer_info)
 
             # set our layout
-#            self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-#            self.vbox = wx.BoxSizer(wx.VERTICAL)
-#            self.vbox.Add(self.button, 1, wx.EXPAND)
-#            self.vbox.Add(self.panel, 1, wx.EXPAND)
-#            self.hbox.Add(self.listbox, 1, wx.EXPAND)
-#            self.hbox.Add(self.vbox, 1, wx.EXPAND)
-#            self.SetSizer(self.hbox)
+            self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+            self.vbox = wx.BoxSizer(wx.VERTICAL)
+
+            self.vbox.Add(self.panel, 1, wx.EXPAND)
+            self.vbox.Add(self.button, 1, wx.EXPAND)
+            self.hbox.Add(self.listbox, 1, wx.EXPAND)
+            self.hbox.Add(self.vbox, 1, wx.EXPAND)
+            self.SetSizer(self.hbox)
 
         def OnQuit(self, event):
             self.Destroy()
-
-        def temp(self, event):
-            print("mouse wheel")
-            print(event.GetEventObject())
-            # This kinda works, but it uses the global positions instead
-            # of the FloatCanvas positon :-(
-            self.panel.mouse_wheel(event)
 
     frame = ExampleFrame("Called as a panel in your own app!", xyd, wafer_info)
     frame.Show()
@@ -152,9 +145,9 @@ def main():
     # Generate some fake data
     wafer_info, xyd = gen_fake_data.generate_fake_data()
 
-#    standalone_app(xyd, wafer_info)
+    standalone_app(xyd, wafer_info)
     add_to_existing_app(xyd, wafer_info)
-#    discrete_data_example(xyd, wafer_info)
+    discrete_data_example(xyd, wafer_info)
 
 if __name__ == "__main__":
     main()
