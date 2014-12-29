@@ -28,17 +28,9 @@ import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-# check to see if we can import from the dev folder, otherwise import
-# from the standard install folder, site-packages
-if 'site-packages' in __file__:
-    from wafer_map import wm_legend
-    from wafer_map import wm_utils
-    from wafer_map.wm_constants import *
-else:
-    print("Running wm_core from Development Location")
-    import wm_legend
-    import wm_utils
-    from wm_constants import *
+import wm_legend
+import wm_utils
+from wm_constants import *
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)

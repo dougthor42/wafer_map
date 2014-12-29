@@ -21,18 +21,9 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import wx
 
-# check to see if we can import local, otherwise import absolute
-print(__file__)
-if 'site-packages' in __file__:
-    print("we're being run from site-pkg")
-    from wafer_map import gen_fake_data
-    from wafer_map import wm_core
-    from wafer_map import wm_app
-else:
-    print("running in dev mode")
-    import gen_fake_data
-    import wm_core
-    import wm_app
+import gen_fake_data
+import wm_core
+import wm_app
 
 __author__ = "Douglas Thor"
 __version__ = "v0.4.0"

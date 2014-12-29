@@ -159,7 +159,7 @@ def _GradientFillLinear(rect,
 
     I think that perhaps this function will just calculate the color for
     a given 0-1 value between initial_color and dest_color on the fly.
-    
+
     I'm an idiot! This is just linear algebra, I can solve this!
     """
     pass
@@ -370,16 +370,14 @@ def rescale_clip(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     else:
         return result
 
-print("Dev file!")
-
 if __name__ == "__main__":
     print("0 and 1")
     print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0))
     print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 1))
-    
+
     print("\n0.5:")
     print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0.5))
-    
+
     print("\n0.25")
     print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0.25))
     print("\n0.75")
@@ -392,5 +390,5 @@ if __name__ == "__main__":
                                (0, 0, 255),
                                ],
                               0.5))
-    
+
     print(linear_gradient((0, 0, 0), (255, 255, 255), 1.5))

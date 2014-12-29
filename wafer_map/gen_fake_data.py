@@ -19,18 +19,9 @@ from __future__ import print_function, division, absolute_import
 import math
 import random
 
-# check to see if we can import local, otherwise import absolute
-print(__file__)
-if 'site-packages' in __file__:
-    print("we're being run from site-pkg")
-    from wafer_map import wm_info
-    from wafer_map import wm_utils
-    from wafer_map.wm_constants import *
-else:
-    print("running in dev mode")
-    import wm_info
-    import wm_utils
-    from wm_constants import *
+import wm_info
+import wm_utils
+from wm_constants import *
 
 
 def generate_fake_data(**kwargs):

@@ -18,15 +18,8 @@ from __future__ import print_function, division, absolute_import
 #from __future__ import unicode_literals
 import wx
 
-# check to see if we can import from the dev folder, otherwise import
-# from the standard install folder, site-packages
-if 'site-packages' in __file__:
-    from wafer_map import wm_core
-    from wafer_map.wm_constants import *
-else:
-    print("Running wm_frame from Development Location")
-    import wm_core
-    from wm_constants import *
+import wm_core
+from wm_constants import *
 
 
 __author__ = "Douglas Thor"

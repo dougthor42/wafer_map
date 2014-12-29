@@ -181,6 +181,9 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.4 / 2014-12-29**
+
+  + Changed import statements to not be weird.
 
 * **1.0.3 / 2014-12-17**
 

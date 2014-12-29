@@ -21,15 +21,8 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 import colorsys
 
-# check to see if we can import from the dev folder, otherwise import
-# from the standard install folder, site-packages
-if 'site-packages' in __file__:
-    from wafer_map import wm_utils
-    from wafer_map.wm_constants import *
-else:
-    print("Running wm_legend from Development Location")
-    import wm_utils
-    from wm_constants import *
+import wm_utils
+from wm_constants import *
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 
