@@ -42,6 +42,7 @@ class WaferMapPanel(wx.Panel):
 
     Usage: WaferMap(parent, xyd, wafer_info)
         xyd :: List of (x_coord, y_coord, data) tuples
+
         wafer_info :: instance of the WaferInfo class
     """
     def __init__(self,
