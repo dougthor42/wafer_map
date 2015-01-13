@@ -47,9 +47,9 @@ def generate_fake_data(**kwargs):
 
     Examples of Offsets:
     --------------------
-    
+
     The ``X`` denotes the center of the wafer::
-    
+
       x_offset = 0          x_offset = 0
       y_offset = 0          y_offset = 0.5
       |-----------|         |-----------|
@@ -57,7 +57,7 @@ def generate_fake_data(**kwargs):
       |     X     |         |           |
       |           |         |           |
       |-----------|         |-----X-----|
-      
+
       x_offset = 0.5        x_offset = 0.5
       y_offset = 0          y_offset = 0.5
       |-----------|         |-----------|
@@ -106,6 +106,7 @@ def generate_fake_data(**kwargs):
                       'flat_excl': random.choice(excl_list),
                       'x_offset': random.choice(offset_list),
                       'y_offset': random.choice(offset_list),
+                      'grid_center': None
                       }
 
     # parse the keyword arguements, asigning defaults if not found.
@@ -120,6 +121,7 @@ def generate_fake_data(**kwargs):
     flat_excl = kwargs['flat_excl']
     x_offset = kwargs['x_offset']
     y_offset = kwargs['y_offset']
+    grid_center = kwargs['grid_center']
 
     die_size = (die_x, die_y)
 
@@ -138,7 +140,8 @@ def generate_fake_data(**kwargs):
     grid_max_y = 2 * int(math.ceil(dia / die_y))
 
     # 2. Determine the centerpoint
-    grid_center = (grid_max_x/2 + x_offset, grid_max_y/2 + y_offset)
+    if grid_center is None:
+        grid_center = (grid_max_x/2 + x_offset, grid_max_y/2 + y_offset)
     print("Offsets: {}".format((x_offset, y_offset)))
 
     # This could be more efficient
