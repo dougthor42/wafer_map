@@ -327,7 +327,7 @@ def max_dist_sqrd(center, size):
     return dist
 
 
-def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
+def rescale(x, orig_scale, new_scale=(0, 1)):
     """
     Rescales x (which was part of scale original_min to original_max)
     to run over a range new_min to new_max such
@@ -341,6 +341,9 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     rescale(27, (0, 200), (0, 5)) = 0.675
     rescale(1.5, (0, 1), (0, 10)) = 15.0
     """
+    original_min, original_max = orig_scale
+    new_min, new_max = new_scale
+
     part_a = x * (new_max - new_min)
     part_b = original_min * new_max - original_max * new_min
     denominator = original_max - original_min
@@ -351,7 +354,7 @@ def rescale(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     return float(result)
 
 
-def rescale_clip(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
+def rescale_clip(x, orig_scale, new_scale=(0, 1)):
     """
     Same as rescale, but also clips the new data. Any result that is
     below new_min or above new_max is listed as new_min or
@@ -362,6 +365,9 @@ def rescale_clip(x, (original_min, original_max), (new_min, new_max)=(0, 1)):
     rescale_clip(15, (10, 20), (0, 1)) = 0.5
     rescale_clip(25, (10, 20), (0, 1)) = 1
     """
+    original_min, original_max = orig_scale
+    new_min, new_max = new_scale
+
     result = rescale(x, (original_min, original_max), (new_min, new_max))
     if result > new_max:
         return new_max
