@@ -34,6 +34,7 @@ from wm_constants import *
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
+# TODO: Add function to update wafer map with new die size and the like.
 
 
 class WaferMapPanel(wx.Panel):
@@ -417,6 +418,7 @@ class WaferMapPanel(wx.Panel):
         Start making the zoom-to-box box.
         """
         print("Left mouse down!")
+        # TODO: Look into what I was doing here. Why no 'self' on parent?
         parent = wx.GetTopLevelParent(self)
         wx.PostEvent(self.parent, event)
 
