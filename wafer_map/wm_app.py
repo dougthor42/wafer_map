@@ -84,14 +84,14 @@ class WaferMapApp(object):
 
 def main():
     """ Main Code """
-    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=2.43,
-                                                       die_y=3.3,
+    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=4.43,
+                                                       die_y=6.3,
                                                        dia=150,
                                                        edge_excl=4.5,
                                                        flat_excl=4.5,
                                                        x_offset=0,
                                                        y_offset=0.5,
-                                                       grid_center=(29, 21),
+                                                       grid_center=(29, 21.5),
                                                        )
 
     import random
