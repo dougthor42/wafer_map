@@ -22,14 +22,38 @@ from colour import Color
 
 class Gradient(object):
     """
-    Base class for all gradients
+    Base class for all gradients.
+
+    Currently does nothing.
     """
     pass
 
 
 class LinearGradient(Gradient):
     """
-    Linear gradient between two colors
+    Linear gradient between two colors.
+
+    Parameters:
+    -----------
+    initial_color :
+        The starting color for the linear gradient.
+
+    dest_color :
+        sdfsd
+
+    Attributes:
+    -----------
+    self.initial_color :
+        asad
+
+    self.dest_color :
+        asdads
+
+    Methods:
+    --------
+    get_color(self, value) :
+        Returns a color that is ``value`` between self.initial_color and
+        self.final_color
     """
     def __init__(self, initial_color, dest_color):
         self.initial_color = initial_color
@@ -42,9 +66,32 @@ class LinearGradient(Gradient):
 
 class PolylinearGradient(Gradient):
     """
-    Polylinear Gradient between n colors.
+    Polylinear Gradient between ``n`` colors.
 
-    Acts as a LinearGradient if n == 2
+    Acts as a LinearGradient if ``n == 2``.
+
+    Parameters:
+    -----------
+    colors : iterable
+        A list or tuple of RGB or RGBa tuples (or wx.Colour objects). Each
+        color in this list is a vertex of the polylinear gradient.
+
+    Attributes:
+    -----------
+    self.colors : iterable
+        The list of colors (or wx.Colour objects) which are the verticies
+        of the poly gradient.
+
+    self.initial_color : tuple or wx.Colour object
+        The starting color of the gradient.
+
+    self.dest_color : tuple or wx.Colour object
+        The final color of the gradient.
+
+    Methods:
+    --------
+    get_color(self, value):
+        Returns a color that is ``value`` along the gradient.
     """
     def __init__(self, *colors):
         self.colors = colors
@@ -59,6 +106,8 @@ class PolylinearGradient(Gradient):
 class BeizerGradient(Gradient):
     """
     Beizer curve gradient between 3 colors.
+
+    Not implemented.
     """
     def __init__(self, initial_color, arc_color, dest_color):
         self.initial_color = initial_color
@@ -336,6 +385,23 @@ def frange(start, stop, step):
 def coord_to_grid(coord, die_size, grid_center):
     """
     Converts a panel coordinate to a grid value.
+
+    Parameters:
+    -----------
+    coord : tuple
+        A 2-tuple of (x, y) floating point values for the panel coordinate
+
+    die_size : tuple
+        A 2-tuple of (x, y) floating point values for the die size
+
+    grid_center : tuple
+        A 2-tuple of (grid_x, grid_y) values that represents the origin of
+        the wafer in grid coordinates.
+
+    Returns:
+    --------
+    (grid_x, grid_y) : tuple
+        The grid coordinates. Also known as (column, row).
     """
     # TODO: seems have a error with negative 0 grid values.
     grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
@@ -373,13 +439,40 @@ def nanpercentile(a, percentile):
 
 def max_dist_sqrd(center, size):
     """
-    Calcualtes the largest distance from the origin for a rectangle of
-    size (x, y), where the center of the rectangle's coordinates are known.
+    Calculates the squared distance from the orgin (0, 0) to the
+    farthest corner of a rectangle, where the center of the rectangle's
+    coordinates are known.
+
+    Does not take the square of the distance for the sake of speed.
+
     If the rectangle's center is in the Q1, then the upper-right corner is
     the farthest away from the origin. If in Q2, then the upper-left corner
     is farthest away. Etc.
-    Returns the magnitude of the largest distance squared.
-    Does not include the Sqrt function for sake of speed.
+
+    Returns the magnitude of the largest distance.
+
+    Used primarily for calculating if a die has any part outside of wafer's
+    edge exclusion.
+
+    Parameters:
+    -----------
+    center : tuple of length 2, numerics
+        (x, y) tuple defining the rectangle's center coordinates
+
+    size : tuple of length 2
+        (x, y) tuple that defines the size of the rectangle.
+
+    Returns:
+    --------
+    dist : numeric
+        The distance from the origin (0, 0) to the farthest corner of the
+        rectangle.
+
+    See Also:
+    ---------
+    max_dist :
+        Calculates the distance from the orgin (0, 0) to the
+        farthest corner of a rectangle.
     """
     half_x = size[0]/2.
     half_y = size[1]/2.
@@ -393,6 +486,8 @@ def max_dist_sqrd(center, size):
 
 def rescale(x, orig_scale, new_scale=(0, 1)):
     """
+    Rescales x to run over a new range.
+
     Rescales x (which was part of scale original_min to original_max)
     to run over a range new_min to new_max such
     that the value x maintains position on the new scale new_min to new_max.
@@ -400,10 +495,30 @@ def rescale(x, orig_scale, new_scale=(0, 1)):
 
     Default new scale range is 0 to 1 inclusive.
 
+    Parameters:
+    -----------
+    x : numeric
+        The value to rescale.
+
+    orig_scale : sequence of numerics, length 2
+        The (min, max) value that ``x`` typically ranges over.
+
+    new_scale : sequence of numerics, length 2, optional
+        The new (min, max) value that the rescaled ``x`` should reference
+
+    Returns:
+    --------
+    result : float
+        The rescaled ``x`` value
+
     Examples:
-    rescale(5, (10, 20), (0, 1)) = -0.5
-    rescale(27, (0, 200), (0, 5)) = 0.675
-    rescale(1.5, (0, 1), (0, 10)) = 15.0
+    ---------
+    >>> rescale(5, (10, 20), (0, 1))
+    -0.5
+    >>> rescale(27, (0, 200), (0, 5))
+    0.675
+    >>> rescale(1.5, (0, 1), (0, 10))
+    15.0
     """
     original_min, original_max = orig_scale
     new_min, new_max = new_scale
