@@ -17,6 +17,7 @@ Options:
 from __future__ import print_function, division#, absolute_import
 #from __future__ import unicode_literals
 import numpy as np
+from colour import Color
 
 
 class Gradient(object):
@@ -71,28 +72,91 @@ class BeizerGradient(Gradient):
 
 def linear_gradient(initial_color, dest_color, value):
     """
-    Find the color that is value between initial and dest.
+    Find the color that is ``value`` between initial_color and dest_color.
 
-    Colors are either 3-tuples or 4-tuples.
+    Parameters:
+    -----------
+    initial_color : tuple
+        A 3- or 4-tuple of RGB or RGBa values representing the starting
+        color for the gradient. Each color channel should be
+        in the range 0-255 inclusive.
 
-    value ranges from 0 to 1 inclusive.
+    dest_color : tuple
+        A 3- or 4-tuple of RGB or RGBa values representing the ending
+        color for the gradient. Each color channel should be
+        in the range 0-255.
+
+    value : float
+        A floating point number from 0 to 1 inclusive that determines how
+        far along the color gradient the returned color should be. A value
+        of ``0`` returns ``initial_color`` while a value of ``1`` returns
+        ``dest_color``.
+
+    Returns:
+    --------
+    (r, g, b) : tuple
+        A 3-tuple representing the color that is ``value * 100`` percent
+        along the gradient. Each color channel is 0-255 inclusive.
+
+    Implementation Details:
+    -----------------------
+    All of this package works in the RGB colorspace. However, as is seen in
+    https://www.youtube.com/watch?v=LKnqECcg6Gw and
+    https://www.youtube.com/watch?v=sPiWg5jSoZI, the RGB color space does
+    not blend correctly with standard averaging, which is what I do here.
+
+    I haven't found any source for this, but experimentation has shown that
+    the HSL colorspace *does* blend correctly with linear averaging. So
+    I use the ``colour`` module to convert RGB to HSL. After converting, I
+    take the linear average of my two colors (via ``rescale``) and then
+    convert back to RGB.
+
+    Examples:
+    ---------
+    Halfway between Red and Green is Yellow. This really should return
+    (255, 255, 0), but it's close enough for now.
+
+    >>> linear_gradient((255, 0, 0), (0, 255, 0), 0.5)
+    (254, 255, 0)
+
+    Red and Blue mix to make green. Standard Rainbow
+
+    >>> linear_gradient((255, 0, 0), (0, 0, 255), 0.5)
+    (0, 255, 0)
+
+    75% of the from Red to Green is Orange.
+
+    >>> linear_gradient((255, 0, 0), (0, 255, 0), 0.75)
+    (127, 255, 0)
     """
     if value <= 0:
         return initial_color
     elif value >= 1:
         return dest_color
 
-    r1 = initial_color[0]
-    g1 = initial_color[1]
-    b1 = initial_color[2]
+    # Old way, linear averaging.
+#    r1, g1, b1 = (_c for _c in initial_color)
+#    r2, g2, b2 = (_c for _c in dest_color)
+#    r = int(rescale(value, (0, 1), (r1, r2)))
+#    g = int(rescale(value, (0, 1), (g1, g2)))
+#    b = int(rescale(value, (0, 1), (b1, b2)))
 
-    r2 = dest_color[0]
-    g2 = dest_color[1]
-    b2 = dest_color[2]
+    # Using the ``colour`` package
+    # Convert from 0-255 to 0-1 and instance the Color class
+    c1 = Color(rgb=(_c / 255 for _c in initial_color))
+    c2 = Color(rgb=(_c / 255 for _c in dest_color))
 
-    r = int(rescale(value, (0, 1), (r1, r2)))
-    g = int(rescale(value, (0, 1), (g1, g2)))
-    b = int(rescale(value, (0, 1), (b1, b2)))
+    # extract the HSL values
+    h1, s1, l1 = c1.hsl
+    h2, s2, l2 = c2.hsl
+
+    # Perform the linear interpolation
+    h = rescale(value, (0, 1), (h1, h2))
+    s = rescale(value, (0, 1), (s1, s2))
+    l = rescale(value, (0, 1), (l1, l2))
+
+    # Convert back to 0-255 for wxPython
+    r, g, b = (int(_c * 255) for _c in Color(hsl=(h, s, l)).rgb)
 
     return (r, g, b)
 

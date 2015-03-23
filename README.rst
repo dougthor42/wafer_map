@@ -184,6 +184,9 @@ Changelog
 * **1.0.5 / TBD**
 
   + Added optional "grid_center" input to gen_fake_data
+  + Fixed Issue #28: Updated wm_utils.linear_gradient to act on HSL data
+    rather than on RGB data.
+  + Updated docstring for wm_utils.linear_gradient
 
 * **1.0.4 / 2014-12-29**
 

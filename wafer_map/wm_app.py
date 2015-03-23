@@ -74,6 +74,8 @@ class WaferMapApp(object):
                                              data_type=self.data_type,
                                              high_color=self.high_color,
                                              low_color=self.low_color,
+#                                             high_color=wx.Colour(255, 0, 0),
+#                                             low_color=wx.Colour(0, 0, 255),
                                              plot_range=self.plot_range,
                                              size=(600, 500)
                                              )
