@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map"],
-    version="1.0.4",
+    version="1.0.5",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -77,7 +77,7 @@ The easiest way to use this to to:
 
     The input parameters for WaferMapApp are:
 
-      :die_size:    The die size in (x, y). Units are mm. 
+      :die_size:    The die size in (x, y). Units are mm.
       :center_xy:   The grid (x, y) coordinate that represents the physical
                     center of the wafer.
       :dia:         The wafer diameter. Units are in mm.
@@ -86,7 +86,7 @@ The easiest way to use this to to:
       :flat_excl:   The exclusion distance measured from the wafer flat.
                     Units are in mm. Cannot be less than ``edge_excl``.
 
-3.  An image should appear. Yay! Play around with it: middle-click+drag to 
+3.  An image should appear. Yay! Play around with it: middle-click+drag to
     pan, scroll wheel to zoom. See "Keyboard Shortcuts and Mouse Usage"
     section.
 
@@ -184,6 +184,17 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.5 / 2015-03-30**
+
+  + Added optional "grid_center" input to gen_fake_data
+  + Fixed Issue #28: Updated wm_utils.linear_gradient to act on HSL data
+    rather than on RGB data.
+  + Updated documentation for items in wm_utils.
+  + Added option to plot the die centers as small red dots.
+
+* **1.0.4 / 2014-12-29**
+
+  + Changed import statements to not be weird.
 
 * **1.0.3 / 2014-12-17**
 
@@ -203,7 +214,7 @@ Changelog
   + The legend for continuous data now fills the entire available vertical
     area.
   + Added a color for invalid data points such as NaN or Inf.
-  + Plot range can now be set manually. If it's not set, then it uses the 
+  + Plot range can now be set manually. If it's not set, then it uses the
     2nd and 98th percentiles.
   + Added yellow circle representing the wafer as if the flat did not exist.
   + Created wm_constants.py to contain various default values such as colors.

@@ -42,6 +42,7 @@ class WaferMapApp(object):
                  high_color=wm_HIGH_COLOR,
                  low_color=wm_LOW_COLOR,
                  plot_range=None,
+                 plot_die_centers=False,
                  ):
         """
         __init__(self,
@@ -67,6 +68,7 @@ class WaferMapApp(object):
         self.high_color = high_color
         self.low_color = low_color
         self.plot_range = plot_range
+        self.plot_die_centers = plot_die_centers
 
         self.frame = wm_frame.WaferMapWindow("Wafer Map",
                                              self.xyd,
@@ -77,7 +79,8 @@ class WaferMapApp(object):
 #                                             high_color=wx.Colour(255, 0, 0),
 #                                             low_color=wx.Colour(0, 0, 255),
                                              plot_range=self.plot_range,
-                                             size=(600, 500)
+                                             size=(600, 500),
+                                             plot_die_centers=self.plot_die_centers,
                                              )
 
         self.frame.Show()
@@ -118,6 +121,7 @@ def main():
                 wafer_info.flat_excl,
                 data_type=dtype,
 #                plot_range=(0.0, 75.0**2),
+                plot_die_centers=True,
                 )
 
 

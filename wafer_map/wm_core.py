@@ -55,6 +55,7 @@ class WaferMapPanel(wx.Panel):
                  high_color=wm_HIGH_COLOR,
                  low_color=wm_LOW_COLOR,
                  plot_range=None,
+                 plot_die_centers=False,
                  ):
         """
         __init__(self,
@@ -82,6 +83,7 @@ class WaferMapPanel(wx.Panel):
         self.high_color = high_color
         self.low_color = low_color
         self.plot_range = plot_range
+        self.plot_die_centers = plot_die_centers
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -110,6 +112,8 @@ class WaferMapPanel(wx.Panel):
 
         # Draw the die and wafer objects (outline, crosshairs) on the canvas
         self.draw_die()
+        if self.plot_die_centers:
+            self.draw_die_center()
         self.draw_wafer_objects()
 
         # Bind events to the canvas
@@ -210,6 +214,24 @@ class WaferMapPanel(wx.Panel):
                                      FillColor=color,
                                      )
 
+    def draw_die_center(self):
+        """ Plots the die centers as a small dot """
+        for die in self.xyd:
+            # Determine the die's lower-left coordinate
+            lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
+                                                           self.die_size,
+                                                           self.grid_center)
+
+            # then adjust back to the die center
+            lower_left_coord = (lower_left_coord[0] + self.die_size[0] / 2,
+                                lower_left_coord[1] + self.die_size[1] / 2)
+
+            circ = FloatCanvas.Circle(lower_left_coord,
+                                      0.5,
+                                      FillColor=wx.RED,
+                                      )
+            self.canvas.AddObject(circ)
+
     def draw_wafer_objects(self):
         """
         Draw and Add the various wafer objects
@@ -232,6 +254,8 @@ class WaferMapPanel(wx.Panel):
             # call the continuous legend on_color_change() code
             self.legend.on_color_change(event)
         self.draw_die()
+        if self.plot_die_centers:
+            self.draw_die_center()
         self.draw_wafer_objects()
         self.canvas.Draw(True)
 #        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)

@@ -181,12 +181,13 @@ Current capabilities:
 
 Changelog
 =========
-* **1.0.5 / TBD**
+* **1.0.5 / 2015-03-30**
 
   + Added optional "grid_center" input to gen_fake_data
   + Fixed Issue #28: Updated wm_utils.linear_gradient to act on HSL data
     rather than on RGB data.
   + Updated documentation for items in wm_utils.
+  + Added option to plot the die centers as small red dots.
 
 * **1.0.4 / 2014-12-29**
 
