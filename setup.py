@@ -191,6 +191,8 @@ Changelog
     rather than on RGB data.
   + Updated documentation for items in wm_utils.
   + Added option to plot the die centers as small red dots.
+  + Added option to have the wafer map use a constant number of items for
+    discrete legend.
 
 * **1.0.4 / 2014-12-29**
 

@@ -56,6 +56,7 @@ class WaferMapPanel(wx.Panel):
                  low_color=wm_LOW_COLOR,
                  plot_range=None,
                  plot_die_centers=False,
+                 discrete_legend_values=None,
                  ):
         """
         __init__(self,
@@ -84,6 +85,7 @@ class WaferMapPanel(wx.Panel):
         self.low_color = low_color
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
+        self.discrete_legend_values = discrete_legend_values
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -166,7 +168,10 @@ class WaferMapPanel(wx.Panel):
         Might change to 5th percentile and 95th percentile.
         """
         if self.data_type == "discrete":
-            unique_items = list({_die[2] for _die in self.xyd})
+            if self.discrete_legend_values is None:
+                unique_items = list({_die[2] for _die in self.xyd})
+            else:
+                unique_items = self.discrete_legend_values
             self.legend = wm_legend.DiscreteLegend(self,
                                                    labels=unique_items,
                                                    colors=None,
