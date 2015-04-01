@@ -470,7 +470,7 @@ class WaferMapPanel(wx.Panel):
         print("Right mouse up!")
 
 
-def draw_wafer_outline(dia=150, excl=5, flat=5):
+def draw_wafer_outline(dia=150, excl=5, flat=None):
     """
     Draws a wafer outline for a given radius, including any edge exclusion
     lines.
@@ -484,22 +484,24 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
     """
 
     rad = float(dia)/2.0
+    if flat is None:
+        flat = excl
 
+    # Full wafer outline circle
     circ = FloatCanvas.Circle((0, 0),
                               dia,
                               LineColor=wx.YELLOW,
                               LineWidth=1,
                               )
 
-    if flat == 0:
-        flat = excl
+    # Calculate the exclusion Radius
+    exclRad = 0.5 * (dia - 2.0 * excl)
 
-    # TODO: There's a lot of duplicate code here. I should try and change that.
     if dia in wm_FLAT_LENGTHS:
         # A flat is defined, so we draw it.
         flat_size = wm_FLAT_LENGTHS[dia]
         x = flat_size/2
-        y = -math.sqrt(rad**2 - x**2)
+        y = -math.sqrt(rad**2 - x**2)       # Wfr Flat's Y Location
 
         arc = FloatCanvas.Arc((x, y),
                               (-x, y),
@@ -510,34 +512,18 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
 
         # actually a wafer flat, but called notch
         notch = draw_wafer_flat(rad, wm_FLAT_LENGTHS[dia])
-    else:
-        # Flat not defined, so use a notch to denote wafer orientation.
-        ang = 2.5
-        ang_rad = ang * math.pi / 180
-
-        start_xy = (rad * math.sin(ang_rad), -rad * math.cos(ang_rad))
-        end_xy = (-rad * math.sin(ang_rad), -rad * math.cos(ang_rad))
-
-        arc = FloatCanvas.Arc(start_xy,
-                              end_xy,
-                              (0, 0),
-                              LineColor=wx.RED,
-                              LineWidth=3,
-                              )
-
-        notch = draw_wafer_notch(rad)
-
-    # Group the outline arc and the orientation (flat / notch) together
-    group = FloatCanvas.Group([circ, arc, notch])
-
-    # if an exclusion is defined: create it and add to group
-    if excl != 0:
-        exclRad = 0.5 * (dia - 2.0 * excl)
-
-        if dia in wm_FLAT_LENGTHS:
-            # Define the arc angle based on the flat exclusion, not the edge
-            # exclusion. Find the flat exclusion X and Y coords.
-            FSSflatY = y + flat
+        # Define the arc angle based on the flat exclusion, not the edge
+        # exclusion. Find the flat exclusion X and Y coords.
+        FSSflatY = y + flat
+        if exclRad < abs(FSSflatY):
+            # Then draw a circle with no flat
+            excl_arc = FloatCanvas.Circle((0, 0),
+                                          exclRad * 2,
+                                          LineColor=wx.RED,
+                                          LineWidth=3,
+                                          )
+            excl_group = FloatCanvas.Group([excl_arc])
+        else:
             FSSflatX = math.sqrt(exclRad**2 - FSSflatY**2)
 
             # Define the wafer arc
@@ -549,27 +535,95 @@ def draw_wafer_outline(dia=150, excl=5, flat=5):
                                        )
 
             excl_notch = draw_wafer_flat(exclRad, FSSflatX * 2)
+            excl_group = FloatCanvas.Group([excl_arc, excl_notch])
+    else:
+        # Flat not defined, so use a notch to denote wafer orientation.
+        ang = 2.5
+        start_xy, end_xy = calc_flat_coords(rad, ang)
 
-        else:
-            # Flat not defined, so use a notch to denote wafer orientation.
-            ang = 2.5
-            ang_rad = ang * math.pi / 180
+        arc = FloatCanvas.Arc(start_xy,
+                              end_xy,
+                              (0, 0),
+                              LineColor=wx.RED,
+                              LineWidth=3,
+                              )
 
-            start_xy = (exclRad * math.sin(ang_rad),
-                        -exclRad * math.cos(ang_rad))
-            end_xy = (-exclRad * math.sin(ang_rad),
-                      -exclRad * math.cos(ang_rad))
+        notch = draw_wafer_notch(rad)
+        # Flat not defined, so use a notch to denote wafer orientation.
+        start_xy, end_xy = calc_flat_coords(exclRad, ang)
 
-            excl_arc = FloatCanvas.Arc(start_xy,
-                                       end_xy,
-                                       (0, 0),
-                                       LineColor=wx.RED,
-                                       LineWidth=3,
-                                       )
+        excl_arc = FloatCanvas.Arc(start_xy,
+                                   end_xy,
+                                   (0, 0),
+                                   LineColor=wx.RED,
+                                   LineWidth=3,
+                                   )
 
-            excl_notch = draw_wafer_notch(exclRad)
-        group = FloatCanvas.Group([circ, arc, notch, excl_arc, excl_notch])
+        excl_notch = draw_wafer_notch(exclRad)
+        excl_group = FloatCanvas.Group([excl_arc, excl_notch])
+
+    # Group the outline arc and the orientation (flat / notch) together
+    group = FloatCanvas.Group([circ, arc, notch, excl_group])
     return group
+
+
+def calc_flat_coords(radius, angle):
+    """
+    Calculates the starting and ending XY coordinates for a horizontal line
+    below the y axis that interects a circle of radius ``radius`` and
+    makes an angle ``angle`` at the center of the circle.
+
+    This line is below the y axis.
+
+    Parameters:
+    -----------
+    radius : float
+        The radius of the circle that the line intersects.
+    angle : float
+        The angle, in degrees, that the line spans.
+
+    Returns:
+    --------
+    (start_xy, end_xy) : tuple of coord pairs
+        The starting and ending XY coordinates of the line.
+        (start_x, start_y), (end_x, end_y))
+
+    Notes:
+    ------
+    What follows is a poor-mans schematic. I hope.
+
+    ::
+
+        1-------------------------------------------------------1
+        1                                                       1
+        1                                                       1
+        1                           +                           1
+        1                          . .                          1
+        1                         .   .                         1
+        1                        .     . Radius                 1
+         1                      .       .                      1
+         1                     .         .                     1
+         1                    .           .                    1
+          1                  .             .                  1
+          1                 .  <--angle-->  .                 1
+           1               .                 .               1
+            1             .                   .             1
+            1            .                     .            1
+             1          .                       .          1
+              1        .                         .        1
+                1     .                           .     1
+                 1   .                             .   1
+                  1 .                               . 1
+                    1-------------line--------------1
+                      1                           1
+                        1                       1
+                           1                  1
+                               111111111111
+    """
+    ang_rad = angle * math.pi / 180
+    start_xy = (radius * math.sin(ang_rad), -radius * math.cos(ang_rad))
+    end_xy = (-radius * math.sin(ang_rad), -radius * math.cos(ang_rad))
+    return (start_xy, end_xy)
 
 
 def draw_crosshairs(dia=150, dot=False):
