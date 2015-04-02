@@ -31,19 +31,32 @@ def generate_fake_data(**kwargs):
     Keyword Arguments:
     ------------------
 
-    - die_x:        Die x size in mm
-    - die_y:        Die y size in mm
-    - dia:          Wafer diameter in mm
-    - edge_excl:    Edge exclusion in mm
-    - flat_excl:    Wafer Flat exclusion in mm
-    - x_offset:     The center die's x offset.
-
-                    (0-1), where 0.5 means that the center of the
-                    wafer is located on a vertical street (edge of a die).
-    - y_offset:     The center die's y offset.
-
-                    (0-1), where 0.5 means that the center of the
-                    wafer is located on a horizontal street (edge of a die).
+    die_x : float
+        Die x size in mm
+    die_y : float
+        Die y size in mm
+    dia : float
+        Wafer diameter in mm
+    edge_excl : float
+        Edge exclusion in mm
+    flat_excl : float
+        Wafer Flat exclusion in mm
+    x_offset : float
+        The center die's x offset.
+        (0-1), where 0.5 means that the center of the
+        wafer is located on a vertical street (edge of a die).
+    y_offset : float
+        The center die's y offset.
+        (0-1), where 0.5 means that the center of the
+        wafer is located on a horizontal street (edge of a die).
+    grid_center : tuple of floats
+        The grid coordinates (x_col, y_row) that denote the
+        center of the wafer. Defaults to None, which determines
+        the center grid coordinates based on the total number of
+        rows and columns.
+    dtype : string
+        Datatype. Valid options are "discrete" and "continuous".
+        Defaults to "continuous".
 
     Examples of Offsets:
     --------------------
@@ -106,7 +119,8 @@ def generate_fake_data(**kwargs):
                       'flat_excl': random.choice(excl_list),
                       'x_offset': random.choice(offset_list),
                       'y_offset': random.choice(offset_list),
-                      'grid_center': None
+                      'grid_center': None,
+                      'dtype': 'continuous',
                       }
 
     # parse the keyword arguements, asigning defaults if not found.
@@ -122,6 +136,7 @@ def generate_fake_data(**kwargs):
     x_offset = kwargs['x_offset']
     y_offset = kwargs['y_offset']
     grid_center = kwargs['grid_center']
+    dtype = kwargs['dtype']
 
     die_size = (die_x, die_y)
 
@@ -162,15 +177,27 @@ def generate_fake_data(**kwargs):
                     or coord_lower_left_y < (flat_y + flat_excl)):
                 continue
             else:
-                grid_points.append((_x,
-                                    _y,
-                                    center_rad_sqrd,
-                                    # these items are for debug.
-#                                    coord_lower_left,
-#                                    center_rad_sqrd,
-#                                    coord_die_center,
-#                                    die_max_sqrd,
-                                    ))
+                if dtype == 'discrete':
+                    grid_points.append((_x,
+                                        _y,
+                                        random.choice(['a', 'b', 'c']),
+                                        # these items are for debug.
+#                                        coord_lower_left,
+#                                        center_rad_sqrd,
+#                                        coord_die_center,
+#                                        die_max_sqrd,
+                                        ))
+
+                else:
+                    grid_points.append((_x,
+                                        _y,
+                                        center_rad_sqrd,
+                                        # these items are for debug.
+#                                        coord_lower_left,
+#                                        center_rad_sqrd,
+#                                        coord_die_center,
+#                                        die_max_sqrd,
+                                        ))
 
     print("\nPlotting {} die.".format(len(grid_points)))
 
@@ -188,7 +215,7 @@ def generate_fake_data(**kwargs):
 
 def main():
     """ Main Code """
-    wafer, data = generate_fake_data()
+    wafer, data = generate_fake_data(dtype='discrete')
     from pprint import pprint
     pprint(data)
 
