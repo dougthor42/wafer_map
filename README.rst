@@ -35,6 +35,7 @@ wafer_map requires the following non-built-in packages:
 - colour (https://pypi.python.org/pypi/colour/)
 
 and the following core (built-in) packages:
+
 - math
 - colorsys
 
