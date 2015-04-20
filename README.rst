@@ -25,6 +25,19 @@ Install from PyPI.
 
 ``pip install wafer_map``
 
+Requirements
+============
+
+wafer_map requires the following non-built-in packages:
+
+- wxPython (http://www.wxpython.org/)
+- numpy (https://pypi.python.org/pypi/numpy/)
+- colour (https://pypi.python.org/pypi/colour/)
+
+and the following core (built-in) packages:
+- math
+- colorsys
+
 
 What's it Look Like?
 ====================
