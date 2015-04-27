@@ -23,6 +23,7 @@ setup(
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Scientific/Engineering :: Visualization",
         ],
+    packages=["wafer_map", "wafer_map.tests"],
     requires=["wxPython"],
     long_description="""
 =========

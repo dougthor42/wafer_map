@@ -29,7 +29,7 @@ import wafer_map.wm_utils as utils
 #    print("Running wm_app from Development Location")
 #    import wm_utils as utils
 #    from wafer_map import wm_utils as utils
-#    import 
+#    import
 
 __author__ = "Douglas Thor"
 __version__ = "v0.1.0"
@@ -37,10 +37,10 @@ __version__ = "v0.1.0"
 
 class LinearGradient(unittest.TestCase):
 
-    known_values = (((0, 0, 0), (255, 255, 255), 0.5, (128, 128, 128)),
-                    ((0, 0, 0), (255, 0, 0), 0.5, (128, 0, 0)),
-                    ((0, 0, 0), (0, 255, 0), 0.5, (0, 128, 0)),
-                    ((0, 0, 0), (0, 0, 255), 0.5, (0, 0, 128)),
+    known_values = (((0, 0, 0), (255, 255, 255), 0.5, (127, 127, 127)),
+                    ((0, 0, 0), (255, 0, 0), 0.5, (95, 31, 31)),
+                    ((0, 0, 0), (0, 255, 0), 0.5, (95, 95, 31)),
+                    ((0, 0, 0), (0, 0, 255), 0.5, (31, 95, 31)),
                     )
 
     def test_known_values(self):
