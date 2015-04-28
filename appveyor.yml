@@ -48,7 +48,7 @@ environment:
 
 install:
   - ECHO "Filesystem root:"
-  - ps: "New-Item C:\Temp\ PowerShell -type directory"
+  - ps: "New-Item C:\\Temp\\ PowerShell -type directory"
   - ps: "ls \"C:/\""
 
 #  - ECHO "Installed SDKs:"
@@ -58,7 +58,7 @@ install:
   # not already installed.
   - "powershell ./appveyor/install.ps1"
 
-  # also install 7-zip, needed for extracting wxPython	
+  # also install 7-zip, needed for extracting wxPython
   - "powershell ./appveyor/get-7zip.ps1"
 
   # Prepend newly installed Python to the PATH of this build (this cannot be
@@ -86,7 +86,7 @@ install:
   - ps: $args = "e 'C:\Temp\wxPython_source.tar.bz2'"
   - ps: start-process "C:\Program Files\7-Zip\7z.exe" -arguementlist $args -wait
 
-  
+
 
 
 build: false  # Not a C# project, build stuff at the test step instead.
