@@ -47,11 +47,11 @@ environment:
 #     PYTHON_ARCH: "64"
 
 install:
-  - ECHO "Filesystem root:"
-  - ps: "ls \"C:/\""
+#  - ECHO "Filesystem root:"
+#  - ps: "ls \"C:/\""
 
-  - ECHO "Installed SDKs:"
-  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
+#  - ECHO "Installed SDKs:"
+#  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
   # Install Python (from the official .msi of http://python.org) and pip when
   # not already installed.
@@ -66,17 +66,18 @@ install:
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
 
-  # download and install wxPython
-  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
-
   # install dependencies
   #- "%CMD_IN_ENV% pip install -r dev-requirements.txt"
-  - "%CMD_IN_ENV% pip install scipy-0.15.1-cp27-none-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl"
+  - "%CMD_IN_ENV% pip install wxpython"
+  - "%CMD_IN_ENV% pip install scipy-0.15.1-cp27-none-any.whl"
   - "%CMD_IN_ENV% pip install colour"
 #  - "%CMD_IN_ENV% pip install setuptools pip"
 #  - "%CMD_IN_ENV% pip install ."
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-datetime/"
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-pytest/"
+
+  # download and install wxPython
+  #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
