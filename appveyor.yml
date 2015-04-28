@@ -48,8 +48,8 @@ environment:
 
 install:
   - ECHO "Filesystem root:"
-  - ps: "new-item c:\\temp -itemtype directory"
-  - ps: "ls \"C:/\""
+  - ps: new-item "C:\\temp" -itemtype directory
+  - ps: ls "C:\\"
 
 #  - ECHO "Installed SDKs:"
 #  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
@@ -84,10 +84,10 @@ install:
   # download and install wxPython from source
   - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
   #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
-  - ps: $args = "e 'C:\Temp\wxPython_source.tar.bz2'"
-  - ps: start-process "C:\Program Files\7-Zip\7z.exe" "e 'C:\Temp\wxPython_source.tar.bz2'" -Wait
-  - ps: start-process "C:\Program Files\7-Zip\7z.exe" "e 'C:\Temp\wxPython_source.tar'" -Wait
-  - ps: "ls \"C:/Temp\""
+  - ps: $args = "e 'C:\\Temp\\wxPython_source.tar.bz2'"
+  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e 'C:\\Temp\\wxPython_source.tar.bz2' -oC:\\Temp\\wxPython_source.tar" -Wait
+  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e 'C:\\Temp\\wxPython_source.tar' -oC:\\Temp\\wxPython_source\\" -Wait
+  - ps: ls "C:\\Temp"
 
 
 build: false  # Not a C# project, build stuff at the test step instead.
