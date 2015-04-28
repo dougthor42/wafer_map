@@ -48,7 +48,7 @@ environment:
 
 install:
   - ECHO "Filesystem root:"
-  - ps: "New-Item C:\\Temp\\ PowerShell -type directory"
+  - ps: "new-item c:\temp -itemtype directory"
   - ps: "ls \"C:/\""
 
 #  - ECHO "Installed SDKs:"
