@@ -86,6 +86,8 @@ install:
   #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
   - ps: $args = "e 'C:\Temp\wxPython_source.tar.bz2'"
   - ps: start-process "C:\Program Files\7-Zip\7z.exe" "e 'C:\Temp\wxPython_source.tar.bz2'" -Wait
+  - ps: start-process "C:\Program Files\7-Zip\7z.exe" "e 'C:\Temp\wxPython_source.tar'" -Wait
+  - ps: "ls \"C:/Temp\""
 
 
 build: false  # Not a C# project, build stuff at the test step instead.
