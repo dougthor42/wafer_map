@@ -47,8 +47,9 @@ environment:
 #     PYTHON_ARCH: "64"
 
 install:
-#  - ECHO "Filesystem root:"
-#  - ps: "ls \"C:/\""
+  - ECHO "Filesystem root:"
+  - ps: "New-Item C:\Temp\ PowerShell -type directory"
+  - ps: "ls \"C:/\""
 
 #  - ECHO "Installed SDKs:"
 #  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
@@ -56,6 +57,9 @@ install:
   # Install Python (from the official .msi of http://python.org) and pip when
   # not already installed.
   - "powershell ./appveyor/install.ps1"
+
+  # also install 7-zip, needed for extracting wxPython	
+  - "powershell ./appveyor/get-7zip.ps1"
 
   # Prepend newly installed Python to the PATH of this build (this cannot be
   # done from inside the powershell script as it would require to restart
@@ -68,16 +72,22 @@ install:
 
   # install dependencies
   #- "%CMD_IN_ENV% pip install -r dev-requirements.txt"
-  - "%CMD_IN_ENV% pip install wxpython"
-  - "%CMD_IN_ENV% pip install scipy-0.15.1-cp27-none-any.whl"
+  #- "%CMD_IN_ENV% pip install wxpython"
+  #- "%CMD_IN_ENV% pip install scipy-0.15.1-cp27-none-any.whl"
   - "%CMD_IN_ENV% pip install colour"
 #  - "%CMD_IN_ENV% pip install setuptools pip"
 #  - "%CMD_IN_ENV% pip install ."
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-datetime/"
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-pytest/"
 
-  # download and install wxPython
+  # download and install wxPython from source
+  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
   #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
+  - ps: $args = "e 'C:\Temp\wxPython_source.tar.bz2'"
+  - ps: start-process "C:\Program Files\7-Zip\7z.exe" -arguementlist $args -wait
+
+  
+
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
