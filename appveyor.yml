@@ -85,21 +85,27 @@ install:
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-datetime/"
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-pytest/"
 
-  # download wxPython Source (Powershell 3.0)
-  #- ps: Invoke-WebRequest http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal' -Outfile 'C:\Temp\wxPython_source.tar.bz2'
+  ### ----------------------
+  ### Download wxPython
+  ### ----------------------
 
-  # download and install wxPython from source (PS 2.0)
-  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
-  #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
-  #- ps: $args = "e 'C:\\Temp\\wxPython_source.tar.bz2'"
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp\\wxPython_source.tar"
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e 'C:\\Temp\\wxPython_source.tar' -oC:\\Temp\\wxPython_source\\" -Wait
-  #- ps: ls "C:\\Temp"
+  #http://downloads.sourceforge.net/project/wxpython/wxPython/2.8.12.1/wxPython-src-2.8.12.1.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fwxpython%2Ffiles%2FwxPython%2F2.8.12.1%2F&ts=1430329632&use_mirror=iweb
+
+  # download wxPython Source (Powershell >= 3.0)
+  - ps: Invoke-WebRequest http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal' -Outfile 'C:\Temp\wxPython_source.tar.bz2'
+
+  # download wxPython Source (Powershell 2.0)
   #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -y" -wait
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source" -wait
-  #- ps: ls "C:\\Temp"
 
+  ### ----------------------
+  ### Extract wxPython
+  ### ----------------------
+
+  # These do not provide any output. Normally would be OK.
+  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp" -Wait
+  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e 'C:\\Temp\\wxPython_source.tar' -oC:\\Temp\\wxPython_source\\" -Wait
+
+  # First extract .bz2 file
   # In order to get 7-Zip's output redirected, I need to use this big block:
   - ps: $psi = New-object System.Diagnostics.ProcessStartInfo 
   - ps: $psi.CreateNoWindow = $true 
@@ -115,6 +121,7 @@ install:
   - ps: $process.WaitForExit() 
   - ps: $output
 
+  # Then extract the .tar file to a directory
   # In order to get 7-Zip's output redirected, I need to use this big block:
   - ps: $psi = New-object System.Diagnostics.ProcessStartInfo 
   - ps: $psi.CreateNoWindow = $true 
@@ -129,6 +136,12 @@ install:
   - ps: $output = $process.StandardOutput.ReadToEnd() 
   - ps: $process.WaitForExit() 
   - ps: $output
+
+  ### ----------------------
+  ### Build wxPython
+  ### ----------------------
+
+  - python C:\Temp\wxPython-src=3.0.2.0\wxPython build-wxpython.py --build_dir=C:\Temp\wxPython-src=3.0.2.0\bld
 
 
 build: false  # Not a C# project, build stuff at the test step instead.
