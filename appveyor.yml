@@ -141,7 +141,7 @@ install:
   ### Build wxPython
   ### ----------------------
 
-  - python C:\Temp\wxPython-src-3.0.2.0\wxPython build-wxpython.py --build_dir=C:\Temp\wxPython-src=3.0.2.0\bld
+  - python "C:\\Temp\\wxPython_source" build-wxpython.py --install
 
 
 build: false  # Not a C# project, build stuff at the test step instead.
