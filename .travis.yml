@@ -8,4 +8,5 @@ install:
   - "pip install -r dev-requirements.txt"
 # command to run tests
 script:
-  - nosetests
+  #- nosetests
+  - python --version

@@ -1,3 +1,2 @@
-numpy
 colour
 nose
