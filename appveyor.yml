@@ -92,7 +92,7 @@ install:
   #http://downloads.sourceforge.net/project/wxpython/wxPython/2.8.12.1/wxPython-src-2.8.12.1.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fwxpython%2Ffiles%2FwxPython%2F2.8.12.1%2F&ts=1430329632&use_mirror=iweb
 
   # download wxPython Source (Powershell >= 3.0)
-  - ps: Invoke-WebRequest http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal' -Outfile 'C:\Temp\wxPython_source.tar.bz2'
+  - ps: Invoke-WebRequest "http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal" -Outfile 'C:\Temp\wxPython_source.tar.bz2'
 
   # download wxPython Source (Powershell 2.0)
   #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
