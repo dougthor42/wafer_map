@@ -101,41 +101,40 @@ install:
   ### Extract wxPython
   ### ----------------------
 
-  # These do not provide any output. Normally would be OK.
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp" -Wait
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e 'C:\\Temp\\wxPython_source.tar' -oC:\\Temp\\wxPython_source\\" -Wait
 
   # First extract .bz2 file
+  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp" -Wait
   # In order to get 7-Zip's output redirected, I need to use this big block:
-  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo 
-  - ps: $psi.CreateNoWindow = $true 
-  - ps: $psi.UseShellExecute = $false 
-  - ps: $psi.RedirectStandardOutput = $true 
-  - ps: $psi.RedirectStandardError = $true 
-  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe' 
-  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar.bz2 -y -oC:\\Temp") 
-  - ps: $process = New-Object System.Diagnostics.Process 
-  - ps: $process.StartInfo = $psi 
+  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
+  - ps: $psi.CreateNoWindow = $true
+  - ps: $psi.UseShellExecute = $false
+  - ps: $psi.RedirectStandardOutput = $true
+  - ps: $psi.RedirectStandardError = $true
+  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
+  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar.bz2 -y -oC:\\Temp")
+  - ps: $process = New-Object System.Diagnostics.Process
+  - ps: $process.StartInfo = $psi
   - ps: $process.Start()
-  - ps: $output = $process.StandardOutput.ReadToEnd() 
-  - ps: $process.WaitForExit() 
+  - ps: $output = $process.StandardOutput.ReadToEnd()
+  - ps: $process.WaitForExit()
   - ps: $output
 
   # Then extract the .tar file to a directory
+  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source" -Wait
   # In order to get 7-Zip's output redirected, I need to use this big block:
-  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo 
-  - ps: $psi.CreateNoWindow = $true 
-  - ps: $psi.UseShellExecute = $false 
-  - ps: $psi.RedirectStandardOutput = $true 
-  - ps: $psi.RedirectStandardError = $true 
-  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe' 
-  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source") 
-  - ps: $process = New-Object System.Diagnostics.Process 
-  - ps: $process.StartInfo = $psi 
-  - ps: $process.Start()
-  - ps: $output = $process.StandardOutput.ReadToEnd() 
-  - ps: $process.WaitForExit() 
-  - ps: $output
+  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
+  - ps: $psi.CreateNoWindow = $true
+  - ps: $psi.UseShellExecute = $false
+  - ps: $psi.RedirectStandardOutput = $true
+  - ps: $psi.RedirectStandardError = $true
+  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
+  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source")
+  - ps: $process = New-Object System.Diagnostics.Process
+  - ps: $process.StartInfo = $psi
+  #- ps: $process.Start()
+  #- ps: $output = $process.StandardOutput.ReadToEnd()
+  #- ps: $process.WaitForExit()
+  #- ps: $output
 
   ### ----------------------
   ### Build wxPython
