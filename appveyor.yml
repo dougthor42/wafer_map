@@ -51,6 +51,9 @@ install:
   - ps: new-item "C:\\temp" -itemtype directory
   - ps: ls "C:\\"
 
+  - ECHO "Powershell Version:"
+  - ps: $PSVersionTable.PSVersion
+
 #  - ECHO "Installed SDKs:"
 #  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
@@ -82,13 +85,50 @@ install:
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-datetime/"
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-pytest/"
 
-  # download and install wxPython from source
-  #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
+  # download wxPython Source (Powershell 3.0)
+#  - ps: Invoke-WebRequest http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal' -Outfile 'C:\Temp\wxPython_source.tar.bz2'
+
+  # download and install wxPython from source (PS 2.0)
+  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
   #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/wxpython/wxPython3.0-win32-3.0.2.0-py27.exe', 'wxPython.exe');Start-Process 'wxPython.exe'
   #- ps: $args = "e 'C:\\Temp\\wxPython_source.tar.bz2'"
-  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp\\wxPython_source.tar"
+  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp\\wxPython_source.tar"
   #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e 'C:\\Temp\\wxPython_source.tar' -oC:\\Temp\\wxPython_source\\" -Wait
-  - ps: ls "C:\\Temp"
+  #- ps: ls "C:\\Temp"
+  #- ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
+  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -y" -wait
+  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source" -wait
+  #- ps: ls "C:\\Temp"
+
+  # In order to get 7-Zip's output redirected, I need to use this big block:
+  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo 
+  - ps: $psi.CreateNoWindow = $true 
+  - ps: $psi.UseShellExecute = $false 
+  - ps: $psi.RedirectStandardOutput = $true 
+  - ps: $psi.RedirectStandardError = $true 
+  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe' 
+  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar.bz2 -y -oC:\\Temp") 
+  - ps: $process = New-Object System.Diagnostics.Process 
+  - ps: $process.StartInfo = $psi 
+  - ps: [void]$process.Start()
+  - ps: $output = $process.StandardOutput.ReadToEnd() 
+  - ps: $process.WaitForExit() 
+  - ps: $output
+
+  # In order to get 7-Zip's output redirected, I need to use this big block:
+  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo 
+  - ps: $psi.CreateNoWindow = $true 
+  - ps: $psi.UseShellExecute = $false 
+  - ps: $psi.RedirectStandardOutput = $true 
+  - ps: $psi.RedirectStandardError = $true 
+  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe' 
+  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source") 
+  - ps: $process = New-Object System.Diagnostics.Process 
+  - ps: $process.StartInfo = $psi 
+  - ps: [void]$process.Start()
+  - ps: $output = $process.StandardOutput.ReadToEnd() 
+  - ps: $process.WaitForExit() 
+  - ps: $output
 
 
 build: false  # Not a C# project, build stuff at the test step instead.
