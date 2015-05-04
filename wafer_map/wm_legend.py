@@ -21,8 +21,23 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 import colorsys
 
-import wafer_map.wm_utils as wm_utils
-import wafer_map.wm_constants as wm_const
+
+import os.path as osp
+if "github" in osp.abspath(__file__):
+    import sys
+#    [print(_p) for _p in sys.path]
+    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
+else:
+    print("importing from site-packages")
+
+import wm_utils as wm_utils
+import wm_constants as wm_const
+
+print("Imports for WM_LEGEND:")
+print("wm_utils:\t\t{}".format(wm_utils.__file__))
+print("wm_const:\t\t{}".format(wm_const.__file__))
+
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 
@@ -263,11 +278,18 @@ class ContinuousLegend(wx.Panel):
 
         self.draw_scale()
 
-    def on_scale__change(self, event):
+    def on_scale_change(self, event):
         """
         Redraws things on scale change
         """
-        pass
+        self.gradient = wm_utils.LinearGradient(self.low_color,
+                                                self.high_color)
+
+        self.hbox.Remove(0)
+        self.hbox.Add((self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+
+        self.draw_scale()
 
     def get_color(self, value):
         """

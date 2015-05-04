@@ -28,9 +28,24 @@ import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-import wafer_map.wm_legend as wm_legend
-import wafer_map.wm_utils as wm_utils
-import wafer_map.wm_constants as wm_const
+import os.path as osp
+if "github" in osp.abspath(__file__):
+    import sys
+#    [print(_p) for _p in sys.path]
+    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
+else:
+    print("importing from site-packages")
+
+import wm_legend as wm_legend
+import wm_utils as wm_utils
+import wm_constants as wm_const
+
+print("Imports for WM_CORE:")
+print("wm_legend:\t\t{}".format(wm_legend.__file__))
+print("wm_utils:\t\t{}".format(wm_utils.__file__))
+print("wm_const:\t\t{}".format(wm_const.__file__))
+
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)

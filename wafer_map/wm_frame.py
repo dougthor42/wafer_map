@@ -18,9 +18,21 @@ from __future__ import print_function, division#, absolute_import
 #from __future__ import unicode_literals
 import wx
 
-import wafer_map.wm_core as wm_core
-import wafer_map.wm_constants as wm_const
+import os.path as osp
+if "github" in osp.abspath(__file__):
+    import sys
+#    [print(_p) for _p in sys.path]
+    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
+else:
+    print("importing from site-packages")
 
+import wm_core as wm_core
+import wm_constants as wm_const
+
+print("Imports for WM_FRAME:")
+print("wm_core:\t\t{}".format(wm_core.__file__))
+print("wm_const:\t\t{}".format(wm_const.__file__))
 
 __author__ = "Douglas Thor"
 __version__ = "v0.1.0"

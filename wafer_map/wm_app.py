@@ -17,11 +17,27 @@ Options:
 from __future__ import print_function, division#, absolute_import
 #from __future__ import unicode_literals
 import wx
-import wafer_map.wm_frame as wm_frame
-import wafer_map.wm_info as wm_info
-import wafer_map.gen_fake_data as gen_fake_data
-import wafer_map.wm_constants as wm_const
 
+import os.path as osp
+if "github" in osp.abspath(__file__):
+    import sys
+#    [print(_p) for _p in sys.path]
+    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
+else:
+    print("importing from site-packages")
+
+import wm_frame as wm_frame
+import wm_info as wm_info
+import gen_fake_data as gen_fake_data
+import wm_constants as wm_const
+
+print("Imports for WM_APP:")
+print("wm_app:\t\t{}".format(__file__))
+print("wm_frame:\t\t{}".format(wm_frame.__file__))
+print("wm_info:\t\t{}".format(wm_info.__file__))
+print("gen_fake_data:\t{}".format(gen_fake_data.__file__))
+print("wm_const:\t\t{}".format(wm_const.__file__))
 
 __author__ = "Douglas Thor"
 __version__ = "v0.1.0"
@@ -127,3 +143,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+#    pass
