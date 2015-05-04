@@ -157,6 +157,9 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
         self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
 
+        # This is supposed to fix the flicker on mouse move...
+        self.Bind(wx.EVT_ERASE_BACKGROUND, None)
+
         # Panel Events
         self.Bind(csel.EVT_COLOURSELECT, self.on_color_change)
 
