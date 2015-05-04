@@ -195,6 +195,15 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.9 / 2015-05-04**
+
+  + Fixed flicker issue.
+
+* **1.0.8 / 2015-05-04**
+
+  + I messed up on the PyPI release, so I have to release under a new file
+    name. Oh well...
+
 * **1.0.7 / 2015-05-04**
 
   + Minor import refactoring
