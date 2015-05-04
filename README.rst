@@ -195,18 +195,20 @@ Current capabilities:
 
 Changelog
 =========
-* **1.0.7 / 2015-05-04""
-  - Minor import refactoring
-  - Added some docstrings
+* **1.0.7 / 2015-05-04**
+
+  + Minor import refactoring
+  + Added some docstrings
 
 * **1.0.6 / 2015-04-01**
-  - Refactored wm_core.draw_wafer_outline so that there are fewer branches
-  - Added wm_core.calc_flat_coords to reduce code duplication. This function
+
+  + Refactored wm_core.draw_wafer_outline so that there are fewer branches
+  + Added wm_core.calc_flat_coords to reduce code duplication. This function
     calculates the start and end coordinates of a horizontal chord below
     the circle origin whos length spans a given angle. See doctring on
     wm_core.calc_flat_coords for more info.
-  - Fixed issue where a flat exclusion of 0 would not work
-  - Fixed issue where an exclusion of 0 would prevent the flat exclusion from
+  + Fixed issue where a flat exclusion of 0 would not work
+  + Fixed issue where an exclusion of 0 would prevent the flat exclusion from
     being drawn.
 
 * **1.0.5 / 2015-03-30**
