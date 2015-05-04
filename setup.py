@@ -3,8 +3,8 @@
 from distutils.core import setup
 setup(
     name="wafer_map",
-    packages=["wafer_map"],
-    version="1.0.6",
+    packages=["wafer_map", "wafer_map.tests"],
+    version="1.0.7",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -23,7 +23,6 @@ setup(
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Scientific/Engineering :: Visualization",
         ],
-    packages=["wafer_map", "wafer_map.tests"],
     requires=["wxPython"],
     long_description="""
 =========
@@ -185,6 +184,20 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.7 / 2015-05-04""
+  - Minor import refactoring
+  - Added some docstrings
+
+* **1.0.6 / 2015-04-01**
+  - Refactored wm_core.draw_wafer_outline so that there are fewer branches
+  - Added wm_core.calc_flat_coords to reduce code duplication. This function
+    calculates the start and end coordinates of a horizontal chord below
+    the circle origin whos length spans a given angle. See doctring on
+    wm_core.calc_flat_coords for more info.
+  - Fixed issue where a flat exclusion of 0 would not work
+  - Fixed issue where an exclusion of 0 would prevent the flat exclusion from
+    being drawn.
+
 * **1.0.5 / 2015-03-30**
 
   + Added optional "grid_center" input to gen_fake_data

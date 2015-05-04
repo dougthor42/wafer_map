@@ -195,6 +195,10 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.7 / 2015-05-04""
+  - Minor import refactoring
+  - Added some docstrings
+
 * **1.0.6 / 2015-04-01**
   - Refactored wm_core.draw_wafer_outline so that there are fewer branches
   - Added wm_core.calc_flat_coords to reduce code duplication. This function
