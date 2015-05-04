@@ -28,9 +28,9 @@ import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-import wm_legend
-import wm_utils
-from wm_constants import *
+import wafer_map.wm_legend as wm_legend
+import wafer_map.wm_utils as wm_utils
+import wafer_map.wm_constants as wm_const
 
 # Module-level TODO list.
 # TODO: make variables "private" (prepend underscore)
@@ -52,8 +52,8 @@ class WaferMapPanel(wx.Panel):
                  wafer_info,
                  data_type='continuous',
                  coord_type='absolute',
-                 high_color=wm_HIGH_COLOR,
-                 low_color=wm_LOW_COLOR,
+                 high_color=wm_const.wm_HIGH_COLOR,
+                 low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
                  plot_die_centers=False,
                  discrete_legend_values=None,
@@ -94,6 +94,7 @@ class WaferMapPanel(wx.Panel):
         self.init_ui()
 
     def xyd_to_dict(self, xyd_list):
+        """ Converts the xyd list to a dict of xNNyNN key-value pairs """
         return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
 
     def init_ui(self):
@@ -288,7 +289,7 @@ class WaferMapPanel(wx.Panel):
         #   Allows for zoom acceleration: fast wheel move = large zoom.
         #   factor < 0: zoom out. factor > 0: zoom in
         sign = abs(speed) / speed
-        factor = (abs(speed) * wm_ZOOM_FACTOR)**sign
+        factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR)**sign
 
         self.canvas.Zoom(factor,
                          center=pos,
@@ -350,6 +351,7 @@ class WaferMapPanel(wx.Panel):
             self.move_timer.Start(30, oneShot=True)
 
     def mouse_middle_down(self, event):
+        """ Start the drag """
         self.drag = True
 
         # Update various positions
@@ -362,6 +364,7 @@ class WaferMapPanel(wx.Panel):
         self.SetCursor(wx.StockCursor(wx.CURSOR_SIZING))
 
     def mouse_middle_up(self, event):
+        """ End the drag """
         self.drag = False
 
         # update various positions
@@ -408,6 +411,7 @@ class WaferMapPanel(wx.Panel):
             print("KeyCode: {}".format(key))
 
     def zoom_fill(self):
+        """ Zoom so that everything is displayed """
         self.canvas.ZoomToBB()
 
     def toggle_outline(self):
@@ -497,9 +501,9 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
     # Calculate the exclusion Radius
     exclRad = 0.5 * (dia - 2.0 * excl)
 
-    if dia in wm_FLAT_LENGTHS:
+    if dia in wm_const.wm_FLAT_LENGTHS:
         # A flat is defined, so we draw it.
-        flat_size = wm_FLAT_LENGTHS[dia]
+        flat_size = wm_const.wm_FLAT_LENGTHS[dia]
         x = flat_size/2
         y = -math.sqrt(rad**2 - x**2)       # Wfr Flat's Y Location
 
@@ -511,7 +515,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
                               )
 
         # actually a wafer flat, but called notch
-        notch = draw_wafer_flat(rad, wm_FLAT_LENGTHS[dia])
+        notch = draw_wafer_flat(rad, wm_const.wm_FLAT_LENGTHS[dia])
         # Define the arc angle based on the flat exclusion, not the edge
         # exclusion. Find the flat exclusion X and Y coords.
         FSSflatY = y + flat

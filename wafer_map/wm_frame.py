@@ -18,8 +18,8 @@ from __future__ import print_function, division#, absolute_import
 #from __future__ import unicode_literals
 import wx
 
-import wm_core
-from wm_constants import *
+import wafer_map.wm_core as wm_core
+import wafer_map.wm_constants as wm_const
 
 
 __author__ = "Douglas Thor"
@@ -40,8 +40,8 @@ class WaferMapWindow(wx.Frame):
                  wafer_info,
                  size=(800, 600),
                  data_type='continuous',
-                 high_color=wm_HIGH_COLOR,
-                 low_color=wm_LOW_COLOR,
+                 high_color=wm_const.wm_HIGH_COLOR,
+                 low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
                  plot_die_centers=False,
                  ):

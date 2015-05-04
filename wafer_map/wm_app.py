@@ -19,8 +19,8 @@ from __future__ import print_function, division#, absolute_import
 import wx
 import wm_frame
 import wm_info
-import gen_fake_data
-from wm_constants import *
+import wafer_map.gen_fake_data as gen_fake_data
+import wafer_map.wm_constants as wm_const
 
 
 __author__ = "Douglas Thor"
@@ -39,8 +39,8 @@ class WaferMapApp(object):
                  edge_excl=5,
                  flat_excl=5,
                  data_type='continuous',
-                 high_color=wm_HIGH_COLOR,
-                 low_color=wm_LOW_COLOR,
+                 high_color=wm_const.wm_HIGH_COLOR,
+                 low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
                  plot_die_centers=False,
                  ):

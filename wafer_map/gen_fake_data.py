@@ -19,9 +19,9 @@ from __future__ import print_function, division#, absolute_import
 import math
 import random
 
-import wm_info
-import wm_utils
-from wm_constants import *
+import wafer_map.wm_info as wm_info
+import wafer_map.wm_utils as wm_utils
+import wafer_map.wm_constants as wm_const
 
 
 def generate_fake_data(**kwargs):
@@ -142,9 +142,9 @@ def generate_fake_data(**kwargs):
 
     # Determine where our wafer edge is for the flat area
     flat_y = -dia/2     # assume wafer edge at first
-    if dia in wm_FLAT_LENGTHS:
+    if dia in wm_const.wm_FLAT_LENGTHS:
         # A flat is defined by SEMI M1-0302, so we calcualte where it is
-        flat_y = -math.sqrt((dia/2)**2 - (wm_FLAT_LENGTHS[dia] * 0.5)**2)
+        flat_y = -math.sqrt((dia/2)**2 - (wm_const.wm_FLAT_LENGTHS[dia] * 0.5)**2)
 
     # calculate the exclusion radius^2
     excl_sqrd = (dia/2)**2 + (edge_excl**2) - (dia * edge_excl)

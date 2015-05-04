@@ -21,9 +21,9 @@ from __future__ import print_function, division#, absolute_import
 #from __future__ import unicode_literals
 import wx
 
-import gen_fake_data
-import wm_core
-import wm_app
+import wafer_map.gen_fake_data as gen_fake_data
+import wafer_map.wm_core as wm_core
+import wafer_map.wm_app as wm_app
 
 __author__ = "Douglas Thor"
 __version__ = "v0.4.0"

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
+#         C0103 = invalid variable name
 """
 @name:          new_program.py
 @vers:          0.1.0

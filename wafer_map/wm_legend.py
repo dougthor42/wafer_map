@@ -21,8 +21,8 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 import colorsys
 
-import wm_utils
-from wm_constants import *
+import wafer_map.wm_utils as wm_utils
+import wafer_map.wm_constants as wm_const
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 
@@ -101,11 +101,11 @@ class ContinuousLegend(wx.Panel):
     def __init__(self,
                  parent,
                  plot_range,
-                 high_color=wm_HIGH_COLOR,
-                 low_color=wm_LOW_COLOR,
-                 num_ticks=wm_TICK_COUNT,
-                 oor_high_color=wm_OOR_HIGH_COLOR,
-                 oor_low_color=wm_OOR_LOW_COLOR,
+                 high_color=wm_const.wm_HIGH_COLOR,
+                 low_color=wm_const.wm_LOW_COLOR,
+                 num_ticks=wm_const.wm_TICK_COUNT,
+                 oor_high_color=wm_const.wm_OOR_HIGH_COLOR,
+                 oor_low_color=wm_const.wm_OOR_LOW_COLOR,
                  ):
         """
         __init__(self,
@@ -130,7 +130,7 @@ class ContinuousLegend(wx.Panel):
         self.num_ticks = num_ticks
         self.oor_high_color = oor_high_color
         self.oor_low_color = oor_low_color
-        self.invalid_color = wm_INVALID_COLOR
+        self.invalid_color = wm_const.wm_INVALID_COLOR
 
         ###==================================================================
         ### Initialize Size Attributes
@@ -263,6 +263,12 @@ class ContinuousLegend(wx.Panel):
 
         self.draw_scale()
 
+    def on_scale__change(self, event):
+        """
+        Redraws things on scale change
+        """
+        pass
+
     def get_color(self, value):
         """
         Gets a color from the gradient.
@@ -345,7 +351,7 @@ class ContinuousLegend(wx.Panel):
     def set_sizes(self):
         """
         Sets various instance attributes for item sizes and locations.
-        
+
         Uses the current client size and Text Height to set set some items.
         """
         # These are in a specific order. Do not change!
@@ -493,7 +499,7 @@ class DiscreteLegend(wx.Panel):
         self.init_ui()
 
     def init_ui(self):
-
+        """ Initialize UI components """
         # Add layout management
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
         self.fgs = wx.FlexGridSizer(rows=self.n_items, cols=2, vgap=0, hgap=2)
