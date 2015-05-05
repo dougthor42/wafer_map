@@ -83,24 +83,31 @@ class WaferMapPanel(wx.Panel):
                  ) -> wx.Panel
         """
         wx.Panel.__init__(self, parent)
+
+        ###==================================================================
+        ### Inputs
+        ###==================================================================
         self.parent = parent
         self.xyd = xyd
-        self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
         self.wafer_info = wafer_info
-        self.grid_center = self.wafer_info.center_xy
-        self.die_size = self.wafer_info.die_size
-
-        self.drag = False
-        self.wfr_outline_bool = True
-        self.crosshairs_bool = True
-        self.legend_bool = True
         self.data_type = data_type
         self.coord_type = coord_type
         self.high_color = high_color
         self.low_color = low_color
+        self.grid_center = self.wafer_info.center_xy
+        self.die_size = self.wafer_info.die_size
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
         self.discrete_legend_values = discrete_legend_values
+
+        ###==================================================================
+        ### Other Attributes
+        ###==================================================================
+        self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
+        self.drag = False
+        self.wfr_outline_bool = True
+        self.crosshairs_bool = True
+        self.legend_bool = True
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.

@@ -79,9 +79,9 @@ class WaferMapWindow(wx.Frame):
         self.low_color = low_color
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
-        self.init_ui()
+        self._init_ui()
 
-    def init_ui(self):
+    def _init_ui(self):
         """
         Init the UI components.
         """
@@ -225,35 +225,35 @@ class WaferMapWindow(wx.Frame):
     def _bind_events(self):
         """ Binds events to varoius MenuItems """
         self.Bind(wx.EVT_MENU, self.on_quit, self.mf_close)
-        self.Bind(wx.EVT_MENU, self.zoom_fit, self.mv_zoomfit)
-        self.Bind(wx.EVT_MENU, self.toggle_crosshairs, self.mv_crosshairs)
-        self.Bind(wx.EVT_MENU, self.toggle_outline, self.mv_outline)
-        self.Bind(wx.EVT_MENU, self.toggle_legend, self.mv_legend)
-        self.Bind(wx.EVT_MENU, self.change_high_color, self.mo_high_color)
-        self.Bind(wx.EVT_MENU, self.change_low_color, self.mo_low_color)
+        self.Bind(wx.EVT_MENU, self.on_zoom_fit, self.mv_zoomfit)
+        self.Bind(wx.EVT_MENU, self.on_toggle_crosshairs, self.mv_crosshairs)
+        self.Bind(wx.EVT_MENU, self.on_toggle_outline, self.mv_outline)
+        self.Bind(wx.EVT_MENU, self.on_toggle_legend, self.mv_legend)
+        self.Bind(wx.EVT_MENU, self.on_change_high_color, self.mo_high_color)
+        self.Bind(wx.EVT_MENU, self.on_change_low_color, self.mo_low_color)
 
         # If I define an ID to the menu item, then I can use that instead of
         #   and event source:
         #self.mo_test = wx.MenuItem(self.mopts, 402, "&Test", "Nothing")
-        #self.Bind(wx.EVT_MENU, self.zoom_fit, id=402)
+        #self.Bind(wx.EVT_MENU, self.on_zoom_fit, id=402)
 
     def on_quit(self, event):
         """ Actions for the quit event """
         self.Close(True)
 
     # TODO: I don't think I need a separate method for this
-    def zoom_fit(self, event):
+    def on_zoom_fit(self, event):
         """ Call the WaferMapPanel.zoom_fill() method """
         print("Frame Event!")
         self.panel.zoom_fill()
 
     # TODO: I don't think I need a separate method for this
-    def toggle_crosshairs(self, event):
+    def on_toggle_crosshairs(self, event):
         """ Call the WaferMapPanel toggle_crosshairs() method """
         self.panel.toggle_crosshairs()
 
     # TODO: I don't think I need a separate method for this
-    def toggle_outline(self, event):
+    def on_toggle_outline(self, event):
         """ Call the WaferMapPanel.toggle_outline() method """
         self.panel.toggle_outline()
 
@@ -261,11 +261,11 @@ class WaferMapWindow(wx.Frame):
     #       However if I don't use these then I have to
     #           1) instance self.panel at the start of __init__
     #           2) make it so that self.panel.toggle_legend accepts arg: event
-    def toggle_legend(self, event):
+    def on_toggle_legend(self, event):
         """ Call the WaferMapPanel.toggle_legend() method """
         self.panel.toggle_legend()
 
-    def change_high_color(self, event):
+    def on_change_high_color(self, event):
         print("High color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
@@ -279,7 +279,7 @@ class WaferMapWindow(wx.Frame):
             print("no color chosen :-(")
         cd.Destroy()
 
-    def change_low_color(self, event):
+    def on_change_low_color(self, event):
         print("Low Color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
