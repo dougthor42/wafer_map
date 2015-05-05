@@ -108,9 +108,9 @@ class WaferMapPanel(wx.Panel):
         self.move_timer = wx.PyTimer(self.on_move_timer)
         self._init_ui()
 
-    ### #---------------------------------------------------------
+    ### #--------------------------------------------------------------------
     ### Methods
-    ### #---------------------------------------------------------
+    ### #--------------------------------------------------------------------
 
     def _init_ui(self):
         """
@@ -158,10 +158,10 @@ class WaferMapPanel(wx.Panel):
         for more info.
         """
         # Canvas Events
-        self.canvas.Bind(FloatCanvas.EVT_MOTION, self.mouse_move)
-        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
-        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
-        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
+        self.canvas.Bind(FloatCanvas.EVT_MOTION, self.on_mouse_move)
+        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.on_mouse_wheel)
+        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.on_mouse_middle_down)
+        self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.on_mouse_middle_up)
         self.canvas.Bind(wx.EVT_PAINT, self._on_first_paint)
         # XXX: Binding the EVT_LEFT_DOWN seems to cause Issue #24.
         #      What seems to happen is: If I bind EVT_LEFT_DOWN, then the
@@ -170,7 +170,7 @@ class WaferMapPanel(wx.Panel):
         #      properly.
 #        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
 #        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
-#        self.canvas.Bind(wx.EVT_KEY_DOWN, self._key_down)
+#        self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
         # This is supposed to fix flicker on mouse move, but it doesn't work.
 #        self.Bind(wx.EVT_ERASE_BACKGROUND, None)
@@ -307,11 +307,11 @@ class WaferMapPanel(wx.Panel):
             self.legend_bool = True
         self.canvas.Draw(Force=True)
 
-    ### #---------------------------------------------------------
+    ### #--------------------------------------------------------------------
     ### Event Handlers
-    ### #---------------------------------------------------------
+    ### #--------------------------------------------------------------------
 
-    def _key_down(self, event):
+    def _on_key_down(self, event):
         """
         Event Handler for Keyboard Shortcuts. This is used when the panel
         is integrated into a Frame and the Frame does not define the KB
@@ -366,7 +366,7 @@ class WaferMapPanel(wx.Panel):
         self.draw_wafer_objects()
         self.canvas.Draw(True)
 #        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
-#        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
+#        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.on_mouse_wheel)
 
     def on_move_timer(self, event=None):
         """
@@ -376,7 +376,7 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
         self.canvas.Draw()
 
-    def mouse_wheel(self, event):
+    def on_mouse_wheel(self, event):
         """ Mouse wheel event for Zooming """
         speed = event.GetWheelRotation()
         pos = event.GetPosition()
@@ -400,7 +400,7 @@ class WaferMapPanel(wx.Panel):
                          keepPointInPlace=True,
                          )
 
-    def mouse_move(self, event):
+    def on_mouse_move(self, event):
         """
         Updates the status bar with the world coordinates
         """
@@ -443,7 +443,7 @@ class WaferMapPanel(wx.Panel):
             # doesn't appear to do anything...
             self.move_timer.Start(30, oneShot=True)
 
-    def mouse_middle_down(self, event):
+    def on_mouse_middle_down(self, event):
         """ Start the drag """
         self.drag = True
 
@@ -456,7 +456,7 @@ class WaferMapPanel(wx.Panel):
         # Change the cursor to a drag cursor
         self.SetCursor(wx.StockCursor(wx.CURSOR_SIZING))
 
-    def mouse_middle_up(self, event):
+    def on_mouse_middle_up(self, event):
         """ End the drag """
         self.drag = False
 
@@ -469,7 +469,7 @@ class WaferMapPanel(wx.Panel):
         # change the cursor back to normal
         self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
-    def mouse_left_down(self, event):
+    def on_mouse_left_down(self, event):
         """
         Start making the zoom-to-box box.
         """
@@ -478,28 +478,28 @@ class WaferMapPanel(wx.Panel):
         parent = wx.GetTopLevelParent(self)
         wx.PostEvent(self.parent, event)
 
-    def mouse_left_up(self, event):
+    def on_mouse_left_up(self, event):
         """
         End making the zoom-to-box box and execute the zoom.
         """
         print("Left mouse up!")
 
-    def mouse_right_down(self, event):
+    def on_mouse_right_down(self, event):
         """
         Start making the zoom-out box.
         """
         print("Right mouse down!")
 
-    def mouse_right_up(self, event):
+    def on_mouse_right_up(self, event):
         """
         Stop making the zoom-out box and execute the zoom
         """
         print("Right mouse up!")
 
 
-### #---------------------------------------------------------
+### #------------------------------------------------------------------------
 ### Module Functions
-### #---------------------------------------------------------
+### #------------------------------------------------------------------------
 
 def xyd_to_dict(xyd_list):
         """ Converts the xyd list to a dict of xNNyNN key-value pairs """

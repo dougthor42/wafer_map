@@ -198,6 +198,10 @@ class ContinuousLegend(wx.Panel):
 
         self._init_ui()
 
+    ### #--------------------------------------------------------------------
+    ### Methods
+    ### #--------------------------------------------------------------------
+
     def _init_ui(self):
         """
         Add a Sizer that is the same size as the MemoryDC
@@ -208,92 +212,11 @@ class ContinuousLegend(wx.Panel):
 
     def _bind_events(self):
         """ Bind events to various event handlers """
-        self.Bind(wx.EVT_PAINT, self.on_paint)
-        self.Bind(wx.EVT_SIZE, self.on_size)
-#        self.Bind(wx.EVT_MOTION, self.mouse_move)
-#        self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
-#        self.Bind(wx.EVT_RIGHT_DOWN, self.right_click)
-
-    def on_size(self, event):
-        """ Redraw everything with the new sizes. """
-        # TODO: Also reduce number of ticks when text starts to overlap
-        #       or add ticks when there's extra space.
-        self.set_sizes()
-        self.hbox.Remove(0)
-        self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
-        self.draw_scale()
-        self.Refresh()
-
-    def on_paint(self, event):
-        """ Push the MemoryDC bitmap to the displayed PaintDC """
-        dc = wx.PaintDC(self)
-        dc.Blit(0, 0, self.dc_w, self.dc_h, self.mdc, 0, 0)
-
-    def mouse_move(self, event):
-        """ Used for debugging """
-        pt = self.mdc.GetPixelPoint(event.GetPosition())
-        print(pt)
-
-    def left_click(self, event):
-        """ Used for debugging """
-        print("Left-click - color from self.mdc.GetPixelPoint.")
-        pos = event.GetPosition()
-        w, h = self.mdc.GetSize()       # change to gradient area
-        if pos[0] < w and pos[1] < h:
-            val = wm_utils.rescale(pos[1],
-                                   (self.grad_start_y, self.grad_end_y - 1),
-                                   reversed(self.plot_range))
-            a = self.mdc.GetPixelPoint(event.GetPosition())
-            print("{}\t{}\t{}".format(pos, a, val))
-
-    def right_click(self, event):
-        """ Used for debugging """
-        print("Right-click - color from get_color()")
-        pos = event.GetPosition()
-        w, h = self.mdc.GetSize()       # change to gradient area
-        if pos[0] < w and pos[1] < h:
-            val = wm_utils.rescale(pos[1],
-                                   (self.grad_start_y, self.grad_end_y - 1),
-                                   reversed(self.plot_range))
-            a = self.get_color(val)
-            print("{}\t{}\t{}".format(pos, a, val))
-
-    def mouse_wheel(self, event):
-        print("mouse wheel!")
-#        self.left_click(event)
-
-    def on_color_change(self, event):
-        """
-        Change the plot colors by updating self.gradient and by calling
-        self.draw_scale()
-        """
-        if event['low'] is not None:
-            self.low_color = event['low']
-        if event['high'] is not None:
-            self.high_color = event['high']
-        self.gradient = wm_utils.LinearGradient(self.low_color,
-                                                self.high_color)
-
-#        self._clear_scale()
-        self.hbox.Remove(0)
-        self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
-
-        self.draw_scale()
-
-    def on_scale_change(self, event):
-        """
-        Redraws things on scale change
-        """
-        self.gradient = wm_utils.LinearGradient(self.low_color,
-                                                self.high_color)
-
-        self.hbox.Remove(0)
-        self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
-
-        self.draw_scale()
+        self.Bind(wx.EVT_PAINT, self._on_paint)
+        self.Bind(wx.EVT_SIZE, self._on_size)
+#        self.Bind(wx.EVT_MOTION, self.on_mouse_move)
+#        self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+#        self.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
 
     def get_color(self, value):
         """
@@ -494,6 +417,93 @@ class ContinuousLegend(wx.Panel):
     def get_max_text_w(self, ticks):
         """ Get the maximum label sizes. There's probably a better way... """
         return max([self.mdc.GetTextExtent(i[0])[0] for i in ticks])
+
+
+    ### #--------------------------------------------------------------------
+    ### Events
+    ### #--------------------------------------------------------------------
+
+    def _on_size(self, event):
+        """ Redraw everything with the new sizes. """
+        # TODO: Also reduce number of ticks when text starts to overlap
+        #       or add ticks when there's extra space.
+        self.set_sizes()
+        self.hbox.Remove(0)
+        self.hbox.Add((self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.draw_scale()
+        self.Refresh()
+
+    def _on_paint(self, event):
+        """ Push the MemoryDC bitmap to the displayed PaintDC """
+        dc = wx.PaintDC(self)
+        dc.Blit(0, 0, self.dc_w, self.dc_h, self.mdc, 0, 0)
+
+    def on_color_change(self, event):
+        """
+        Change the plot colors by updating self.gradient and by calling
+        self.draw_scale()
+        """
+        if event['low'] is not None:
+            self.low_color = event['low']
+        if event['high'] is not None:
+            self.high_color = event['high']
+        self.gradient = wm_utils.LinearGradient(self.low_color,
+                                                self.high_color)
+
+#        self._clear_scale()
+        self.hbox.Remove(0)
+        self.hbox.Add((self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+
+        self.draw_scale()
+
+    def on_scale_change(self, event):
+        """
+        Redraws things on scale change
+        """
+        self.gradient = wm_utils.LinearGradient(self.low_color,
+                                                self.high_color)
+
+        self.hbox.Remove(0)
+        self.hbox.Add((self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+
+        self.draw_scale()
+
+    def on_mouse_move(self, event):
+        """ Used for debugging """
+        pt = self.mdc.GetPixelPoint(event.GetPosition())
+        print(pt)
+
+    def on_mouse_left_down(self, event):
+        """ Used for debugging """
+        print("Left-click - color from self.mdc.GetPixelPoint.")
+        pos = event.GetPosition()
+        w, h = self.mdc.GetSize()       # change to gradient area
+        if pos[0] < w and pos[1] < h:
+            val = wm_utils.rescale(pos[1],
+                                   (self.grad_start_y, self.grad_end_y - 1),
+                                   reversed(self.plot_range))
+            a = self.mdc.GetPixelPoint(event.GetPosition())
+            print("{}\t{}\t{}".format(pos, a, val))
+
+    def on_mouse_right_down(self, event):
+        """ Used for debugging """
+        print("Right-click - color from get_color()")
+        pos = event.GetPosition()
+        w, h = self.mdc.GetSize()       # change to gradient area
+        if pos[0] < w and pos[1] < h:
+            val = wm_utils.rescale(pos[1],
+                                   (self.grad_start_y, self.grad_end_y - 1),
+                                   reversed(self.plot_range))
+            a = self.get_color(val)
+            print("{}\t{}\t{}".format(pos, a, val))
+
+    def on_mouse_wheel(self, event):
+        print("mouse wheel!")
+#        self.on_mouse_left_down(event)
+
 
 
 class DiscreteLegend(wx.Panel):
