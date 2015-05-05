@@ -85,7 +85,7 @@ class WaferMapPanel(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.parent = parent
         self.xyd = xyd
-        self.xyd_dict = self.xyd_to_dict(self.xyd)      # data duplication!
+        self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
         self.wafer_info = wafer_info
         self.grid_center = self.wafer_info.center_xy
         self.die_size = self.wafer_info.die_size
@@ -104,15 +104,15 @@ class WaferMapPanel(wx.Panel):
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
-        # TODO: Convert PyTimer to Timer and wx.EVT_TIMER. See wxPytho demo.
+        # TODO: Convert PyTimer to Timer and wx.EVT_TIMER. See wxPython demo.
         self.move_timer = wx.PyTimer(self.on_move_timer)
-        self.init_ui()
+        self._init_ui()
 
-    def xyd_to_dict(self, xyd_list):
-        """ Converts the xyd list to a dict of xNNyNN key-value pairs """
-        return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
+    ### #---------------------------------------------------------
+    ### Methods
+    ### #---------------------------------------------------------
 
-    def init_ui(self):
+    def _init_ui(self):
         """
         Creates the UI Elements for the wafer map and binds various events
         such as mouse wheel change (zoom) and left-click+drag (pan).
@@ -162,18 +162,18 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_DOWN, self.mouse_middle_down)
         self.canvas.Bind(FloatCanvas.EVT_MIDDLE_UP, self.mouse_middle_up)
-        self.canvas.Bind(wx.EVT_PAINT, self.on_first_paint)
+        self.canvas.Bind(wx.EVT_PAINT, self._on_first_paint)
         # XXX: Binding the EVT_LEFT_DOWN seems to cause Issue #24.
         #      What seems to happen is: If I bind EVT_LEFT_DOWN, then the
         #      parent panel or application can't set focus to this
         #      panel, which prevents the EVT_MOUSEWHEEL event from firing
         #      properly.
 #        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
-        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
-        self.canvas.Bind(wx.EVT_KEY_DOWN, self.key_down)
+#        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
+#        self.canvas.Bind(wx.EVT_KEY_DOWN, self._key_down)
 
-        # This is supposed to fix the flicker on mouse move...
-        self.Bind(wx.EVT_ERASE_BACKGROUND, None)
+        # This is supposed to fix flicker on mouse move, but it doesn't work.
+#        self.Bind(wx.EVT_ERASE_BACKGROUND, None)
 
         # Panel Events
         self.Bind(csel.EVT_COLOURSELECT, self.on_color_change)
@@ -214,6 +214,10 @@ class WaferMapPanel(wx.Panel):
                                                      self.high_color,
                                                      self.low_color,
                                                      )
+
+    def _clear_canvas(self):
+        """ Clears the canvas """
+        self.canvas.ClearAll(ResetBB=False)
 
     def draw_die(self):
         """ Draws and add the die on the canvas """
@@ -267,9 +271,88 @@ class WaferMapPanel(wx.Panel):
         self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
 
-    def _clear_canvas(self):
-        """ Clears the canvas """
-        self.canvas.ClearAll(ResetBB=False)
+    def zoom_fill(self):
+        """ Zoom so that everything is displayed """
+        self.canvas.ZoomToBB()
+
+    def toggle_outline(self):
+        """ Toggles the wafer outline and edge exclusion on and off """
+        if self.wfr_outline_bool:
+            self.canvas.RemoveObject(self.wafer_outline)
+            self.wfr_outline_bool = False
+        else:
+            self.canvas.AddObject(self.wafer_outline)
+            self.wfr_outline_bool = True
+        self.canvas.Draw()
+
+    def toggle_crosshairs(self):
+        """ Toggles the center crosshairs on and off """
+        if self.crosshairs_bool:
+            self.canvas.RemoveObject(self.crosshairs)
+            self.crosshairs_bool = False
+        else:
+            self.canvas.AddObject(self.crosshairs)
+            self.crosshairs_bool = True
+        self.canvas.Draw()
+
+    def toggle_legend(self):
+        """ Toggles the legend on and off """
+        if self.legend_bool:
+            self.hbox.RemovePos(0)
+            self.Layout()       # forces update of layout
+            self.legend_bool = False
+        else:
+            self.hbox.Insert(0, self.legend, 0)
+            self.Layout()
+            self.legend_bool = True
+        self.canvas.Draw(Force=True)
+
+    ### #---------------------------------------------------------
+    ### Event Handlers
+    ### #---------------------------------------------------------
+
+    def _key_down(self, event):
+        """
+        Event Handler for Keyboard Shortcuts. This is used when the panel
+        is integrated into a Frame and the Frame does not define the KB
+        Shortcuts already.
+
+        If inside a frame, the wx.EVT_KEY_DOWN event is sent to the toplevel
+        Frame which handles the event (if defined).
+
+        At least I think that's how that works...
+        See http://wxpython.org/Phoenix/docs/html/events_overview.html
+        for more info.
+
+        Shortcuts:
+            HOME:   Zoom to fill window
+            O:      Toggle wafer outline
+            C:      Toggle wafer crosshairs
+            L:      Toggle the legend
+        """
+        # TODO: Decide if I want to move this to a class attribute
+        keycodes = {wx.WXK_HOME: self.zoom_fill,      # "Home
+                    79: self.toggle_outline,          # "O"
+                    67: self.toggle_crosshairs,       # "C"
+                    76: self.toggle_legend,           # "L"
+                    }
+
+#        print("panel event!")
+        key = event.GetKeyCode()
+
+        if key in keycodes.keys():
+            keycodes[key]()
+        else:
+#            print("KeyCode: {}".format(key))
+            pass
+
+    def _on_first_paint(self, event):
+        """ Zoom to fill on the first paint event """
+        # disable the handler for future paint events
+        self.canvas.Bind(wx.EVT_PAINT, None)
+
+        #TODO: Fix a flicker-type event that occurs on this call
+        self.zoom_fill()
 
     def on_color_change(self, event):
         """ Update the wafer map canvas with the new color """
@@ -285,13 +368,13 @@ class WaferMapPanel(wx.Panel):
 #        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
 #        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.mouse_wheel)
 
-    def on_first_paint(self, event):
-        """ Zoom to fill on the first paint event """
-        # disable the handler for future paint events
-        self.canvas.Bind(wx.EVT_PAINT, None)
-
-        #TODO: Fix a flicker-type event that occurs on this call
-        self.zoom_fill()
+    def on_move_timer(self, event=None):
+        """
+        Redraw the canvas whenever the move_timer is triggered. Is needed to
+        prevent buffers from being rebuilt too often
+        """
+#        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
+        self.canvas.Draw()
 
     def mouse_wheel(self, event):
         """ Mouse wheel event for Zooming """
@@ -305,7 +388,7 @@ class WaferMapPanel(wx.Panel):
 
         # calculate a zoom factor based on the wheel movement
         #   Allows for zoom acceleration: fast wheel move = large zoom.
-        #   factor < 0: zoom out. factor > 0: zoom in
+        #   factor < 1: zoom out. factor > 1: zoom in
         sign = abs(speed) / speed
         factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR)**sign
 
@@ -316,14 +399,6 @@ class WaferMapPanel(wx.Panel):
 #                         centerCoords="world",
                          keepPointInPlace=True,
                          )
-
-    def on_move_timer(self, event=None):
-        """
-        Redraw the canvas whenever the move_timer is triggered. Is needed to
-        prevent buffers from being rebuilt too often
-        """
-#        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
-        self.canvas.Draw()
 
     def mouse_move(self, event):
         """
@@ -394,76 +469,6 @@ class WaferMapPanel(wx.Panel):
         # change the cursor back to normal
         self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
-    def key_down(self, event):
-        """
-        Event Handler for Keyboard Shortcuts. This is used when the panel
-        is integrated into a Frame and the Frame does not define the KB
-        Shortcuts already.
-
-        If inside a frame, the wx.EVT_KEY_DOWN event is sent to the toplevel
-        Frame which handles the event (if defined).
-
-        At least I think that's how that works...
-        See http://wxpython.org/Phoenix/docs/html/events_overview.html
-        for more info.
-
-        Shortcuts:
-            HOME:   Zoom to fill window
-            O:      Toggle wafer outline
-            C:      Toggle wafer crosshairs
-            L:      Toggle the legend
-        """
-        # TODO: Decide if I want to move this to a class attribute
-        keycodes = {wx.WXK_HOME: self.zoom_fill,      # "Home
-                    79: self.toggle_outline,          # "O"
-                    67: self.toggle_crosshairs,       # "C"
-                    76: self.toggle_legend,           # "L"
-                    }
-
-        print("panel event!")
-        key = event.GetKeyCode()
-
-        if key in keycodes.keys():
-            keycodes[key]()
-        else:
-            print("KeyCode: {}".format(key))
-
-    def zoom_fill(self):
-        """ Zoom so that everything is displayed """
-        self.canvas.ZoomToBB()
-
-    def toggle_outline(self):
-        """ Toggles the wafer outline and edge exclusion on and off """
-        if self.wfr_outline_bool:
-            self.canvas.RemoveObject(self.wafer_outline)
-            self.wfr_outline_bool = False
-        else:
-            self.canvas.AddObject(self.wafer_outline)
-            self.wfr_outline_bool = True
-        self.canvas.Draw()
-
-    def toggle_crosshairs(self):
-        """ Toggles the center crosshairs on and off """
-        if self.crosshairs_bool:
-            self.canvas.RemoveObject(self.crosshairs)
-            self.crosshairs_bool = False
-        else:
-            self.canvas.AddObject(self.crosshairs)
-            self.crosshairs_bool = True
-        self.canvas.Draw()
-
-    def toggle_legend(self):
-        """ Toggles the legend on and off """
-        if self.legend_bool:
-            self.hbox.RemovePos(0)
-            self.Layout()       # forces update of layout
-            self.legend_bool = False
-        else:
-            self.hbox.Insert(0, self.legend, 0)
-            self.Layout()
-            self.legend_bool = True
-        self.canvas.Draw(Force=True)
-
     def mouse_left_down(self, event):
         """
         Start making the zoom-to-box box.
@@ -490,6 +495,15 @@ class WaferMapPanel(wx.Panel):
         Stop making the zoom-out box and execute the zoom
         """
         print("Right mouse up!")
+
+
+### #---------------------------------------------------------
+### Module Functions
+### #---------------------------------------------------------
+
+def xyd_to_dict(xyd_list):
+        """ Converts the xyd list to a dict of xNNyNN key-value pairs """
+        return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=None):

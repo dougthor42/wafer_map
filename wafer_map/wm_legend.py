@@ -194,21 +194,25 @@ class ContinuousLegend(wx.Panel):
         self.draw_scale()
 
         # Bind various events
-        self.Bind(wx.EVT_PAINT, self.on_paint)
-        self.Bind(wx.EVT_SIZE, self.on_size)
-#        self.Bind(wx.EVT_MOTION, self.mouse_move)
-        self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
-        self.Bind(wx.EVT_RIGHT_DOWN, self.right_click)
+        self._bind_events()
 
-        self.init_ui()
+        self._init_ui()
 
-    def init_ui(self):
+    def _init_ui(self):
         """
         Add a Sizer that is the same size as the MemoryDC
         """
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
         self.hbox.Add((self.dc_w, self.dc_h))
         self.SetSizer(self.hbox)
+
+    def _bind_events(self):
+        """ Bind events to various event handlers """
+        self.Bind(wx.EVT_PAINT, self.on_paint)
+        self.Bind(wx.EVT_SIZE, self.on_size)
+#        self.Bind(wx.EVT_MOTION, self.mouse_move)
+#        self.Bind(wx.EVT_LEFT_DOWN, self.left_click)
+#        self.Bind(wx.EVT_RIGHT_DOWN, self.right_click)
 
     def on_size(self, event):
         """ Redraw everything with the new sizes. """
@@ -518,9 +522,9 @@ class DiscreteLegend(wx.Panel):
             self.colors = colors
         self.create_color_dict()
 
-        self.init_ui()
+        self._init_ui()
 
-    def init_ui(self):
+    def _init_ui(self):
         """ Initialize UI components """
         # Add layout management
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
