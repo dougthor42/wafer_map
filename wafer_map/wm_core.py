@@ -84,9 +84,7 @@ class WaferMapPanel(wx.Panel):
         """
         wx.Panel.__init__(self, parent)
 
-        ###==================================================================
-        ### Inputs
-        ###==================================================================
+        ### Inputs ##########################################################
         self.parent = parent
         self.xyd = xyd
         self.wafer_info = wafer_info
@@ -100,9 +98,7 @@ class WaferMapPanel(wx.Panel):
         self.plot_die_centers = plot_die_centers
         self.discrete_legend_values = discrete_legend_values
 
-        ###==================================================================
-        ### Other Attributes
-        ###==================================================================
+        ### Other Attributes ################################################
         self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
         self.drag = False
         self.wfr_outline_bool = True

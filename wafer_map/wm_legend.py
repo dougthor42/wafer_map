@@ -135,9 +135,7 @@ class ContinuousLegend(wx.Panel):
         """
         wx.Panel.__init__(self, parent)
 
-        ###==================================================================
-        ### Inputs
-        ###==================================================================
+        ### Inputs ##########################################################
         self.parent = parent
         self.plot_range = plot_range
         self.high_color = high_color
@@ -147,9 +145,7 @@ class ContinuousLegend(wx.Panel):
         self.oor_low_color = oor_low_color
         self.invalid_color = wm_const.wm_INVALID_COLOR
 
-        ###==================================================================
-        ### Initialize Size Attributes
-        ###==================================================================
+        ### Initialize Size Attributes ######################################
         # These get set in set_sizes(), but are here to remind me that
         # the instance attribute exists and what they are.
         # Values are in px.
@@ -167,16 +163,12 @@ class ContinuousLegend(wx.Panel):
         self.dc_w = None            # total bitmap width
         self.dc_h = None            # total bitmap height
 
-        ###==================================================================
-        ### Other Instance Attributes
-        ###==================================================================
+        ### Other Instance Attributes #######################################
         self.ticks = None
         self.gradient = wm_utils.LinearGradient(self.low_color,
                                                 self.high_color)
 
-        ###==================================================================
-        ### Remainder of __init__
-        ###==================================================================
+        ### Remainder of __init__ ###########################################
         # Create the MemoryDC now - we'll add the bitmap later.
         self.mdc = wx.MemoryDC()
         self.mdc.SetFont(wx.Font(9,
