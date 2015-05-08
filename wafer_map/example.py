@@ -17,8 +17,6 @@ Description:
     Provides an example on how to use the wafer_map module.
 """
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
 import wx
 
 import wafer_map.gen_fake_data as gen_fake_data

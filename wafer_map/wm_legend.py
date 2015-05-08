@@ -14,8 +14,6 @@ Options:
     --version           # Show version.
 """
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
@@ -180,7 +178,8 @@ class ContinuousLegend(wx.Panel):
         self.set_sizes()
 
         # Create EmptyBitmap in our MemoryDC where we'll do all our drawing.
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         # Draw the entire thing
         self.draw_scale()
@@ -422,7 +421,8 @@ class ContinuousLegend(wx.Panel):
         self.set_sizes()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
         self.draw_scale()
         self.Refresh()
 
@@ -446,7 +446,8 @@ class ContinuousLegend(wx.Panel):
 #        self._clear_scale()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         self.draw_scale()
 
@@ -459,7 +460,8 @@ class ContinuousLegend(wx.Panel):
 
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         self.draw_scale()
 
