@@ -393,12 +393,13 @@ class WaferMapPanel(wx.Panel):
         sign = abs(speed) / speed
         factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR)**sign
 
+        # TODO: wxPython 3 changed the Zoom, so need to fix.
         self.canvas.Zoom(factor,
                          center=pos,
                          centerCoords="pixel",
 #                         center=event.GetCoords(),
 #                         centerCoords="world",
-#                         keepPointInPlace=True,
+#                         keepPointInPlace=True,        # removed in wx3
                          )
 
     def on_mouse_move(self, event):
