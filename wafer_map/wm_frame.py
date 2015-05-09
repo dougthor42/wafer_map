@@ -195,23 +195,23 @@ class WaferMapWindow(wx.Frame):
 
     def _add_menu_items(self):
         """ Appends MenuItems to each menu """
-#        self.mfile.AppendItem(self.mf_new)
-#        self.mfile.AppendItem(self.mf_open)
-        self.mfile.AppendItem(self.mf_close)
+#        self.mfile.Append(self.mf_new)
+#        self.mfile.Append(self.mf_open)
+        self.mfile.Append(self.mf_close)
 
-        self.medit.AppendItem(self.me_redraw)
-#        self.medit.AppendItem(self.me_test1)
-#        self.medit.AppendItem(self.me_test2)
+        self.medit.Append(self.me_redraw)
+#        self.medit.Append(self.me_test1)
+#        self.medit.Append(self.me_test2)
 
-        self.mview.AppendItem(self.mv_zoomfit)
+        self.mview.Append(self.mv_zoomfit)
         self.mview.AppendSeparator()
-        self.mview.AppendItem(self.mv_crosshairs)
-        self.mview.AppendItem(self.mv_outline)
-        self.mview.AppendItem(self.mv_legend)
+        self.mview.Append(self.mv_crosshairs)
+        self.mview.Append(self.mv_outline)
+        self.mview.Append(self.mv_legend)
 
-        self.mopts.AppendItem(self.mo_test)
-        self.mopts.AppendItem(self.mo_high_color)
-        self.mopts.AppendItem(self.mo_low_color)
+        self.mopts.Append(self.mo_test)
+        self.mopts.Append(self.mo_high_color)
+        self.mopts.Append(self.mo_low_color)
 
     def _add_menus(self):
         """ Appends each menu to the menu bar """

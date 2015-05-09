@@ -19,9 +19,18 @@ Description:
 
 import wx
 
-import wafer_map.gen_fake_data as gen_fake_data
-import wafer_map.wm_core as wm_core
-import wafer_map.wm_app as wm_app
+import os.path as osp
+if "github" in osp.abspath(__file__):
+    import sys
+#    [print(_p) for _p in sys.path]
+    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
+else:
+    print("importing from site-packages")
+
+import gen_fake_data as gen_fake_data
+import wm_core as wm_core
+import wm_app as wm_app
 
 __author__ = "Douglas Thor"
 __version__ = "v0.4.0"

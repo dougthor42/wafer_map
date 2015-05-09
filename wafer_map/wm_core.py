@@ -299,7 +299,7 @@ class WaferMapPanel(wx.Panel):
     def toggle_legend(self):
         """ Toggles the legend on and off """
         if self.legend_bool:
-            self.hbox.RemovePos(0)
+            self.hbox.Remove(0)
             self.Layout()       # forces update of layout
             self.legend_bool = False
         else:
@@ -398,7 +398,7 @@ class WaferMapPanel(wx.Panel):
                          centerCoords="pixel",
 #                         center=event.GetCoords(),
 #                         centerCoords="world",
-                         keepPointInPlace=True,
+#                         keepPointInPlace=True,
                          )
 
     def on_mouse_move(self, event):
@@ -455,7 +455,7 @@ class WaferMapPanel(wx.Panel):
         self.end_move_loc = None
 
         # Change the cursor to a drag cursor
-        self.SetCursor(wx.StockCursor(wx.CURSOR_SIZING))
+        self.SetCursor(wx.Cursor(wx.CURSOR_SIZING))
 
     def on_mouse_middle_up(self, event):
         """ End the drag """
@@ -468,7 +468,7 @@ class WaferMapPanel(wx.Panel):
             self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
 
         # change the cursor back to normal
-        self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+        self.SetCursor(wx.Cursor(wx.CURSOR_ARROW))
 
     def on_mouse_left_down(self, event):
         """
