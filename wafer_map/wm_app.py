@@ -84,7 +84,7 @@ class WaferMapApp(object):
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
 
-        self.frame = wm_frame.WaferMapWindow("Wafer Map",
+        self.frame = wm_frame.WaferMapWindow("Wafer Map Phoenix",
                                              self.xyd,
                                              self.wafer_info,
                                              data_type=self.data_type,

@@ -169,8 +169,9 @@ class WaferMapPanel(wx.Panel):
         #      parent panel or application can't set focus to this
         #      panel, which prevents the EVT_MOUSEWHEEL event from firing
         #      properly.
-#        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
-#        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
+        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+#        self.canvas.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
+#        self.canvas.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
 #        self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
         # This is supposed to fix flicker on mouse move, but it doesn't work.
@@ -393,14 +394,16 @@ class WaferMapPanel(wx.Panel):
         sign = abs(speed) / speed
         factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR)**sign
 
-        # TODO: wxPython 3 changed the Zoom, so need to fix.
-        self.canvas.Zoom(factor,
-                         center=pos,
-                         centerCoords="pixel",
-#                         center=event.GetCoords(),
-#                         centerCoords="world",
-#                         keepPointInPlace=True,        # removed in wx3
-                         )
+        # Changes to FloatCanvas.Zoom mean we need to do the following
+        # rather than calling the zoom() function.
+        # Note that SetToNewScale() changes the pixel center (?). This is why
+        # we can call PixelToWorld(pos) again and get a different value!
+        oldpoint = self.canvas.PixelToWorld(pos)
+        self.canvas.Scale = self.canvas.Scale * factor
+        self.canvas.SetToNewScale(False)        # sets new scale but no redraw
+        newpoint = self.canvas.PixelToWorld(pos)
+        delta = newpoint - oldpoint
+        self.canvas.MoveImage(-delta, 'World')  # performs the redraw
 
     def on_mouse_move(self, event):
         """
@@ -475,8 +478,12 @@ class WaferMapPanel(wx.Panel):
         """
         Start making the zoom-to-box box.
         """
-        print("Left mouse down!")
+#        print("Left mouse down!")
         # TODO: Look into what I was doing here. Why no 'self' on parent?
+        pcoord = event.GetPosition()
+        wcoord = self.canvas.PixelToWorld(pcoord)
+        string = "Pixel Coord = {}    \tWorld Coord = {}"
+        print(string.format(pcoord, wcoord))
         parent = wx.GetTopLevelParent(self)
         wx.PostEvent(self.parent, event)
 

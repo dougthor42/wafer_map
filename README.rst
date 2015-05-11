@@ -4,6 +4,51 @@ wafer_map
 
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
+---------------------------------------------------------------------------
+
+Important Note!
+===============
+This is the Python3 fork of my original ``wafer_map`` code. Since wxPython
+Phoenix is not yet fully ported to 3.3+, there is one change that needs to
+be made.
+
+In ``wx\core.py``, the following needs to be added around line 557::
+
+  def _Colour___hash__(self):
+      return hash(tuple(self.Get()))
+  Colour.__hash__ = _Colour___hash__
+  del _Colour___hash__
+
+Yes, the file says to not edit it because it's generated from SIP. All this
+means is that you'll have to redo this change if you ever update wxPython.
+
+This was tested using **wxPython_Phoenix-3.0.3.dev1820+49a8884** found here:
+http://wxpython.org/Phoenix/snapshot-builds/, specifically
+**wxPython_Phoenix-3.0.3.dev1820+49a8884-cp34-none-win_amd64.whl**
+
+You can see a little more info on this here:
+https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII
+
+---------------------------------------------------------------------------
+
+Contents
+========
+
++ `Features`_
++ `Installation`_
++ `Requirements`_
++ `What's it Look Like?`_
++ `Usage`_
+
+  + `Example`_
+  + `Nomenclature`_
+  + `Keyboard Shortcuts and Mouse Usage`_
+
++ `Notes`_
+
+  + `Current capabilities`_
+
++ `Changelog`_
 
 Features
 ========
@@ -181,7 +226,7 @@ coding style too harshly (though constructive criticism is much appreciated!)
 
 **Requires: wxPython**
 
-Current capabilities:
+Current capabilities
 ----------------------
 
 1. Draw wafer outline and flat or notch.
