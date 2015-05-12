@@ -171,8 +171,8 @@ class WaferMapPanel(wx.Panel):
         #      parent panel or application can't set focus to this
         #      panel, which prevents the EVT_MOUSEWHEEL event from firing
         #      properly.
-#        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
-#        self.canvas.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
+#        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+#        self.canvas.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
 #        self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
         # This is supposed to fix flicker on mouse move, but it doesn't work.
