@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E1101
+#   E1101 = Module X has no Y member
 """
 @name:          wafer_map.py
 @vers:          1.0.0
@@ -169,7 +171,7 @@ class WaferMapPanel(wx.Panel):
         #      parent panel or application can't set focus to this
         #      panel, which prevents the EVT_MOUSEWHEEL event from firing
         #      properly.
-        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+#        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
 #        self.canvas.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
 #        self.canvas.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
 #        self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
@@ -435,7 +437,7 @@ class WaferMapPanel(wx.Panel):
                                                         )
         try:
             parent.SetStatusText(status_str)
-        except:
+        except:         # TODO: put in exception types.
             pass
 
         # If we're dragging, actually move the image.
@@ -479,11 +481,11 @@ class WaferMapPanel(wx.Panel):
         Start making the zoom-to-box box.
         """
 #        print("Left mouse down!")
+#        pcoord = event.GetPosition()
+#        wcoord = self.canvas.PixelToWorld(pcoord)
+#        string = "Pixel Coord = {}    \tWorld Coord = {}"
+#        print(string.format(pcoord, wcoord))
         # TODO: Look into what I was doing here. Why no 'self' on parent?
-        pcoord = event.GetPosition()
-        wcoord = self.canvas.PixelToWorld(pcoord)
-        string = "Pixel Coord = {}    \tWorld Coord = {}"
-        print(string.format(pcoord, wcoord))
         parent = wx.GetTopLevelParent(self)
         wx.PostEvent(self.parent, event)
 
@@ -511,8 +513,8 @@ class WaferMapPanel(wx.Panel):
 ### #------------------------------------------------------------------------
 
 def xyd_to_dict(xyd_list):
-        """ Converts the xyd list to a dict of xNNyNN key-value pairs """
-        return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
+    """ Converts the xyd list to a dict of xNNyNN key-value pairs """
+    return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=None):

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E1101
+#   E1101 = Module X has no Y member
 """
 @name:          wm_frame.py
 @vers:          0.1.0
@@ -263,7 +265,9 @@ class WaferMapWindow(wx.Frame):
         """ Call the WaferMapPanel.toggle_legend() method """
         self.panel.toggle_legend()
 
+    # TODO: See the 'and' in the docstring? Means I need a separate method!
     def on_change_high_color(self, event):
+        """ Change the high color and refresh display """
         print("High color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
@@ -277,7 +281,9 @@ class WaferMapWindow(wx.Frame):
             print("no color chosen :-(")
         cd.Destroy()
 
+    # TODO: See the 'and' in the docstring? Means I need a separate method!
     def on_change_low_color(self, event):
+        """ Change the low color and refresh display """
         print("Low Color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
