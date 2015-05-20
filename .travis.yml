@@ -1,11 +1,21 @@
 language: python
+
 python:
   - "2.7"
+
+notifications:
+  email: False
+
 # command to install dependencies
 before_install:
-  - sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev
+  #- "sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev"
+- sudo apt-get install python-wxgtk2.8
+
 install:
-  - "pip install -r dev-requirements.txt"
+  - pip install --upgrade
+  - pip install -r dev-requirements.txt
+  - pip install coveralls
+
 # command to run tests
 script:
   #- nosetests
