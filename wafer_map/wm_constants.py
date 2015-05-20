@@ -15,6 +15,11 @@ wm_HIGH_COLOR = wx.Colour(0, 255, 128, 255)
 #wm_LOW_COLOR = wx.Colour(0, 192, 0, 255)
 wm_LOW_COLOR = wx.Colour(128, 0, 255, 255)
 wm_INVALID_COLOR = wx.Colour(255, 255, 255, 255)
+wm_OUTLINE_COLOR = wx.Colour(255, 255, 0, 255)          # yellow
+wm_WAFER_EDGE_COLOR = wx.Colour(255, 0, 0, 255)         # red
+wm_WAFER_CENTER_DOT_COLOR = wx.Colour(255, 0, 0, 255)   # red
+wm_DIE_CENTER_DOT_COLOR = wx.Colour(255, 0, 0, 255)     # red
+wm_CROSSHAIR_COLOR = wx.Colour(0, 255, 255, 255)        # cyan
 wm_TICK_COUNT = 11
 
 # Continuous Data Gradient sizez in px.

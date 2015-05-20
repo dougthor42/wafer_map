@@ -259,7 +259,7 @@ class WaferMapPanel(wx.Panel):
 
             circ = FloatCanvas.Circle(lower_left_coord,
                                       0.5,
-                                      FillColor=wx.RED,
+                                      FillColor=wm_const.wm_DIE_CENTER_DOT_COLOR,
                                       )
             self.canvas.AddObject(circ)
 
@@ -529,7 +529,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
     # Full wafer outline circle
     circ = FloatCanvas.Circle((0, 0),
                               dia,
-                              LineColor=wx.YELLOW,
+                              LineColor=wm_const.wm_OUTLINE_COLOR,
                               LineWidth=1,
                               )
 
@@ -545,7 +545,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
         arc = FloatCanvas.Arc((x, y),
                               (-x, y),
                               (0, 0),
-                              LineColor=wx.RED,
+                              LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                               LineWidth=3,
                               )
 
@@ -558,7 +558,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
             # Then draw a circle with no flat
             excl_arc = FloatCanvas.Circle((0, 0),
                                           exclRad * 2,
-                                          LineColor=wx.RED,
+                                          LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                                           LineWidth=3,
                                           )
             excl_group = FloatCanvas.Group([excl_arc])
@@ -569,7 +569,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
             excl_arc = FloatCanvas.Arc((FSSflatX, FSSflatY),
                                        (-FSSflatX, FSSflatY),
                                        (0, 0),
-                                       LineColor=wx.RED,
+                                       LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                                        LineWidth=3,
                                        )
 
@@ -583,7 +583,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
         arc = FloatCanvas.Arc(start_xy,
                               end_xy,
                               (0, 0),
-                              LineColor=wx.RED,
+                              LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                               LineWidth=3,
                               )
 
@@ -594,7 +594,7 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
         excl_arc = FloatCanvas.Arc(start_xy,
                                    end_xy,
                                    (0, 0),
-                                   LineColor=wx.RED,
+                                   LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                                    LineWidth=3,
                                    )
 
@@ -670,7 +670,7 @@ def draw_crosshairs(dia=150, dot=False):
     if dot:
         circ = FloatCanvas.Circle((0, 0),
                                   2.5,
-                                  FillColor=wx.RED,
+                                  FillColor=wm_const.wm_WAFER_CENTER_DOT_COLOR,
                                   )
 
         return FloatCanvas.Group([circ])
@@ -693,7 +693,7 @@ def draw_wafer_flat(rad, flat_length):
     y = -math.sqrt(rad**2 - x**2)
 
     flat = FloatCanvas.Line([(-x, y), (x, y)],
-                            LineColor=wx.RED,
+                            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                             LineWidth=3,
                             )
     return flat
@@ -704,7 +704,7 @@ def draw_excl_flat(rad, flat_y, line_width=1, line_color='black'):
     flat_x = math.sqrt(rad**2 - flat_y**2)
 
     flat = FloatCanvas.Line([(-flat_x, flat_y), (flat_x, flat_y)],
-                            LineColor=wx.RED,
+                            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                             LineWidth=3,
                             )
     return flat
@@ -721,7 +721,7 @@ def draw_wafer_notch(rad):
                  (rad * math.sin(ang_rad), -rad * math.cos(ang_rad))]
 
     notch = FloatCanvas.Line(xy_points,
-                             LineColor=wx.RED,
+                             LineColor=wm_const.wm_WAFER_EDGE_COLOR,
                              LineWidth=2,
                              )
     return notch
