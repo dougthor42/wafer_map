@@ -1,11 +1,25 @@
 language: python
+
+sudo: required
+
 python:
-  - "2.7"
+  - "3.4"
+
+notifications:
+  email: False
+
 # command to install dependencies
 before_install:
-  - sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev
+  #- wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+
 install:
-  - "pip install -r dev-requirements.txt"
+  - pip install --upgrade
+  - pip install -r dev-requirements.txt
+  - pip install coveralls
+  - pip install wheel
+  #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+  - sudo pip install --upgrade --pre -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
+
 # command to run tests
 script:
   #- nosetests
