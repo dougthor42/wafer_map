@@ -20,7 +20,7 @@ before_install:
   - ls
   - cd wxPython_Phoenix-3.0.3.dev1820+49a8884
   - ls
-  - sudo add-apt-repository ppa:gstreamer-developers/ppa
+  - sudo add-apt-repository -y ppa:gstreamer-developers/ppa
   - sudo apt-get update
   - sudo apt-get install gstreamer1.0*
   - python setup.py build
