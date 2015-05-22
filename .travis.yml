@@ -10,14 +10,14 @@ notifications:
 before_install:
   #- "sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev"
 - sudo apt-get install python-wxgtk2.8
-- wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884-cp27-none-win32.whl"
+- wget "http://wxpython.org/Phoenix/snapshot-builds/http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
 
 install:
   - pip install --upgrade
   - pip install -r dev-requirements.txt
   - pip install coveralls
   - pip install wheel
-  - pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884-cp27-none-win32.whl"
+  - pip install "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
 
 # command to run tests
 script:
