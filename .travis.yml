@@ -8,16 +8,30 @@ notifications:
 
 # command to install dependencies
 before_install:
+  # Method 1
   #- "sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev"
-- sudo apt-get install python-wxgtk2.8
-- wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+
+  # Method 2
+  #- sudo apt-get install python-wxgtk2.8
+  #- wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+  #- tar -xvzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+  #- python wxPython_Phoenix-3.0.3.dev1820+49a8884/setup.py build
+  #- python wxPython_Phoenix-3.0.3.dev1820+49a8884/setup.py install
+  
+  # Method 3
+   - sudo apt-get install dpkg-dev build-essential
+   - sudo apt-get install libjpeg-dev libtiff-dev
+   - sudo apt-get install libgtk2.0-dev
+   - sudo apt-get install libsdl1.2-dev libgstreamer-plugins-base0.10-dev 
+    
 
 install:
   - pip install --upgrade
   - pip install -r dev-requirements.txt
   - pip install coveralls
   - pip install wheel
-  - pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+  #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+  - sudo pip install --upgrade --pre -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 # command to run tests
 script:
