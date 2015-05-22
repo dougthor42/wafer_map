@@ -11,22 +11,22 @@ notifications:
 # command to install dependencies
 before_install:
   # Method 1
-  #- "sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev"
+  - "sudo apt-get install python-wxgtk2.8 python-wxtools wx2.8-i18n libwxgtk2.8-dev libgtk2.0-dev"
 
   # Method 2
   #- sudo apt-get install python-wxgtk2.8
-  - wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
-  - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
-  - ls
-  - cd wxPython_Phoenix-3.0.3.dev1820+49a8884
-  - ls
+  #- wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+  #- tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+  #- ls
+  #- cd wxPython_Phoenix-3.0.3.dev1820+49a8884
+  #- ls
   #- sudo add-apt-repository -y ppa:gstreamer-developers/ppa
   #- sudo apt-get update
   #- sudo apt-get install gstreamer1.0*
-  - sudo apt-get install libgstreamer0.10-dev
-  - python setup.py build
-  - python setup.py install
-  - cd ..
+  #- sudo apt-get install libgstreamer0.10-dev
+  #- python setup.py build
+  #- python setup.py install
+  #- cd ..
   
   # Method 3
   #- sudo apt-get install dpkg-dev build-essential
