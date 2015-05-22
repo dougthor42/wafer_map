@@ -15,6 +15,7 @@ before_install:
   #- sudo apt-get install python-wxgtk2.8
   - wget "http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
   - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+  - ls
   - python wxPython_Phoenix-3.0.3.dev1820+49a8884/setup.py build
   - python wxPython_Phoenix-3.0.3.dev1820+49a8884/setup.py install
   
