@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
+#from distutils.core import setup
+from setuptools import setup, find_packages
 setup(
     name="wafer_map",
-    packages=["wafer_map", "wafer_map.tests"],
+    packages=find_packages(),
     version="1.0.10",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
@@ -16,9 +17,10 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
+#        "Programming Language :: Python :: 2.6",
+#        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.4",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Scientific/Engineering :: Visualization",
