@@ -405,9 +405,11 @@ def coord_to_grid(coord, die_size, grid_center):
     (grid_x, grid_y) : tuple
         The grid coordinates. Also known as (column, row).
     """
-    # TODO: seems have a error with negative 0 grid values.
-    grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
-    grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
+#    grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
+#    grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
+    # Fixes #30, courtesy of GitHub user sinkra
+    grid_x = int(round(grid_center[0] + (coord[0] / die_size[0])))
+    grid_y = int(round(grid_center[1] - (coord[1] / die_size[1])))
     return (grid_x, grid_y)
 
 
