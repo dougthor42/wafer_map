@@ -195,12 +195,14 @@ Current capabilities:
 
 Changelog
 =========
+
 * **1.0.10 / 2015-05-04**
 
   + Playing around with imports. Trying to make it so that if I'm running
     a file from my development directory, it imports all the development
     modules and if I'm running something else, it imports from the
     released (site-packages) directory.
+  + Fixed Issue #30
 
 * **1.0.9 / 2015-05-04**
 
