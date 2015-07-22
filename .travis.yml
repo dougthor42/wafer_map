@@ -20,18 +20,19 @@ before_install:
   # Installing wxPython Phoenix from source
   #------------------------------------------
   # Download the source tarball
-#  - wget http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
-#  - ls
+  - wget http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+  - ls
 
   # extract it
-#  - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
-#  - ls
-#  - ls wxPython_Phoenix-3.0.3.dev1820+49a8884
+  - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+  - ls
+  - ls wxPython_Phoenix-3.0.3.dev1820+49a8884
 
   # Run the build script
-#  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
+  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
 #  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
-#  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py dox etg sip build
+  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 --build_dir=../bld --nodoc etg sip build
+  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 test --verbose
 
 install:
   - echo "-----install-----"
@@ -41,7 +42,7 @@ install:
   - pip install wheel
   - pip install numpy
   #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
-  - pip install --upgrade --pre --trusted-host wxpython.org -vvv -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
+#  - pip install --upgrade --pre --trusted-host wxpython.org -vvv -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 script:
   - nosetests
