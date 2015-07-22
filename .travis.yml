@@ -41,7 +41,7 @@ install:
   - pip install wheel
   - pip install numpy
   #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
-  - travis_wait pip install -v --upgrade --pre --trusted-host wxpython.org -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
+  - travis_wait pip install --upgrade --pre --trusted-host wxpython.org -vvv -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 script:
   - nosetests
