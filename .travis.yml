@@ -34,8 +34,8 @@ before_install:
   - ls
 #  - python build.py --help
 #  - python ./build.py --build_dir=../bld --nodoc dox etg sip build
-  - sudo python ./build.py dox touch etg --nodoc sip build
-  - python ./build.py 3.4 test --verbose
+  - sudo python ./build.py --build_dir=./bld dox touch etg --nodoc sip build
+  - python ./build.py test --verbose
   - cd ..
 
 install:
