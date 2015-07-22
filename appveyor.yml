@@ -84,6 +84,7 @@ install:
 #  - "%CMD_IN_ENV% pip install ."
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-datetime/"
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-pytest/"
+  - "%CMD_IN_ENV% pip install --upgrade --trusted-host wxpython.org --pre http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix"
 
   ### ----------------------
   ### Download wxPython
@@ -95,7 +96,7 @@ install:
   #- ps: Invoke-WebRequest "http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal" -Outfile 'C:\Temp\wxPython_source.tar.bz2'
 
   # download wxPython Source (Powershell 2.0)
-  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
+#  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
 
   ### ----------------------
   ### Extract wxPython
@@ -105,32 +106,32 @@ install:
   # First extract .bz2 file
   #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp" -Wait
   # In order to get 7-Zip's output redirected, I need to use this big block:
-  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
-  - ps: $psi.CreateNoWindow = $true
-  - ps: $psi.UseShellExecute = $false
-  - ps: $psi.RedirectStandardOutput = $true
-  - ps: $psi.RedirectStandardError = $true
-  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
-  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar.bz2 -y -oC:\\Temp")
-  - ps: $process = New-Object System.Diagnostics.Process
-  - ps: $process.StartInfo = $psi
-  - ps: $process.Start()
-  - ps: $output = $process.StandardOutput.ReadToEnd()
-  - ps: $process.WaitForExit()
-  - ps: $output
+#  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
+#  - ps: $psi.CreateNoWindow = $true
+#  - ps: $psi.UseShellExecute = $false
+#  - ps: $psi.RedirectStandardOutput = $true
+#  - ps: $psi.RedirectStandardError = $true
+#  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
+#  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar.bz2 -y -oC:\\Temp")
+#  - ps: $process = New-Object System.Diagnostics.Process
+#  - ps: $process.StartInfo = $psi
+#  - ps: $process.Start()
+#  - ps: $output = $process.StandardOutput.ReadToEnd()
+#  - ps: $process.WaitForExit()
+#  - ps: $output
 
   # Then extract the .tar file to a directory
-  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source" -Wait
+#  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source" -Wait
   # In order to get 7-Zip's output redirected, I need to use this big block:
-  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
-  - ps: $psi.CreateNoWindow = $true
-  - ps: $psi.UseShellExecute = $false
-  - ps: $psi.RedirectStandardOutput = $true
-  - ps: $psi.RedirectStandardError = $true
-  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
-  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source")
-  - ps: $process = New-Object System.Diagnostics.Process
-  - ps: $process.StartInfo = $psi
+#  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
+#  - ps: $psi.CreateNoWindow = $true
+#  - ps: $psi.UseShellExecute = $false
+#  - ps: $psi.RedirectStandardOutput = $true
+#  - ps: $psi.RedirectStandardError = $true
+#  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
+#  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source")
+#  - ps: $process = New-Object System.Diagnostics.Process
+#  - ps: $process.StartInfo = $psi
   #- ps: $process.Start()
   #- ps: $output = $process.StandardOutput.ReadToEnd()
   #- ps: $process.WaitForExit()
