@@ -30,8 +30,8 @@ before_install:
 
   # Run the build script
 #  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
-  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
-  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
+#  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
+  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py dox etg sip build
 
 install:
   - echo "-----install-----"
