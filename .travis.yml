@@ -38,7 +38,7 @@ before_install:
   - pwd
 
   # Set the `SIP` environment variable to the sip install location
-  # (used by wxPython later)
+  # (used by wxPython later, see build.py:562)
   - export SIP=/home/travis/build/dougthor42/wafer_map/sip-4.16.9
   - set | grep SIP
   - env | grep SIP
@@ -67,7 +67,7 @@ before_install:
   - ls
   - python ./build.py --build_dir=./bld etg --nodoc
   - ls
-  - python ./build.py --build_dir=./bld sip
+  - sudo python ./build.py --build_dir=./bld sip
 #  - python ./build.py --build_dir=./bld build      # split into _wx and _py
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
