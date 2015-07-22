@@ -32,13 +32,17 @@ before_install:
   - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
   - cd ./wxPython_Phoenix-3.0.3.dev1820+49a8884
   - ls
+  - ls ./sip
 #  - python build.py --help
-#  - python ./build.py --build_dir=../bld --nodoc dox etg sip build
+#  - python ./build.py --build_dir=../bld dox touch etg --nodoc sip build
   - python ./build.py --build_dir=./bld dox
+  - ls
   - python ./build.py --build_dir=./bld touch
+  - ls
   - python ./build.py --build_dir=./bld etg --nodoc
+  - ls
   - python ./build.py --build_dir=./bld sip
-#  - python ./build.py --build_dir=./bld build
+#  - python ./build.py --build_dir=./bld build      # split into _wx and _py
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
