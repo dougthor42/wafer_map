@@ -30,6 +30,7 @@ before_install:
 
   # run configure, make, and make install
   - cd sip-4.16.9
+  - ls
   - ./configure
   - make
   - make install
