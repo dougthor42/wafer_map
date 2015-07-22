@@ -27,11 +27,11 @@ before_install:
   - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
   - ls
   - ls wxPython_Phoenix-3.0.3.dev1820+49a8884
-  - ls wxPython_Phoenix-3.0.3.dev1820+49a8884/wxPython
 
   # Run the build script
-  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/wxPython/
-  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/wxPython/build-wxpython.py --install
+#  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
+  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
+  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
 
 install:
   - echo "-----install-----"
