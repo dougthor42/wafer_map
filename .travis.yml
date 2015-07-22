@@ -24,3 +24,11 @@ install:
 script:
   - nosetests
   - python --version
+
+addons:
+  apt:
+    packages:
+      - libghc-gstreamer-dev
+      - dpkg-dev
+      - libnotify
+      - libsdl1.2-dev
