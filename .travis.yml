@@ -33,8 +33,8 @@ before_install:
   - cd ./wxPython_Phoenix-3.0.3.dev1820+49a8884
   - ls
 #  - python build.py --help
-#  - python ./build.py 3.4 --build_dir=../bld --nodoc dox etg sip build
-  - sudo python ./build.py 3.4 dox touch etg --nodoc sip build
+#  - python ./build.py --build_dir=../bld --nodoc dox etg sip build
+  - sudo python ./build.py dox touch etg --nodoc sip build
   - python ./build.py 3.4 test --verbose
   - cd ..
 
