@@ -22,9 +22,9 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
 
   matrix:
-    - PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7.8"
-      PYTHON_ARCH: "32"
+#    - PYTHON: "C:\\Python27"
+#      PYTHON_VERSION: "2.7.8"
+#      PYTHON_ARCH: "32"
 
 #    - PYTHON: "C:\\Python27-x64"
 #      PYTHON_VERSION: "2.7.8"
@@ -42,9 +42,9 @@ environment:
 #     PYTHON_VERSION: "3.4.1"
 #     PYTHON_ARCH: "32"
 
-#   - PYTHON: "C:\\Python34-x64"
-#     PYTHON_VERSION: "3.4.1"
-#     PYTHON_ARCH: "64"
+   - PYTHON: "C:\\Python34-x64"
+     PYTHON_VERSION: "3.4.1"
+     PYTHON_ARCH: "64"
 
 install:
   - ECHO "Filesystem root:"
@@ -84,7 +84,7 @@ install:
 #  - "%CMD_IN_ENV% pip install ."
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-datetime/"
 #  - "%CMD_IN_ENV% pip install ./hypothesis-extra/hypothesis-pytest/"
-  - "%CMD_IN_ENV% pip install --upgrade --trusted-host wxpython.org --pre http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix"
+  - "%CMD_IN_ENV% pip install --upgrade --trusted-host wxpython.org --pre http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884-cp34-none-win_amd64.whl"
 
   ### ----------------------
   ### Download wxPython
