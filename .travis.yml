@@ -17,6 +17,7 @@ install:
   - pip install -r dev-requirements.txt
   - pip install coveralls
   - pip install wheel
+  - pip install numpy
   #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
   - pip install --upgrade --pre --trusted-host wxpython.org -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
