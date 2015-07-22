@@ -1,3 +1,6 @@
+#################################
+# General setup
+#################################
 language: python
 
 sudo: false
@@ -8,8 +11,24 @@ python:
 notifications:
   email: false
 
+#################################
+# Build Lifecycle
+#################################
 before_install:
   - echo "-----before_install-----"
+
+  # Installing wxPython Phoenix from source
+  #------------------------------------------
+  # Download the source tarball
+  - wget http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+  - mv wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz wxPython_Phoenix-3.0.3.tar.gz
+
+  # extract it
+  - tar -xzf wxPython_Phoenix-3.0.3.tar.gz
+
+  # Run the build script
+  - ls ./wxPython_Phoenix-3.0.3/wxPython/
+  - python ./wxPython_Phoenix-3.0.3/wxPython/build-wxpython.py --install
 
 install:
   - echo "-----install-----"
@@ -19,7 +38,7 @@ install:
   - pip install wheel
   - pip install numpy
   #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
-  - pip install --upgrade --pre --trusted-host wxpython.org -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
+#  - pip install --upgrade --pre --trusted-host wxpython.org -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 script:
   - nosetests
