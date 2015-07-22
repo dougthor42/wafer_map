@@ -17,8 +17,27 @@ notifications:
 before_install:
   - echo "-----before_install-----"
 
+  # Installing SIP from source
+  # ------------------------------
+  # Download the source tarball
+  - wget http://www.riverbankcomputing.com/static/Downloads/sip4/sip-4.16.9.tar.gz
+  - ls
+
+  # extract it
+  - tar -xzf sip-4.16.9.tar.gz
+  - pwd
+  - ls
+
+  # run configure, make, and make install
+  - cd sip-4.16.9
+  - ./configure
+  - make
+  - make install
+  - cd ..
+  - pwd
+
   # Installing wxPython Phoenix from source
-  #------------------------------------------
+  # ------------------------------------------
   # Download the source tarball
   - wget http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
   - ls
