@@ -3,7 +3,7 @@
 #################################
 language: python
 
-sudo: false
+sudo: required
 
 python:
   - "3.4"
@@ -30,9 +30,13 @@ before_install:
 
   # Run the build script
   - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
-#  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
-  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 --build_dir=../bld --nodoc dox etg sip build
-  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 test --verbose
+  - cd ./wxPython_Phoenix-3.0.3.dev1820+49a8884
+  - ls
+#  - python build.py --help
+#  - python ./build.py 3.4 --build_dir=../bld --nodoc dox etg sip build
+  - sudo python ./build.py 3.4 dox touch etg --nodoc sip build
+  - python ./build.py 3.4 test --verbose
+  - cd ..
 
 install:
   - echo "-----install-----"
@@ -58,3 +62,16 @@ addons:
       - dpkg-dev
 #      - libnotify
       - libsdl1.2-dev
+
+      # For wxPython?
+      - dpkg-dev
+      - build-essential
+#      - python2.7-dev # use appropriate Python version
+      - libwebkitgtk-dev
+      - libjpeg-dev
+      - libtiff-dev
+      - libgtk2.0-dev
+      - libsdl1.2-dev
+      - libgstreamer-plugins-base0.10-dev
+      - freeglut3
+      - freeglut3-dev
