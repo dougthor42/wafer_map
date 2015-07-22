@@ -18,9 +18,9 @@ install:
   - pip install coveralls
   - pip install wheel
   #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
-  - pip install --upgrade --pre -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
+  - pip install --upgrade --pre --trusted-host wxpython.org -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 # command to run tests
 script:
-  #- nosetests
+  - nosetests
   - python --version
