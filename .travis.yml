@@ -37,6 +37,10 @@ before_install:
   - cd ..
   - pwd
 
+  # Set the `SIP` environment variable to the sip install location
+  # (used by wxPython later)
+  - SIP = /home/travis/build/dougthor42/wafer_map/sip-4.16.9
+
   # Installing wxPython Phoenix from source
   # ------------------------------------------
   # Download the source tarball
