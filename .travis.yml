@@ -31,7 +31,7 @@ before_install:
   # Run the build script
   - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
 #  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py --help
-  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 --build_dir=../bld --nodoc etg sip build
+  - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 --build_dir=../bld --nodoc dox etg sip build
   - python ./wxPython_Phoenix-3.0.3.dev1820+49a8884/build.py 3.4 test --verbose
 
 install:
@@ -56,5 +56,5 @@ addons:
     packages:
       - libghc-gstreamer-dev
       - dpkg-dev
-      - libnotify
+#      - libnotify
       - libsdl1.2-dev
