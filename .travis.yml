@@ -44,6 +44,7 @@ before_install:
   - set | grep SIP
   - env | grep SIP
   - ls /home/travis/virtualenv/python3.4.2/bin/
+  - ls /home/travis/virtualenv/python3.4.2/bin/sip
 
   # TODO: look into moving sip install to
   # /home/travis/build/dougthor42/wafer_map/wxPython_Phoenix-3.0.3.dev1820+49a8884/bin/sip-4.16.7-linux
@@ -66,7 +67,12 @@ before_install:
   - cd ./wxPython_Phoenix-3.0.3.dev1820+49a8884
   - ls
   - ls ./sip
-#  - python build.py --help
+
+  # seperate commands for:
+  #  1. travis doesn't halt if there's no output
+  #  2. easier debugging.
+  #  3. customize things like sudo
+#  - python build.py --help         # returns code 1, can't use.
 #  - python ./build.py --build_dir=../bld dox touch etg --nodoc sip build
   - python ./build.py --build_dir=./bld dox
   - ls
@@ -74,7 +80,7 @@ before_install:
   - ls
   - python ./build.py --build_dir=./bld etg --nodoc
   - ls
-  - /home/travis/build/dougthor42/wafer_map/sip-4.16.9
+
   - sudo -E python ./build.py --build_dir=./bld sip
 #  - python ./build.py --build_dir=./bld build      # split into _wx and _py
   - python ./build.py --build_dir=./bld build_wx
