@@ -85,6 +85,8 @@ before_install:
   # Up to this point confirmed OK.
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  - pip install --upgrade --pre --trusted-host wxpython.org -vvv -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
+
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
   - cd ..
@@ -96,7 +98,7 @@ install:
   - pip install coveralls
   - pip install wheel
   - pip install numpy
-  #- pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
+#  - pip install "wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz"
 #  - pip install --upgrade --pre --trusted-host wxpython.org -vvv -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 script:
@@ -120,8 +122,8 @@ addons:
 #      - python2.7-dev # use appropriate Python version
       - libwebkitgtk-dev
       - libjpeg-dev
-#      - libtiff-dev        #libtiff-dev is a virtual package.
-      - libtiff4-dev
+      - libtiff-dev        #libtiff-dev is a virtual package.
+#      - libtiff4-dev
       - libgtk2.0-dev
       - libsdl1.2-dev
       - libgstreamer-plugins-base0.10-dev
