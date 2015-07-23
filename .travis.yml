@@ -67,7 +67,7 @@ before_install:
   - ls
   - python ./build.py --build_dir=./bld etg --nodoc
   - ls
-  - sudo python ./build.py --build_dir=./bld sip
+  - sudo --preserve-env python ./build.py --build_dir=./bld sip
 #  - python ./build.py --build_dir=./bld build      # split into _wx and _py
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
