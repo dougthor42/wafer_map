@@ -43,6 +43,11 @@ before_install:
   - set | grep SIP
   - env | grep SIP
 
+  # TODO: look into moving sip install to
+  # /home/travis/build/dougthor42/wafer_map/wxPython_Phoenix-3.0.3.dev1820+49a8884/bin/sip-4.16.7-linux
+  # that will allow me to remove the environment variable and the
+  # --preserve-env on the build.py sip command.
+
   # Installing wxPython Phoenix from source
   # ------------------------------------------
   # Download the source tarball
@@ -67,7 +72,7 @@ before_install:
   - ls
   - python ./build.py --build_dir=./bld etg --nodoc
   - ls
-  - sudo --preserve-env python ./build.py --build_dir=./bld sip
+  - sudo -E python ./build.py --build_dir=./bld sip
 #  - python ./build.py --build_dir=./bld build      # split into _wx and _py
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
