@@ -120,7 +120,8 @@ addons:
 #      - python2.7-dev # use appropriate Python version
       - libwebkitgtk-dev
       - libjpeg-dev
-#      - libtiff-dev
+#      - libtiff-dev        #libtiff-dev is a virtual package.
+      - libtiff4-dev
       - libgtk2.0-dev
       - libsdl1.2-dev
       - libgstreamer-plugins-base0.10-dev
