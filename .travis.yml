@@ -75,15 +75,16 @@ before_install:
 #  - python build.py --help         # returns code 1, can't use.
 #  - python ./build.py --build_dir=../bld dox touch etg --nodoc sip build
   - python ./build.py --build_dir=./bld dox
-  - ls
   - python ./build.py --build_dir=./bld touch
-  - ls
   - python ./build.py --build_dir=./bld etg --nodoc
-  - ls
-
   - sudo -E python ./build.py --build_dir=./bld sip
 #  - python ./build.py --build_dir=./bld build      # split into _wx and _py
   - python ./build.py --build_dir=./bld build_wx
+
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Up to this point confirmed OK.
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
   - cd ..
@@ -119,7 +120,7 @@ addons:
 #      - python2.7-dev # use appropriate Python version
       - libwebkitgtk-dev
       - libjpeg-dev
-      - libtiff-dev
+#      - libtiff-dev
       - libgtk2.0-dev
       - libsdl1.2-dev
       - libgstreamer-plugins-base0.10-dev
