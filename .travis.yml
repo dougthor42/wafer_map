@@ -109,6 +109,7 @@ before_install:
   - wget http://wxpython.org/Phoenix/tools/doxygen-1.8.8-linux.bz2
   - bzip2 -d doxygen-1.8.8-linux.bz2
   - mv doxygen-1.8.8-linux ./bin/doxygen-1.8.8-linux
+  - chmod 755 ./bin/doxygen-1.8.8-linux
 
   # Follow the same flow for building wxPython from source.
   - python ./build.py --build_dir=./bld dox
