@@ -105,6 +105,11 @@ before_install:
   # Switch to the correct commit:
   - git checkout 49a8884e7c
 
+  # Download dox because the build script fails at doing so for some reason.
+  - wget http://wxpython.org/Phoenix/tools/doxygen-1.8.8-linux.bz2
+  - bzip2 -d doxygen-1.8.8-linux.bz2
+  - mv doxygen-1.8.8-linux ./bin/doxygen-1.8.8-linux
+
   # Follow the same flow for building wxPython from source.
   - python ./build.py --build_dir=./bld dox
   - python ./build.py --build_dir=./bld touch
@@ -113,8 +118,6 @@ before_install:
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
-
-
 
 install:
   - echo "-----install-----"
@@ -131,6 +134,7 @@ install:
 #  - pip install --upgrade --pre --trusted-host wxpython.org -vvv -f http://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix
 
 script:
+  - echo "-----script-----"
   - nosetests
   - python --version
 
