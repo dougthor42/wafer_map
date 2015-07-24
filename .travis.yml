@@ -14,83 +14,114 @@ notifications:
 #################################
 # Build Lifecycle
 #################################
+
 before_install:
   - echo "-----before_install-----"
 
   # Installing SIP from source
-  # ------------------------------
+  # -------------------------------------------------------------------------
   # Download the source tarball
-  - wget http://www.riverbankcomputing.com/static/Downloads/sip4/sip-4.16.9.tar.gz
-  - ls
+#  - wget http://www.riverbankcomputing.com/static/Downloads/sip4/sip-4.16.9.tar.gz
+#  - ls
 
   # extract it
-  - tar -xzf sip-4.16.9.tar.gz
-  - pwd
-  - ls
+#  - tar -xzf sip-4.16.9.tar.gz
+#  - pwd
+#  - ls
 
   # run configure, make, and make install
-  - cd sip-4.16.9
-  - ls
-  - python configure.py
-  - make
-  - sudo make install
-  - cd ..
-  - pwd
+#  - cd sip-4.16.9
+#  - ls
+#  - python configure.py
+#  - make
+#  - sudo make install
+#  - cd ..
+#  - pwd
 
   # Set the `SIP` environment variable to the sip install location
   # (used by wxPython later, see build.py:562)
-#  - export SIP=/home/travis/build/dougthor42/wafer_map/sip-4.16.9
-  - export SIP=/home/travis/virtualenv/python3.4.2/bin/sip
-  - set | grep SIP
-  - env | grep SIP
-  - ls /home/travis/virtualenv/python3.4.2/bin/
-  - ls /home/travis/virtualenv/python3.4.2/bin/sip
+#  - export SIP=/home/travis/virtualenv/python3.4.2/bin/sip
+#  - set | grep SIP
+#  - env | grep SIP
+#  - ls /home/travis/virtualenv/python3.4.2/bin/
+#  - ls /home/travis/virtualenv/python3.4.2/bin/sip
 
   # TODO: look into moving sip install to
   # /home/travis/build/dougthor42/wafer_map/wxPython_Phoenix-3.0.3.dev1820+49a8884/bin/sip-4.16.7-linux
   # that will allow me to remove the environment variable and the
   # -E on the build.py sip command.
 
-  # Installing wxPython Phoenix from source
-  # ------------------------------------------
+  # -------------------------------------------------------------------------
+
+
+  # Installing wxPython Phoenix from snapshot
+  # -------------------------------------------------------------------------
   # Download the source tarball
-  - wget http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
-  - ls
+#  - wget http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+#  - ls
 
   # extract it
-  - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
-  - ls
-  - ls wxPython_Phoenix-3.0.3.dev1820+49a8884
+#  - tar -xzf wxPython_Phoenix-3.0.3.dev1820+49a8884.tar.gz
+#  - ls
+#  - ls wxPython_Phoenix-3.0.3.dev1820+49a8884
 
   # Run the build script
-  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
-  - cd ./wxPython_Phoenix-3.0.3.dev1820+49a8884
-  - ls
-  - ls ./sip
+#  - ls ./wxPython_Phoenix-3.0.3.dev1820+49a8884/
+#  - cd ./wxPython_Phoenix-3.0.3.dev1820+49a8884
+#  - ls
+#  - ls ./sip
 
   # seperate commands for:
   #  1. travis doesn't halt if there's no output
   #  2. easier debugging.
   #  3. customize things like sudo
-#  - python build.py --help         # returns code 1, can't use.
-#  - python ./build.py --build_dir=../bld dox touch etg --nodoc sip build
-  - python ./build.py --build_dir=./bld dox
-  - python ./build.py --build_dir=./bld touch
-  - python ./build.py --build_dir=./bld etg --nodoc
-  - sudo -E python ./build.py --build_dir=./bld sip
+#  - python ./build.py --build_dir=../bld dox touch etg --nodoc sip build     # split out
+#  - python ./build.py --build_dir=./bld dox
+#  - python ./build.py --build_dir=./bld touch
+#  - python ./build.py --build_dir=./bld etg --nodoc
+#  - sudo -E python ./build.py --build_dir=./bld sip
 #  - python ./build.py --build_dir=./bld build      # split into _wx and _py
-  - python ./build.py --build_dir=./bld build_wx
+#  - python ./build.py --build_dir=./bld build_wx
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Up to this point confirmed OK.
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#  - python ./build.py --build_dir=./bld build_py
+#  - python ./build.py --build_dir=./bld test --verbose
+#  - cd ..
+
+  # -------------------------------------------------------------------------
+
+  # Installing wxPython Phoenix from repo clone of 49a8884e7c
+  # -------------------------------------------------------------------------
+  - echo "Installing wxPython Phoenix from repo clone of
+  # Clone the repo (downloads entire history)
+  - git clone --depth=50 --branch=master git://github.com/wxWidgets/Phoenix.git
+
+  # Change to the directory
+  - cd Phoenix
+
+  # Switch to the correct commit:
+  - git checkout 49a8884e7c
+
+  # Follow the same flow for building wxPython from source.
+  - python ./build.py --build_dir=./bld dox
+  - python ./build.py --build_dir=./bld touch
+  - python ./build.py --build_dir=./bld etg --nodoc
+  - python ./build.py --build_dir=./bld sip
+  - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
-  - cd ..
+
+
 
 install:
   - echo "-----install-----"
+  # Make sure I'm in the correct directory after all that before_install crap
+  - cd /home/travis/build/dougthor42/wafer_map/
+
+  # Start the install of everything
   - pip install --upgrade pip
   - pip install -r dev-requirements.txt
   - pip install coveralls
@@ -111,13 +142,13 @@ addons:
     packages:
       - libghc-gstreamer-dev
       - dpkg-dev
-#      - libnotify
+      - libnotify
       - libsdl1.2-dev
 
       # For wxPython?
       - dpkg-dev
       - build-essential
-#      - python2.7-dev # use appropriate Python version
+      - python3.4-dev
       - libwebkitgtk-dev
       - libjpeg-dev
       - libtiff-dev
