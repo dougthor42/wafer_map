@@ -102,7 +102,7 @@ before_install:
   # Change to the directory
   - cd Phoenix
 
-  # Have to get submodule. See README.rts:building-wxwidgets
+  # Have to get submodule wxWidgets. See README.rts:building-wxwidgets
   - git submodule init
   - git submodule update
 
@@ -114,6 +114,12 @@ before_install:
   - bzip2 -d doxygen-1.8.8-linux.bz2
   - mv doxygen-1.8.8-linux ./bin/doxygen-1.8.8-linux
   - chmod 755 ./bin/doxygen-1.8.8-linux
+
+  # Download sip because the build script fails at doing so for some reason.
+  - wget http://wxpython.org/Phoenix/tools/sip-4.16.7-linux.bz2
+  - bzip2 -d sip-4.16.7-linux.bz2
+  - mv sip-4.16.7-linux ./bin/sip-4.16.7-linux
+  - chmod 755 ./bin/sip-4.16.7-linux
 
   # Follow the same flow for building wxPython from source.
   - python ./build.py --build_dir=./bld dox
