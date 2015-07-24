@@ -120,6 +120,9 @@ before_install:
   - bzip2 -d sip-4.16.7-linux.bz2
   - mv sip-4.16.7-linux ./bin/sip-4.16.7-linux
   - chmod 755 ./bin/sip-4.16.7-linux
+  - pwd
+  - ls
+  - ls ./bin
 
   # Follow the same flow for building wxPython from source.
   - python ./build.py --build_dir=./bld dox
