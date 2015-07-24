@@ -107,7 +107,7 @@ before_install:
   - cd Phoenix
 
   # Switch to the correct commit:
-  - git checkout 49a8884e7c
+#  - git checkout 49a8884e7c
 
   # Download dox because the build script fails at doing so for some reason.
   - wget http://wxpython.org/Phoenix/tools/doxygen-1.8.8-linux.bz2
