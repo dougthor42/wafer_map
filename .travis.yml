@@ -3,7 +3,7 @@
 #################################
 language: python
 
-sudo: false
+sudo: required
 
 python:
   - "3.4"
@@ -121,14 +121,14 @@ before_install:
   - mv sip-4.16.7-linux ./bin/sip-4.16.7-linux
   - chmod 755 ./bin/sip-4.16.7-linux
   - pwd
-  - ls
-  - ls ./bin
+  - ls -l
+  - ls -l ./bin
 
   # Follow the same flow for building wxPython from source.
   - python ./build.py --build_dir=./bld dox
   - python ./build.py --build_dir=./bld touch
   - python ./build.py --build_dir=./bld etg --nodoc
-  - python ./build.py --build_dir=./bld sip
+  - sudo python ./build.py --build_dir=./bld sip
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
