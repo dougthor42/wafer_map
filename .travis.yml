@@ -3,7 +3,7 @@
 #################################
 language: python
 
-sudo: required
+sudo: false
 
 python:
   - "3.4"
@@ -95,7 +95,7 @@ before_install:
 
   # Installing wxPython Phoenix from repo clone of 49a8884e7c
   # -------------------------------------------------------------------------
-  - echo "Installing wxPython Phoenix from repo clone of
+  - echo "Installing wxPython Phoenix from repo clone of 49a8884e7c"
   # Clone the repo (downloads entire history)
   - git clone --depth=50 --branch=master git://github.com/wxWidgets/Phoenix.git
 
