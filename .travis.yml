@@ -123,7 +123,7 @@ before_install:
   - pwd
   - ls -l
   - ls -l ./bin
-  - export SIP=/home/travis/build/dougthor42/wafer_map/Phoenix/bin/
+  - export SIP=/home/travis/build/dougthor42/wafer_map/Phoenix/bin/sip-4.16.7-linux
   - set | grep SIP
   - env | grep SIP
 
