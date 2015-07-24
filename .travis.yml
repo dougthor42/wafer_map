@@ -132,6 +132,7 @@ before_install:
   - python ./build.py --build_dir=./bld touch
   - python ./build.py --build_dir=./bld etg --nodoc
   - sudo -E python ./build.py --build_dir=./bld sip
+#  - python ./build.py --build_dir=./bld sip
   - python ./build.py --build_dir=./bld build_wx
   - python ./build.py --build_dir=./bld build_py
   - python ./build.py --build_dir=./bld test --verbose
