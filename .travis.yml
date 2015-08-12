@@ -25,6 +25,7 @@ install:
   # Start the install of everything
   - pip install --upgrade pip
   - pip install http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+  - pip install green
 
 script:
   - echo "----- script -----"
