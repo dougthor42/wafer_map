@@ -29,7 +29,7 @@ install:
 
 script:
   - echo "----- script -----"
-  - green wafer_map -vv --run-coverage--version
+  - green wafer_map -vv --run-coverage
 
 after_success:
   - echo "----- after_success -----"
