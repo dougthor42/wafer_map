@@ -410,27 +410,40 @@ class WaferMapPanel(wx.Panel):
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
 
-        die_coord_x, die_coord_y = wm_utils.coord_to_grid(event.Coords,
-                                                          self.die_size,
-                                                          self.grid_center,
-                                                          )
+        ds_x, ds_y = self.die_size
+        gc_x, gc_y = self.grid_center
+        dc_x, dc_y = wm_utils.coord_to_grid(event.Coords,
+                                            self.die_size,
+                                            self.grid_center,
+                                            )
 
         # lookup the die value
-        die_coord = "x{}y{}".format(die_coord_x, die_coord_y)
+        grid = "x{}y{}"
+        die_grid = grid.format(dc_x, dc_y)
+
         try:
-            die_val = self.xyd_dict[die_coord]
+            die_val = self.xyd_dict[die_grid]
         except KeyError:
             die_val = "N/A"
 
         # create the status bar string
-        coord_str = "{x:0.3f}, {y:0.3f}".format(x=event.Coords[0],
-                                                y=event.Coords[1],
-                                                )
-        value_str = "{}".format(die_val)
-        status_str = "{coord} :: {loc} :: {val}".format(coord=coord_str,
-                                                        loc=die_coord,
-                                                        val=value_str,
-                                                        )
+        coord_str = "{x:0.3f}, {y:0.3f}"
+        mouse_coord = "(" + coord_str.format(x=event.Coords[0],
+                                             y=event.Coords[1],
+                                             ) + ")"
+
+        die_radius = math.sqrt((ds_x * (gc_x - dc_x))**2
+                               + (ds_y * (gc_y - dc_y))**2)
+        mouse_radius = math.sqrt(event.Coords[0]**2 + event.Coords[1]**2)
+
+        status_str = "Die {d_grid} :: Radius = {d_rad:0.3f} :: Value = {d_val}     "
+        status_str += "Mouse {m_coord} :: Radius = {m_rad:0.3f}"
+        status_str = status_str.format(d_grid=die_grid,             # grid
+                                       d_val=die_val,               # value
+                                       d_rad=die_radius,            # radius
+                                       m_coord=mouse_coord,         # coord
+                                       m_rad=mouse_radius,          # radius
+                                       )
         try:
             parent.SetStatusText(status_str)
         except:

@@ -195,6 +195,9 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.11 / 2015-10-28**
+
+  + Implemented #31 - added radius of die and mouse to status bar.
 
 * **1.0.10 / 2015-05-04**
 

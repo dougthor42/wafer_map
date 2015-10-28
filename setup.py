@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="wafer_map",
     packages=["wafer_map", "wafer_map.tests"],
-    version="1.0.10",
+    version="1.0.11",
     description="Semiconductor Wafer Mapping",
     author="Douglas Thor",
     author_email="doug.thor@gmail.com",
@@ -184,6 +184,10 @@ Current capabilities:
 
 Changelog
 =========
+* **1.0.11 / 2015-10-28**
+
+  + Implemented #31 - added radius of die and mouse to status bar.
+
 * **1.0.10 / 2015-05-04**
 
   + Playing around with imports. Trying to make it so that if I'm running
