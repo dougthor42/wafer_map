@@ -13,13 +13,18 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
+import colorsys
 
+# Third-Party
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
-import colorsys
 
-
+# Package / Application
 import os.path as osp
 if "github" in osp.abspath(__file__):
     import sys
@@ -29,16 +34,37 @@ if "github" in osp.abspath(__file__):
 else:
     print("importing from site-packages")
 
-import wm_utils as wm_utils
-import wm_constants as wm_const
+try:
+    # Imports used for unittests
+    from . import wm_utils as wm_utils
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_utils as wm_utils
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_utils as wm_utils
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
 
 print("Imports for WM_LEGEND:")
 print("wm_utils:\t\t{}".format(wm_utils.__file__))
 print("wm_const:\t\t{}".format(wm_const.__file__))
 
-
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
-
 
 class Legend(object):
     """

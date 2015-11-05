@@ -15,7 +15,12 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
 
+# Third-Party
 import numpy as np
 from colour import Color
 

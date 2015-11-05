@@ -15,10 +15,16 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
+import os.path as osp
 
+# Third-Party
 import wx
 
-import os.path as osp
+# Package / Application
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
@@ -27,8 +33,32 @@ if "github" in osp.abspath(__file__):
 else:
     print("importing from site-packages")
 
-import wm_core as wm_core
-import wm_constants as wm_const
+try:
+    # Imports used for unittests
+    from . import wm_core as wm_core
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_core as wm_core
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_core as wm_core
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
+
 
 print("Imports for WM_FRAME:")
 print("wm_core:\t\t{}".format(wm_core.__file__))

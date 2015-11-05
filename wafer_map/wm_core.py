@@ -21,14 +21,20 @@ Changelog
 See README.rst
 
 """
-
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
 import math
+import os.path as osp
+
+# Third-Party
 import numpy as np
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-import os.path as osp
+# Package / Application
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
@@ -37,9 +43,34 @@ if "github" in osp.abspath(__file__):
 else:
     print("importing from site-packages")
 
-import wm_legend as wm_legend
-import wm_utils as wm_utils
-import wm_constants as wm_const
+try:
+    # Imports used for unittests
+    from . import wm_legend as wm_legend
+    from . import wm_utils as wm_utils
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_legend as wm_legend
+        import wm_utils as wm_utils
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_legend as wm_legend
+        from wafer_map import wm_utils as wm_utils
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
 
 print("Imports for WM_CORE:")
 print("wm_legend:\t\t{}".format(wm_legend.__file__))
@@ -520,9 +551,9 @@ class WaferMapPanel(wx.Panel):
         print("Right mouse up!")
 
 
-### #------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 ### Module Functions
-### #------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
 def xyd_to_dict(xyd_list):
     """ Converts the xyd list to a dict of xNNyNN key-value pairs """
