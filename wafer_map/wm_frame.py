@@ -35,7 +35,7 @@ else:
     pass
 
 try:
-    # Imports used for unittests
+    # Imports used by unit test runners
     from . import wm_core as wm_core
     from . import wm_constants as wm_const
 #    from . import (__project_name__,

@@ -33,7 +33,7 @@ else:
     pass
 
 try:
-    # Imports used for unittests
+    # Imports used by unit test runners
     from . import wm_frame as wm_frame
     from . import wm_info as wm_info
     from . import gen_fake_data as gen_fake_data

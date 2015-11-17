@@ -45,7 +45,7 @@ else:
     pass
 
 try:
-    # Imports used for unittests
+    # Imports used by unit test runners
     from . import wm_legend as wm_legend
     from . import wm_utils as wm_utils
     from . import wm_constants as wm_const
