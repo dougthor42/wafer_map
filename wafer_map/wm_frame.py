@@ -28,10 +28,11 @@ import wx
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
-    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
     sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 else:
-    print("importing from site-packages")
+#    print("importing from site-packages")
+    pass
 
 try:
     # Imports used for unittests
@@ -60,12 +61,9 @@ except SystemError:
 #        logging.debug("imports for Executable")
 
 
-print("Imports for WM_FRAME:")
-print("wm_core:\t\t{}".format(wm_core.__file__))
-print("wm_const:\t\t{}".format(wm_const.__file__))
-
-__author__ = "Douglas Thor"
-__version__ = "v0.1.0"
+#print("Imports for WM_FRAME:")
+#print("wm_core:\t\t{}".format(wm_core.__file__))
+#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 
 class WaferMapWindow(wx.Frame):
