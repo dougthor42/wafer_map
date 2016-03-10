@@ -1,0 +1,51 @@
+stages:
+  - init
+  - test
+  - tag_deploy
+  - cleanup
+
+variables:
+  VENV_ROOT: C:\temp\builds\
+
+# Set environment vars
+before_script:
+  - call C:\WinPython34\scripts\env.bat
+  - python -c "import sys;print(sys.version)"
+
+pip-install:
+  stage: init
+  when: always
+  script:
+    - python -m venv --clear %VENV_ROOT%%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - call %VENV_ROOT%%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    # Can't upgrade pip in place.
+    # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
+    - python -m pip install --upgrade pip
+    - pip install -r dev-requirements.txt
+    # Build-specific versions shouldn't be in dev-requirements.txt
+    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
+
+tests:
+  stage: test
+  when: on_success
+  script:
+    - call %VENV_ROOT%%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - green -vvv -s 1 wafer_map
+
+tag_bundle:
+  stage: tag_deploy
+  when: on_success
+  only:
+    - tags
+  script:
+    - call %VENV_ROOT%%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - python setup.py sdist bdist_wheel
+  artifacts:
+    paths:
+      - dist/*.whl
+
+clean-up:
+  stage: cleanup
+  when: always
+  script:
+    - rd /S /Q %VENV_ROOT%%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
