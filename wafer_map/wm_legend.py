@@ -13,34 +13,59 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
+import colorsys
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
+# Third-Party
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
-import colorsys
 
-
+# Package / Application
 import os.path as osp
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
-    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
     sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 else:
-    print("importing from site-packages")
+#    print("importing from site-packages")
+    pass
 
-import wm_utils as wm_utils
-import wm_constants as wm_const
+try:
+    # Imports used by unit test runners
+    from . import wm_utils as wm_utils
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_utils as wm_utils
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_utils as wm_utils
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
 
-print("Imports for WM_LEGEND:")
-print("wm_utils:\t\t{}".format(wm_utils.__file__))
-print("wm_const:\t\t{}".format(wm_const.__file__))
-
+#print("Imports for WM_LEGEND:")
+#print("wm_utils:\t\t{}".format(wm_utils.__file__))
+#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
-
 
 class Legend(object):
     """
@@ -180,7 +205,8 @@ class ContinuousLegend(wx.Panel):
         self.set_sizes()
 
         # Create EmptyBitmap in our MemoryDC where we'll do all our drawing.
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         # Draw the entire thing
         self.draw_scale()
@@ -422,7 +448,8 @@ class ContinuousLegend(wx.Panel):
         self.set_sizes()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
         self.draw_scale()
         self.Refresh()
 
@@ -446,7 +473,8 @@ class ContinuousLegend(wx.Panel):
 #        self._clear_scale()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         self.draw_scale()
 
@@ -459,7 +487,8 @@ class ContinuousLegend(wx.Panel):
 
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         self.draw_scale()
 

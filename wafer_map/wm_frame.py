@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E1101
+#   E1101 = Module X has no Y member
 """
 @name:          wm_frame.py
 @vers:          0.1.0
@@ -13,29 +15,55 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
+import os.path as osp
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
+# Third-Party
 import wx
 
-import os.path as osp
+# Package / Application
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
-    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
     sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 else:
-    print("importing from site-packages")
+#    print("importing from site-packages")
+    pass
 
-import wm_core as wm_core
-import wm_constants as wm_const
+try:
+    # Imports used by unit test runners
+    from . import wm_core as wm_core
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_core as wm_core
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_core as wm_core
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
 
-print("Imports for WM_FRAME:")
-print("wm_core:\t\t{}".format(wm_core.__file__))
-print("wm_const:\t\t{}".format(wm_const.__file__))
 
-__author__ = "Douglas Thor"
-__version__ = "v0.1.0"
+#print("Imports for WM_FRAME:")
+#print("wm_core:\t\t{}".format(wm_core.__file__))
+#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 
 class WaferMapWindow(wx.Frame):
@@ -197,23 +225,23 @@ class WaferMapWindow(wx.Frame):
 
     def _add_menu_items(self):
         """ Appends MenuItems to each menu """
-#        self.mfile.AppendItem(self.mf_new)
-#        self.mfile.AppendItem(self.mf_open)
-        self.mfile.AppendItem(self.mf_close)
+#        self.mfile.Append(self.mf_new)
+#        self.mfile.Append(self.mf_open)
+        self.mfile.Append(self.mf_close)
 
-        self.medit.AppendItem(self.me_redraw)
-#        self.medit.AppendItem(self.me_test1)
-#        self.medit.AppendItem(self.me_test2)
+        self.medit.Append(self.me_redraw)
+#        self.medit.Append(self.me_test1)
+#        self.medit.Append(self.me_test2)
 
-        self.mview.AppendItem(self.mv_zoomfit)
+        self.mview.Append(self.mv_zoomfit)
         self.mview.AppendSeparator()
-        self.mview.AppendItem(self.mv_crosshairs)
-        self.mview.AppendItem(self.mv_outline)
-        self.mview.AppendItem(self.mv_legend)
+        self.mview.Append(self.mv_crosshairs)
+        self.mview.Append(self.mv_outline)
+        self.mview.Append(self.mv_legend)
 
-        self.mopts.AppendItem(self.mo_test)
-        self.mopts.AppendItem(self.mo_high_color)
-        self.mopts.AppendItem(self.mo_low_color)
+        self.mopts.Append(self.mo_test)
+        self.mopts.Append(self.mo_high_color)
+        self.mopts.Append(self.mo_low_color)
 
     def _add_menus(self):
         """ Appends each menu to the menu bar """
@@ -265,7 +293,9 @@ class WaferMapWindow(wx.Frame):
         """ Call the WaferMapPanel.toggle_legend() method """
         self.panel.toggle_legend()
 
+    # TODO: See the 'and' in the docstring? Means I need a separate method!
     def on_change_high_color(self, event):
+        """ Change the high color and refresh display """
         print("High color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
@@ -279,7 +309,9 @@ class WaferMapWindow(wx.Frame):
             print("no color chosen :-(")
         cd.Destroy()
 
+    # TODO: See the 'and' in the docstring? Means I need a separate method!
     def on_change_low_color(self, event):
+        """ Change the low color and refresh display """
         print("Low Color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)

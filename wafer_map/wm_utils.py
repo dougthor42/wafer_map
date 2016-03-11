@@ -15,9 +15,12 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
+# Third-Party
 import numpy as np
 from colour import Color
 
@@ -193,9 +196,9 @@ def linear_gradient(initial_color, dest_color, value):
 #    b = int(rescale(value, (0, 1), (b1, b2)))
 
     # Using the ``colour`` package
-    # Convert from 0-255 to 0-1 and instance the Color class
-    c1 = Color(rgb=(_c / 255 for _c in initial_color))
-    c2 = Color(rgb=(_c / 255 for _c in dest_color))
+    # Convert 0-255 to 0-1, drop the 4th term, and instance the Color class
+    c1 = Color(rgb=tuple(_c / 255 for _c in initial_color)[:3])
+    c2 = Color(rgb=tuple(_c / 255 for _c in dest_color)[:3])
 
     # extract the HSL values
     h1, s1, l1 = c1.hsl
@@ -580,4 +583,5 @@ if __name__ == "__main__":
                                ],
                               0.5))
 
-    print(linear_gradient((0, 0, 0), (255, 255, 255), 1.5))
+    print("\nLinear Gradient, 0.5")
+    print(linear_gradient((0, 0, 0), (255, 255, 255), .5))

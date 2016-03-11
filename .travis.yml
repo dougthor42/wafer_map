@@ -1,41 +1,44 @@
+#################################
+# General setup
+#################################
 language: python
 
 sudo: false
 
 python:
-  - "2.7"
+  - "3.4"
 
 notifications:
-  email: False
+  email: false
 
+#################################
+# Build Lifecycle
+#################################
 before_install:
-  - echo "-----before_install-----"
-  # get Conda
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-
+  - echo "----- before_install -----"
 
 install:
-  - echo "-----install-----"
-  # Install wxPython
-  - conda install -c https://conda.anaconda.org/travis wxpython
-  - pip install --upgrade pip
-  - pip install -r dev-requirements.txt
-  - pip install coveralls
-  - pip install wheel
-  - pip install numpy
+  - echo "----- install -----"
+  # Make sure I'm in the correct directory after all that before_install crap
+  - cd /home/travis/build/dougthor42/wafer_map/
 
-# command to run tests
+  # Start the install of everything
+  - pip install --upgrade pip
+  - pip install http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+  - pip install green
+  - pip install coverage
+  - pip install colour
+  - pip install colorama
+    pip install numpy
+    pip install coveralls
+    pip install wheel
+
 script:
-  - nosetests
-  - python --version
+  - echo "----- script -----"
+  - green wafer_map -vv --run-coverage
+
+after_success:
+  - echo "----- after_success -----"
+
+  # Send coverage information to coveralls.io
+  - coveralls

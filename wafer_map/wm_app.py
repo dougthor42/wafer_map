@@ -13,34 +13,63 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
+import os.path as osp
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
+# Third-Party
 import wx
 
-import os.path as osp
+# Package / Application
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
-    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
     sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 else:
-    print("importing from site-packages")
+#    print("importing from site-packages")
+    pass
 
-import wm_frame as wm_frame
-import wm_info as wm_info
-import gen_fake_data as gen_fake_data
-import wm_constants as wm_const
+try:
+    # Imports used by unit test runners
+    from . import wm_frame as wm_frame
+    from . import wm_info as wm_info
+    from . import gen_fake_data as gen_fake_data
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_frame as wm_frame
+        import wm_info as wm_info
+        import gen_fake_data as gen_fake_data
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_frame as wm_frame
+        from wafer_map import wm_info as wm_info
+        from wafer_map import gen_fake_data as gen_fake_data
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
 
-print("Imports for WM_APP:")
-print("wm_app:\t\t{}".format(__file__))
-print("wm_frame:\t\t{}".format(wm_frame.__file__))
-print("wm_info:\t\t{}".format(wm_info.__file__))
-print("gen_fake_data:\t{}".format(gen_fake_data.__file__))
-print("wm_const:\t\t{}".format(wm_const.__file__))
-
-__author__ = "Douglas Thor"
-__version__ = "v0.1.0"
+#print("Imports for WM_APP:")
+#print("wm_app:\t\t{}".format(__file__))
+#print("wm_frame:\t\t{}".format(wm_frame.__file__))
+#print("wm_info:\t\t{}".format(wm_info.__file__))
+#print("gen_fake_data:\t{}".format(gen_fake_data.__file__))
+#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 
 class WaferMapApp(object):
@@ -86,7 +115,7 @@ class WaferMapApp(object):
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
 
-        self.frame = wm_frame.WaferMapWindow("Wafer Map",
+        self.frame = wm_frame.WaferMapWindow("Wafer Map Phoenix",
                                              self.xyd,
                                              self.wafer_info,
                                              data_type=self.data_type,
@@ -105,7 +134,7 @@ class WaferMapApp(object):
 
 def main():
     """ Main Code """
-    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=4.43,
+    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=5.43,
                                                        die_y=6.3,
                                                        dia=150,
                                                        edge_excl=4.5,

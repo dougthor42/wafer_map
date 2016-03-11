@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=E1101
+#   E1101 = Module X has no Y member
 """
 @name:          wafer_map.py
 @vers:          1.0.0
@@ -19,32 +21,62 @@ Changelog
 See README.rst
 
 """
-
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
 import math
+import os.path as osp
+
+# Third-Party
 import numpy as np
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-import os.path as osp
+# Package / Application
 if "github" in osp.abspath(__file__):
     import sys
 #    [print(_p) for _p in sys.path]
-    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
     sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
 else:
-    print("importing from site-packages")
+#    print("importing from site-packages")
+    pass
 
-import wm_legend as wm_legend
-import wm_utils as wm_utils
-import wm_constants as wm_const
+try:
+    # Imports used by unit test runners
+    from . import wm_legend as wm_legend
+    from . import wm_utils as wm_utils
+    from . import wm_constants as wm_const
+#    from . import (__project_name__,
+#                   __version__,
+#                   )
+#    logging.debug("Imports for UnitTests")
+except SystemError:
+    try:
+        # Imports used by Spyder
+        import wm_legend as wm_legend
+        import wm_utils as wm_utils
+        import wm_constants as wm_const
+#        from __init__ import (__project_name__,
+#                              __version__,
+#                              )
+#        logging.debug("Imports for Spyder IDE")
+    except ImportError:
+         # Imports used by cx_freeze
+        from wafer_map import wm_legend as wm_legend
+        from wafer_map import wm_utils as wm_utils
+        from wafer_map import wm_constants as wm_const
+#        from pybank import (__project_name__,
+#                            __version__,
+#                            )
+#        logging.debug("imports for Executable")
 
-print("Imports for WM_CORE:")
-print("wm_legend:\t\t{}".format(wm_legend.__file__))
-print("wm_utils:\t\t{}".format(wm_utils.__file__))
-print("wm_const:\t\t{}".format(wm_const.__file__))
+#print("Imports for WM_CORE:")
+#print("wm_legend:\t\t{}".format(wm_legend.__file__))
+#print("wm_utils:\t\t{}".format(wm_utils.__file__))
+#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 
 # Module-level TODO list.
@@ -172,6 +204,7 @@ class WaferMapPanel(wx.Panel):
         #      panel, which prevents the EVT_MOUSEWHEEL event from firing
         #      properly.
 #        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+#        self.canvas.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
 #        self.canvas.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
 #        self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
@@ -301,7 +334,7 @@ class WaferMapPanel(wx.Panel):
     def toggle_legend(self):
         """ Toggles the legend on and off """
         if self.legend_bool:
-            self.hbox.RemovePos(0)
+            self.hbox.Remove(0)
             self.Layout()       # forces update of layout
             self.legend_bool = False
         else:
@@ -395,13 +428,16 @@ class WaferMapPanel(wx.Panel):
         sign = abs(speed) / speed
         factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR)**sign
 
-        self.canvas.Zoom(factor,
-                         center=pos,
-                         centerCoords="pixel",
-#                         center=event.GetCoords(),
-#                         centerCoords="world",
-                         keepPointInPlace=True,
-                         )
+        # Changes to FloatCanvas.Zoom mean we need to do the following
+        # rather than calling the zoom() function.
+        # Note that SetToNewScale() changes the pixel center (?). This is why
+        # we can call PixelToWorld(pos) again and get a different value!
+        oldpoint = self.canvas.PixelToWorld(pos)
+        self.canvas.Scale = self.canvas.Scale * factor
+        self.canvas.SetToNewScale(False)        # sets new scale but no redraw
+        newpoint = self.canvas.PixelToWorld(pos)
+        delta = newpoint - oldpoint
+        self.canvas.MoveImage(-delta, 'World')  # performs the redraw
 
     def on_mouse_move(self, event):
         """
@@ -410,30 +446,42 @@ class WaferMapPanel(wx.Panel):
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
 
-        die_coord_x, die_coord_y = wm_utils.coord_to_grid(event.Coords,
-                                                          self.die_size,
-                                                          self.grid_center,
-                                                          )
+        ds_x, ds_y = self.die_size
+        gc_x, gc_y = self.grid_center
+        dc_x, dc_y = wm_utils.coord_to_grid(event.Coords,
+                                            self.die_size,
+                                            self.grid_center,
+                                            )
 
         # lookup the die value
-        die_coord = "x{}y{}".format(die_coord_x, die_coord_y)
+        grid = "x{}y{}"
+        die_grid = grid.format(dc_x, dc_y)
         try:
-            die_val = self.xyd_dict[die_coord]
+            die_val = self.xyd_dict[die_grid]
         except KeyError:
             die_val = "N/A"
 
         # create the status bar string
-        coord_str = "{x:0.3f}, {y:0.3f}".format(x=event.Coords[0],
-                                                y=event.Coords[1],
-                                                )
-        value_str = "{}".format(die_val)
-        status_str = "{coord} :: {loc} :: {val}".format(coord=coord_str,
-                                                        loc=die_coord,
-                                                        val=value_str,
-                                                        )
+        coord_str = "{x:0.3f}, {y:0.3f}"
+        mouse_coord = "(" + coord_str.format(x=event.Coords[0],
+                                             y=event.Coords[1],
+                                             ) + ")"
+
+        die_radius = math.sqrt((ds_x * (gc_x - dc_x))**2
+                               + (ds_y * (gc_y - dc_y))**2)
+        mouse_radius = math.sqrt(event.Coords[0]**2 + event.Coords[1]**2)
+
+        status_str = "Die {d_grid} :: Radius = {d_rad:0.3f} :: Value = {d_val}   "
+        status_str += "Mouse {m_coord} :: Radius = {m_rad:0.3f}"
+        status_str = status_str.format(d_grid=die_grid,             # grid
+                                       d_val=die_val,               # value
+                                       d_rad=die_radius,            # radius
+                                       m_coord=mouse_coord,         # coord
+                                       m_rad=mouse_radius,          # radius
+                                       )
         try:
             parent.SetStatusText(status_str)
-        except:
+        except:         # TODO: put in exception types.
             pass
 
         # If we're dragging, actually move the image.
@@ -457,7 +505,7 @@ class WaferMapPanel(wx.Panel):
         self.end_move_loc = None
 
         # Change the cursor to a drag cursor
-        self.SetCursor(wx.StockCursor(wx.CURSOR_SIZING))
+        self.SetCursor(wx.Cursor(wx.CURSOR_SIZING))
 
     def on_mouse_middle_up(self, event):
         """ End the drag """
@@ -470,13 +518,17 @@ class WaferMapPanel(wx.Panel):
             self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
 
         # change the cursor back to normal
-        self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+        self.SetCursor(wx.Cursor(wx.CURSOR_ARROW))
 
     def on_mouse_left_down(self, event):
         """
         Start making the zoom-to-box box.
         """
-        print("Left mouse down!")
+#        print("Left mouse down!")
+#        pcoord = event.GetPosition()
+#        wcoord = self.canvas.PixelToWorld(pcoord)
+#        string = "Pixel Coord = {}    \tWorld Coord = {}"
+#        print(string.format(pcoord, wcoord))
         # TODO: Look into what I was doing here. Why no 'self' on parent?
         parent = wx.GetTopLevelParent(self)
         wx.PostEvent(self.parent, event)
@@ -500,13 +552,13 @@ class WaferMapPanel(wx.Panel):
         print("Right mouse up!")
 
 
-### #------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 ### Module Functions
-### #------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
 def xyd_to_dict(xyd_list):
-        """ Converts the xyd list to a dict of xNNyNN key-value pairs """
-        return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
+    """ Converts the xyd list to a dict of xNNyNN key-value pairs """
+    return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=None):

@@ -14,8 +14,6 @@ Options:
     --version           # Show version.
 """
 
-from __future__ import print_function, division#, absolute_import
-#from __future__ import unicode_literals
 import math
 import random
 
@@ -161,8 +159,8 @@ def generate_fake_data(**kwargs):
 
     # This could be more efficient
     grid_points = []
-    for _x in xrange(1, grid_max_x):
-        for _y in xrange(1, grid_max_y):
+    for _x in range(1, grid_max_x):
+        for _y in range(1, grid_max_y):
             coord_die_center_x = die_x * (_x - grid_center[0])
             # we have to reverse the y coord, hence why it's
             # ``grid_center[1] - _y`` and not ``_y - grid_center[1]``
