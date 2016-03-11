@@ -75,68 +75,8 @@ install:
 
   # install dependencies
   - "%CMD_IN_ENV% pip install wheel"
-  - "%CMD_IN_ENV% pip install --upgrade --pre build_reqs/numpy-1.9.2-cp27-none-win32.whl"
-  - "%CMD_IN_ENV% pip install --upgrade --pre http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884-cp27-none-win32.whl"
+  - "%CMD_IN_ENV% pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl"
   - "%CMD_IN_ENV% pip install -r dev-requirements.txt"
-  - "%CMD_IN_ENV% pip install --upgrade --trusted-host wxpython.org --pre http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884-cp34-none-win_amd64.whl"
-
-  ### ----------------------
-  ### Download wxPython
-  ### ----------------------
-
-  #http://downloads.sourceforge.net/project/wxpython/wxPython/2.8.12.1/wxPython-src-2.8.12.1.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fwxpython%2Ffiles%2FwxPython%2F2.8.12.1%2F&ts=1430329632&use_mirror=iweb
-
-  # download wxPython Source (Powershell >= 3.0)
-  #- ps: Invoke-WebRequest "http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal" -Outfile 'C:\Temp\wxPython_source.tar.bz2'
-
-  # download wxPython Source (Powershell 2.0)
-#  - ps: (new-object net.webclient).DownloadFile('http://downloads.sourceforge.net/project/wxpython/wxPython/3.0.2.0/wxPython-src-3.0.2.0.tar.bz2?r=&ts=1430242200&use_mirror=softlayer-dal', 'C:\Temp\wxPython_source.tar.bz2')
-
-  ### ----------------------
-  ### Extract wxPython
-  ### ----------------------
-
-
-  # First extract .bz2 file
-  #- ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar.bz2 -oC:\\Temp" -Wait
-  # In order to get 7-Zip's output redirected, I need to use this big block:
-#  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
-#  - ps: $psi.CreateNoWindow = $true
-#  - ps: $psi.UseShellExecute = $false
-#  - ps: $psi.RedirectStandardOutput = $true
-#  - ps: $psi.RedirectStandardError = $true
-#  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
-#  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar.bz2 -y -oC:\\Temp")
-#  - ps: $process = New-Object System.Diagnostics.Process
-#  - ps: $process.StartInfo = $psi
-#  - ps: $process.Start()
-#  - ps: $output = $process.StandardOutput.ReadToEnd()
-#  - ps: $process.WaitForExit()
-#  - ps: $output
-
-  # Then extract the .tar file to a directory
-#  - ps: start-process "C:\\Program Files\\7-Zip\\7z.exe" "e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source" -Wait
-  # In order to get 7-Zip's output redirected, I need to use this big block:
-#  - ps: $psi = New-object System.Diagnostics.ProcessStartInfo
-#  - ps: $psi.CreateNoWindow = $true
-#  - ps: $psi.UseShellExecute = $false
-#  - ps: $psi.RedirectStandardOutput = $true
-#  - ps: $psi.RedirectStandardError = $true
-#  - ps: $psi.FileName = 'C:\Program Files\7-Zip\7z.exe'
-#  - ps: $psi.Arguments = @("e C:\\Temp\\wxPython_source.tar -y -oC:\\Temp\\wxPython_source")
-#  - ps: $process = New-Object System.Diagnostics.Process
-#  - ps: $process.StartInfo = $psi
-  #- ps: $process.Start()
-  #- ps: $output = $process.StandardOutput.ReadToEnd()
-  #- ps: $process.WaitForExit()
-  #- ps: $output
-
-  ### ----------------------
-  ### Build wxPython
-  ### ----------------------
-
-  #- python "C:\Temp\wxPython_source\build-wxpython.py" --install
-
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
@@ -145,12 +85,11 @@ test_script:
   - "%CMD_IN_ENV% python --version"
   - "%CMD_IN_ENV% nosetests --verbose"
 
-#after_test:
+after_test:
   # if tests OK, create whl package
-#  - "%CMD_IN_ENV% python setup.py bdist_wheel bdist_wininst"
-#  - ps: "ls dist"
+  - "%CMD_IN_ENV% python setup.py sdist bdist_wheel"
 
-#artifacts:
+artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
-#  - path: dist\*
+  - path: dist\*.whl
 

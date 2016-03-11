@@ -22,9 +22,8 @@ In ``wx\core.py``, the following needs to be added around line 557::
 Yes, the file says to not edit it because it's generated from SIP. All this
 means is that you'll have to redo this change if you ever update wxPython.
 
-This was tested using **wxPython_Phoenix-3.0.3.dev1820+49a8884** found here:
-http://wxpython.org/Phoenix/snapshot-builds/, specifically
-**wxPython_Phoenix-3.0.3.dev1820+49a8884-cp34-none-win_amd64.whl**
+This was tested using **wxPython_Phoenix-3.0.3.dev1956** or higher. See
+http://wxpython.org/Phoenix/snapshot-builds/ for other versions.
 
 You can see a little more info on this here:
 https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII

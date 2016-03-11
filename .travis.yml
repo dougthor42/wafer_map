@@ -19,8 +19,6 @@ before_install:
 
 install:
   - echo "----- install -----"
-  # Make sure I'm in the correct directory after all that before_install crap
-  - cd /home/travis/build/dougthor42/wafer_map/
 
   # Start the install of everything
   - pip install --upgrade pip
