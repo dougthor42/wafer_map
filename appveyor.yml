@@ -61,9 +61,6 @@ install:
   # not already installed.
   - "powershell ./appveyor/install.ps1"
 
-  # also install 7-zip, needed for extracting wxPython
-  - "powershell ./appveyor/get-7zip.ps1"
-
   # Prepend newly installed Python to the PATH of this build (this cannot be
   # done from inside the powershell script as it would require to restart
   # the parent CMD process).
@@ -75,7 +72,7 @@ install:
 
   # install dependencies
   - "%CMD_IN_ENV% pip install wheel"
-  - "%CMD_IN_ENV% pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl"
+  - "%CMD_IN_ENV% pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3-cp34-cp34m-win_amd64.whl"
   - "%CMD_IN_ENV% pip install -r dev-requirements.txt"
 
 build: false  # Not a C# project, build stuff at the test step instead.

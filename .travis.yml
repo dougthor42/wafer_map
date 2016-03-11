@@ -27,9 +27,9 @@ install:
   - pip install coverage
   - pip install colour
   - pip install colorama
-    pip install numpy
-    pip install coveralls
-    pip install wheel
+  - pip install numpy
+  - pip install coveralls
+  - pip install wheel
 
 script:
   - echo "----- script -----"
