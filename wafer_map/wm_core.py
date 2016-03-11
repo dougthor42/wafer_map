@@ -26,7 +26,6 @@ See README.rst
 # ---------------------------------------------------------------------------
 # Standard Library
 import math
-import os.path as osp
 
 # Third-Party
 import numpy as np
@@ -35,15 +34,6 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 # Package / Application
-if "github" in osp.abspath(__file__):
-    import sys
-#    [print(_p) for _p in sys.path]
-#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
-    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
-else:
-#    print("importing from site-packages")
-    pass
-
 try:
     # Imports used by unit test runners
     from . import wm_legend as wm_legend
@@ -72,11 +62,6 @@ except SystemError:
 #                            __version__,
 #                            )
 #        logging.debug("imports for Executable")
-
-#print("Imports for WM_CORE:")
-#print("wm_legend:\t\t{}".format(wm_legend.__file__))
-#print("wm_utils:\t\t{}".format(wm_utils.__file__))
-#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 
 # Module-level TODO list.

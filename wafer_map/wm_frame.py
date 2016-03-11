@@ -19,21 +19,12 @@ Options:
 ### Imports
 # ---------------------------------------------------------------------------
 # Standard Library
-import os.path as osp
+
 
 # Third-Party
 import wx
 
 # Package / Application
-if "github" in osp.abspath(__file__):
-    import sys
-#    [print(_p) for _p in sys.path]
-#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
-    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
-else:
-#    print("importing from site-packages")
-    pass
-
 try:
     # Imports used by unit test runners
     from . import wm_core as wm_core
@@ -59,11 +50,6 @@ except SystemError:
 #                            __version__,
 #                            )
 #        logging.debug("imports for Executable")
-
-
-#print("Imports for WM_FRAME:")
-#print("wm_core:\t\t{}".format(wm_core.__file__))
-#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 
 class WaferMapWindow(wx.Frame):

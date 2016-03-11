@@ -25,16 +25,6 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 # Package / Application
-import os.path as osp
-if "github" in osp.abspath(__file__):
-    import sys
-#    [print(_p) for _p in sys.path]
-#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
-    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
-else:
-#    print("importing from site-packages")
-    pass
-
 try:
     # Imports used by unit test runners
     from . import wm_utils as wm_utils
@@ -60,10 +50,6 @@ except SystemError:
 #                            __version__,
 #                            )
 #        logging.debug("imports for Executable")
-
-#print("Imports for WM_LEGEND:")
-#print("wm_utils:\t\t{}".format(wm_utils.__file__))
-#print("wm_const:\t\t{}".format(wm_const.__file__))
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 

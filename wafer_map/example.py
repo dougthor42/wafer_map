@@ -19,14 +19,14 @@ Description:
 
 import wx
 
-import os.path as osp
-if "github" in osp.abspath(__file__):
-    import sys
-#    [print(_p) for _p in sys.path]
-    print("running {} from the dev dir".format(osp.split(__file__)[1]))
-    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
-else:
-    print("importing from site-packages")
+#import os.path as osp
+#if "github" in osp.abspath(__file__):
+#    import sys
+##    [print(_p) for _p in sys.path]
+#    print("running {} from the dev dir".format(osp.split(__file__)[1]))
+#    sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
+#else:
+#    print("importing from site-packages")
 
 import gen_fake_data as gen_fake_data
 import wm_core as wm_core
