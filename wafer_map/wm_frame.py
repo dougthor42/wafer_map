@@ -25,31 +25,8 @@ Options:
 import wx
 
 # Package / Application
-try:
-    # Imports used by unit test runners
-    from . import wm_core as wm_core
-    from . import wm_constants as wm_const
-#    from . import (__project_name__,
-#                   __version__,
-#                   )
-#    logging.debug("Imports for UnitTests")
-except SystemError:
-    try:
-        # Imports used by Spyder
-        import wm_core as wm_core
-        import wm_constants as wm_const
-#        from __init__ import (__project_name__,
-#                              __version__,
-#                              )
-#        logging.debug("Imports for Spyder IDE")
-    except ImportError:
-         # Imports used by cx_freeze
-        from wafer_map import wm_core as wm_core
-        from wafer_map import wm_constants as wm_const
-#        from pybank import (__project_name__,
-#                            __version__,
-#                            )
-#        logging.debug("imports for Executable")
+import wm_core
+import wm_constants as wm_const
 
 
 class WaferMapWindow(wx.Frame):
