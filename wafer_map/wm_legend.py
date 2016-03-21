@@ -25,31 +25,8 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 # Package / Application
-try:
-    # Imports used by unit test runners
-    from . import wm_utils as wm_utils
-    from . import wm_constants as wm_const
-#    from . import (__project_name__,
-#                   __version__,
-#                   )
-#    logging.debug("Imports for UnitTests")
-except SystemError:
-    try:
-        # Imports used by Spyder
-        import wm_utils as wm_utils
-        import wm_constants as wm_const
-#        from __init__ import (__project_name__,
-#                              __version__,
-#                              )
-#        logging.debug("Imports for Spyder IDE")
-    except ImportError:
-         # Imports used by cx_freeze
-        from wafer_map import wm_utils as wm_utils
-        from wafer_map import wm_constants as wm_const
-#        from pybank import (__project_name__,
-#                            __version__,
-#                            )
-#        logging.debug("imports for Executable")
+import wm_utils
+import wm_constants as wm_const
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 

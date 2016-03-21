@@ -23,37 +23,10 @@ Options:
 import wx
 
 # Package / Application
-try:
-    # Imports used by unit test runners
-    from . import wm_frame as wm_frame
-    from . import wm_info as wm_info
-    from . import gen_fake_data as gen_fake_data
-    from . import wm_constants as wm_const
-#    from . import (__project_name__,
-#                   __version__,
-#                   )
-#    logging.debug("Imports for UnitTests")
-except SystemError:
-    try:
-        # Imports used by Spyder
-        import wm_frame as wm_frame
-        import wm_info as wm_info
-        import gen_fake_data as gen_fake_data
-        import wm_constants as wm_const
-#        from __init__ import (__project_name__,
-#                              __version__,
-#                              )
-#        logging.debug("Imports for Spyder IDE")
-    except ImportError:
-         # Imports used by cx_freeze
-        from wafer_map import wm_frame as wm_frame
-        from wafer_map import wm_info as wm_info
-        from wafer_map import gen_fake_data as gen_fake_data
-        from wafer_map import wm_constants as wm_const
-#        from pybank import (__project_name__,
-#                            __version__,
-#                            )
-#        logging.debug("imports for Executable")
+import wm_frame
+import wm_info
+import gen_fake_data
+import wm_constants as wm_const
 
 
 class WaferMapApp(object):

@@ -17,9 +17,9 @@ Options:
 import math
 import random
 
-import wafer_map.wm_info as wm_info
-import wafer_map.wm_utils as wm_utils
-import wafer_map.wm_constants as wm_const
+import wm_info
+import wm_utils
+import wm_constants as wm_const
 
 
 def generate_fake_data(**kwargs):
