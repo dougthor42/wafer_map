@@ -70,7 +70,7 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - "python -c 'import sys;print(sys.version)'"
+#  - python -c "import sys;print(sys.version)"
 #  - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
 
   # install dependencies
