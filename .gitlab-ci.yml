@@ -8,16 +8,21 @@ variables:
   VENV_ROOT: C:\temp\builds
 
 # Set environment vars
-before_script:
-  - call C:\WinPython34\scripts\env.bat
-  - python -c "import sys;print(sys.version)"
+#before_script:
+#  - call C:\WinPython34\scripts\env.bat
+#  - python -c "import sys;print(sys.version)"
 
-pip-install:
+#################################################
+### Python34_x64 jobs                         ###
+#################################################
+python34_x64-pip-install:
   stage: init
   when: always
   script:
-    - python -m venv --clear %VENV_ROOT%\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
-    - call %VENV_ROOT%\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - call C:\WinPython34\scripts\env.bat
+    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - python -m venv --clear %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
     - python -m pip install --upgrade pip
@@ -25,27 +30,80 @@ pip-install:
     # Build-specific versions shouldn't be in dev-requirements.txt
     - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
 
-tests:
+python34_x64-tests:
   stage: test
   when: on_success
   script:
-    - call %VENV_ROOT%\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - call C:\WinPython34\scripts\env.bat
+    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     - green -vvv -s 1 wafer_map
 
-tag_bundle:
+python34_x64-tag_bundle:
   stage: tag_deploy
   when: on_success
   only:
     - tags
   script:
-    - call %VENV_ROOT%\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - call C:\WinPython34\scripts\env.bat
+    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     - python setup.py sdist bdist_wheel
   artifacts:
     paths:
       - dist/*.whl
 
-clean-up:
+python34_x64-clean-up:
   stage: cleanup
   when: always
   script:
-    - rd /S /Q %VENV_ROOT%\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - rd /S /Q %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+
+
+#################################################
+### Python27_x32 jobs                         ###
+#################################################
+python27_x32-pip-install:
+  stage: init
+  when: always
+  script:
+    - call C:\WinPython27_x32\scripts\env.bat
+    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - pip install virtualenv
+    - python -m virtualenv --clear %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    # Can't upgrade pip in place.
+    # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
+    - python -m pip install --upgrade pip
+    - pip install -r dev-requirements.txt
+    # Build-specific versions shouldn't be in dev-requirements.txt
+    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
+
+python27_x32-tests:
+  stage: test
+  when: on_success
+  script:
+    - call C:\WinPython27_x32\scripts\env.bat
+    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - green -vvv -s 1 wafer_map
+
+python27_x32-tag_bundle:
+  stage: tag_deploy
+  when: on_success
+  only:
+    - tags
+  script:
+    - call C:\WinPython27_x32\scripts\env.bat
+    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - python setup.py sdist bdist_wheel
+  artifacts:
+    paths:
+      - dist/*.whl
+
+python27_x32-clean-up:
+  stage: cleanup
+  when: always
+  script:
+    - rd /S /Q %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
