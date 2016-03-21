@@ -127,21 +127,21 @@ The easiest way to use this to to:
 
     The input parameters for WaferMapApp are:
 
-      + **die_size**:  The die size in (x, y). Units are mm.
-      + **center_xy**: The grid (x, y) coordinate that represents the physical
-                       center of the wafer.
-      + **dia**:       The wafer diameter. Units are in mm.
-      + **edge_excl**: The exclusion distance measured from the edge of the
-                       wafer. Units are in mm.
-      + **flat_excl**: The exclusion distance measured from the wafer flat.
-                       Units are in mm. Cannot be less than `edge_excl`.
+    + **die_size**:  The die size in (x, y). Units are mm.
+    + **center_xy**: The grid (x, y) coordinate that represents the physical
+                     center of the wafer.
+    + **dia**:       The wafer diameter. Units are in mm.
+    + **edge_excl**: The exclusion distance measured from the edge of the
+                     wafer. Units are in mm.
+    + **flat_excl**: The exclusion distance measured from the wafer flat.
+                     Units are in mm. Cannot be less than `edge_excl`.
 
 3.  An image should appear. Yay! Play around with it: middle-click+drag to
     pan, scroll wheel to zoom. See "Keyboard Shortcuts and Mouse Usage"
     section.
 
 
-###Example
+### Example
 
 There is an example file which somewhat demonstrates how to use this package.
 At the very least, you can run the example file and see how this wafer
@@ -235,4 +235,4 @@ coding style too harshly (though constructive criticism is much appreciated!)
 
 
 ## Changelog
-See `CHANGELOG.md<CHANGELOG.md>`_.
+See [CHANGELOG.md](CHANGELOG.md).
