@@ -22,14 +22,16 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
 
   matrix:
-#    - PYTHON: "C:\\Python27"
-#      PYTHON_VERSION: "2.7.8"
-#      PYTHON_ARCH: "32"
+    - PYTHON: "C:\\Python27"
+      PYTHON_VERSION: "2.7.10"
+      PYTHON_ARCH: "32"
+      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
 
-#    - PYTHON: "C:\\Python27-x64"
-#      PYTHON_VERSION: "2.7.8"
-#      PYTHON_ARCH: "64"
-#
+    - PYTHON: "C:\\Python27-x64"
+      PYTHON_VERSION: "2.7.10"
+      PYTHON_ARCH: "64"
+      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win_amd64.whl
+
 #    - PYTHON: "C:\\Python33"
 #      PYTHON_VERSION: "3.3.5"
 #      PYTHON_ARCH: "32"
@@ -42,9 +44,10 @@ environment:
 #     PYTHON_VERSION: "3.4.1"
 #     PYTHON_ARCH: "32"
 
-   - PYTHON: "C:\\Python34-x64"
-     PYTHON_VERSION: "3.4.1"
-     PYTHON_ARCH: "64"
+    - PYTHON: "C:\\Python34-x64"
+      PYTHON_VERSION: "3.4.3"
+      PYTHON_ARCH: "64"
+      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
 
 install:
   - ECHO "Filesystem root:"
@@ -72,7 +75,7 @@ install:
 
   # install dependencies
   - "%CMD_IN_ENV% pip install wheel"
-  - "%CMD_IN_ENV% pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3-cp34-cp34m-win_amd64.whl"
+  - "%CMD_IN_ENV% pip install %WXPYTHON%"
   - "%CMD_IN_ENV% pip install -r dev-requirements.txt"
 
 build: false  # Not a C# project, build stuff at the test step instead.
@@ -82,11 +85,11 @@ test_script:
   - "%CMD_IN_ENV% python --version"
   - "%CMD_IN_ENV% nosetests --verbose"
 
-after_test:
+#after_test:
   # if tests OK, create whl package
-  - "%CMD_IN_ENV% python setup.py sdist bdist_wheel"
+#  - "%CMD_IN_ENV% python setup.py sdist bdist_wheel"
 
-artifacts:
+#artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
-  - path: dist\*.whl
+#  - path: dist\*.whl
 
