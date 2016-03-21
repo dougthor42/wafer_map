@@ -239,4 +239,4 @@ Current capabilities
 
 Changelog
 =========
-See [CHANGELOG.md](CHANGELOG.md).
+See `CHANGELOG.md<CHANGELOG.md>`_.
