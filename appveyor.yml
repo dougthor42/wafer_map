@@ -77,6 +77,7 @@ install:
   - "%CMD_IN_ENV% python -m pip install --upgrade pip"
   - "%CMD_IN_ENV% pip install wheel"
   - "%CMD_IN_ENV% pip install %WXPYTHON%"
+  - "%CMD_IN_ENV% pip install -r requirements.txt"
   - "%CMD_IN_ENV% pip install -r dev-requirements.txt"
 
 build: false  # Not a C# project, build stuff at the test step instead.
@@ -84,7 +85,7 @@ build: false  # Not a C# project, build stuff at the test step instead.
 test_script:
   # Build the compiled extension and run the project tests
   - "%CMD_IN_ENV% python --version"
-  - "%CMD_IN_ENV% nosetests --verbose"
+  - "%CMD_IN_ENV% green -vvv wafer_map"
 
 #after_test:
   # if tests OK, create whl package

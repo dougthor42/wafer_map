@@ -1,4 +1,3 @@
-numpy
-colour
-nose
 green
+coverage
+coveralls

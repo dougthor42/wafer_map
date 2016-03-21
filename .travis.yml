@@ -30,14 +30,9 @@ install:
 
   # Start the install of everything
   - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install -r dev-requirements.txt
   - pip install $WXPYTHON
-  - pip install green
-  - pip install coverage
-  - pip install colour
-  - pip install colorama
-  - pip install numpy
-  - pip install coveralls
-  - pip install wheel
 
 script:
   - echo "----- script -----"
