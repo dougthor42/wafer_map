@@ -5,8 +5,16 @@ language: python
 
 sudo: false
 
-python:
-  - "3.4"
+matrix:
+  include:
+    # Before I can run this on Travis-CI, I need to make a wheel for linux
+#  - python: "2.7"
+#    env:
+#      - WXPYTHON=http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+  - python: "3.4"
+    env:
+      - WXPYTHON=http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+
 
 notifications:
   email: false
@@ -22,7 +30,7 @@ install:
 
   # Start the install of everything
   - pip install --upgrade pip
-  - pip install http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+  - pip install WXPYTHON
   - pip install green
   - pip install coverage
   - pip install colour
