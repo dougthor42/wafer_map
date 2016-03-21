@@ -70,10 +70,11 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - "python --version"
-  - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+  - "python -c 'import sys;print(sys.version)'"
+#  - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
 
   # install dependencies
+  - "%CMD_IN_ENV% python -m pip install --upgrade pip"
   - "%CMD_IN_ENV% pip install wheel"
   - "%CMD_IN_ENV% pip install %WXPYTHON%"
   - "%CMD_IN_ENV% pip install -r dev-requirements.txt"
