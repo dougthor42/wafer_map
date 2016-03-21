@@ -95,7 +95,7 @@ here ya go. Take a look and decide for yourself if you like it.
 
 ## Usage
 
-<I still need to fill this out in detail.>
+> I still need to fill this out in detail.
 
 The easiest way to use this to to:
 
