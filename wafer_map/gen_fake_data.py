@@ -13,13 +13,29 @@ Options:
     -h --help           # Show this screen.
     --version           # Show version.
 """
-
+# ---------------------------------------------------------------------------
+### Imports
+# ---------------------------------------------------------------------------
+# Standard Library
+from __future__ import absolute_import, division, print_function, unicode_literals
+import sys
+if sys.version_info < (3, ):
+    PY2 = True
+elif sys.version_info < (2, 6):
+    raise RuntimeError("Only Python >= 2.7 is supported.")
+else:
+    PY2 = False
 import math
 import random
 
 import wm_info
 import wm_utils
 import wm_constants as wm_const
+
+
+# Python2 Compatibility
+if PY2:
+    range = xrange
 
 
 def generate_fake_data(**kwargs):
