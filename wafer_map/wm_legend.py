@@ -61,6 +61,11 @@ except SystemError:
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 
+# Python2 Compatibility
+if PY2:
+    range = xrange
+
+
 class Legend(object):
     """
     Base class for both discrete and continuous legends.

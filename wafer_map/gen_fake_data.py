@@ -33,6 +33,11 @@ import wafer_map.wm_utils as wm_utils
 import wafer_map.wm_constants as wm_const
 
 
+# Python2 Compatibility
+if PY2:
+    range = xrange
+
+
 def generate_fake_data(**kwargs):
     """
     Generates fake data for wafer_map.

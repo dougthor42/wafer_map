@@ -33,6 +33,11 @@ import numpy as np
 from colour import Color
 
 
+# Python2 Compatibility
+if PY2:
+    range = xrange
+
+
 class Gradient(object):
     """
     Base class for all gradients.
