@@ -7,13 +7,14 @@ sudo: false
 
 matrix:
   include:
-    # Before I can run this on Travis-CI, I need to make a wheel for linux
-#  - python: "2.7"
-#    env:
-#      - WXPYTHON=http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+  - python: "2.7"
+    env:
+      # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
+      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-none-linux_x86_64.whl
   - python: "3.4"
     env:
-      - WXPYTHON=http://dougthor42.github.io/tools/wxPython-3.0.3-cp34-cp34m-linux_x86_64.whl
+      # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
+      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
 
 
 notifications:
@@ -36,6 +37,8 @@ install:
 
 script:
   - echo "----- script -----"
+  - python -c "import sys;print(sys.version)"
+  - python -c "import wx;print(wx.VERSION_STRING)"
   - green wafer_map -vv --run-coverage
 
 after_success:
