@@ -5,20 +5,20 @@ language: python
 
 sudo: false
 
-addons:
-  apt:
-    packages:
-    - dpkg-dev
-    - build-essential
-    - libwebkitgtk-dev
-    - libjpeg-dev
-    - libtiff4-dev
-    - libgtk2.0-dev
-    - libsdl1.2-dev
-    - libgstreamer-plugins-base0.10-dev
-    - libnotify-dev
-    - freeglut3
-    - freeglut3-dev
+#addons:
+#  apt:
+#    packages:
+#    - dpkg-dev
+#    - build-essential
+#    - libwebkitgtk-dev
+#    - libjpeg-dev
+#    - libtiff4-dev
+#    - libgtk2.0-dev
+#    - libsdl1.2-dev
+#    - libgstreamer-plugins-base0.10-dev
+#    - libnotify-dev
+#    - freeglut3
+#    - freeglut3-dev
 
 matrix:
   include:
@@ -48,13 +48,13 @@ install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
-  - pip install $WXPYTHON
+#  - pip install $WXPYTHON
 
 script:
   - echo "----- script -----"
   - python -c "import sys;print(sys.version)"
-  - python -c "import wx;print(wx.VERSION_STRING)"
-  - green wafer_map -vv --run-coverage
+#  - python -c "import wx;print(wx.VERSION_STRING)"
+#  - green wafer_map -vv --run-coverage
 
 after_success:
   - echo "----- after_success -----"
