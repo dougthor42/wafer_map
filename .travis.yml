@@ -22,14 +22,14 @@ sudo: false
 
 matrix:
   include:
-  - python: "2.7"
-    env:
+#  - python: "2.7"
+#    env:
       # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
-      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-none-linux_x86_64.whl
+#      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-none-linux_x86_64.whl
   - python: "3.4"
     env:
       # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
-      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
+      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_server_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
 
 
 notifications:
@@ -48,13 +48,14 @@ install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
-#  - pip install $WXPYTHON
+  - pip install $WXPYTHON
 
 script:
   - echo "----- script -----"
   - python -c "import sys;print(sys.version)"
-#  - python -c "import wx;print(wx.VERSION_STRING)"
-#  - green wafer_map -vv --run-coverage
+  - python -c "import wx;print(wx.VERSION_STRING)"
+#  - grep -C 5 '_Colour___hash__'
+  - green wafer_map -vv --run-coverage
 
 after_success:
   - echo "----- after_success -----"
