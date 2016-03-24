@@ -29,7 +29,8 @@ python34_x64-pip-install:
     - pip install -r requirements.txt -v --no-cache-dir
     - pip install -r dev-requirements.txt -v --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
-    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
+#    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
+    - pip install https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-win_amd64.whl
 
 python34_x64-tests:
   stage: test
@@ -79,7 +80,8 @@ python27_x32-pip-install:
     - pip install -r requirements.txt -v --no-cache-dir
     - pip install -r dev-requirements.txt -v --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
-    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
+#    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
+    - pip install https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-cp27m-win_amd64.whl
 
 python27_x32-tests:
   stage: test
