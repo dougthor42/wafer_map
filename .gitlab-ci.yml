@@ -26,8 +26,8 @@ python34_x64-pip-install:
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
     - python -m pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install -r dev-requirements.txt
+    - pip install -r requirements.txt -v --no-cache-dir
+    - pip install -r dev-requirements.txt -v --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
     - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
 
@@ -76,8 +76,8 @@ python27_x32-pip-install:
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
     - python -m pip install --upgrade pip
-    - pip install -r requirements.txt
-    - pip install -r dev-requirements.txt
+    - pip install -r requirements.txt -v --no-cache-dir
+    - pip install -r dev-requirements.txt -v --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
     - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
 
