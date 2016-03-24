@@ -5,14 +5,14 @@ language: python
 
 sudo: false
 
-#addons:
-#  apt:
-#    packages:
+addons:
+  apt:
+    packages:
 #    - dpkg-dev
 #    - build-essential
 #    - libwebkitgtk-dev
 #    - libjpeg-dev
-#    - libtiff4-dev
+    - libtiff5-dev
 #    - libgtk2.0-dev
 #    - libsdl1.2-dev
 #    - libgstreamer-plugins-base0.10-dev
