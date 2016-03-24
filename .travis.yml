@@ -46,8 +46,8 @@ install:
 
   # Start the install of everything
   - pip install --upgrade pip
-  - pip install -r requirements.txt
-  - pip install -r dev-requirements.txt
+  - pip install -r requirements.txt -v --no-cache-dir
+  - pip install -r dev-requirements.txt -v --no-cache-dir
 #  - pip install $WXPYTHON
 
 script:
