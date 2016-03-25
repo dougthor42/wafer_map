@@ -12,7 +12,7 @@ addons:
 #    - build-essential
 #    - libwebkitgtk-dev
 #    - libjpeg-dev
-    - libtiff4-dev
+#    - libtiff4-dev
 #    - libgtk2.0-dev
 #    - libsdl1.2-dev
 #    - libgstreamer-plugins-base0.10-dev
@@ -22,14 +22,14 @@ addons:
 
 matrix:
   include:
-#  - python: "2.7"
-#    env:
-      # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
-#      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-none-linux_x86_64.whl
-  - python: "3.4"
+  - python: "2.7"
     env:
       # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
-      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_server_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
+      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-12.04.5-desktop-amd64/wxPython_Phoenix-3.0.3.dev1956_aab2833-cp27-cp27mu-linux_x86_64.whl
+#  - python: "3.4"
+#    env:
+      # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
+#      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_server_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
 
 
 notifications:
