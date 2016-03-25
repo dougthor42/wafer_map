@@ -26,10 +26,10 @@ matrix:
     env:
       # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
       - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-12.04.5-desktop-amd64/wxPython_Phoenix-3.0.3.dev1956_aab2833-cp27-cp27mu-linux_x86_64.whl
-#  - python: "3.4"
-#    env:
+  - python: "3.4"
+    env:
       # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
-#      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/linux_server_with_fixes/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
+      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-12.04.5-desktop-amd64/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
 
 
 notifications:
@@ -52,7 +52,7 @@ install:
 
 script:
   - echo "----- script -----"
-  - python -c "import sys;print(sys.version)"
+  - python -c "import sys;print(sys.version);print(sys.path)"
   - python -c "import wx;print(wx.VERSION_STRING)"
 #  - grep -C 5 '_Colour___hash__'
   - green wafer_map -vv --run-coverage
