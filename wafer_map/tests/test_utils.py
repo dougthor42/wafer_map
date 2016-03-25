@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-@name:          new_program.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Wed Dec 17 08:46:21 2014
-@descr:         A new file
+Unittests for the wafer_map.utils module.
 
-Usage:
-    new_program.py
+Created on Wed Dec 17 08:46:21 2014
 
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+@author: dthor
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -27,11 +20,9 @@ else:
     PY2 = False
 import unittest
 
+
+# Package/Application
 from .. import wm_utils as utils
-
-
-__author__ = "Douglas Thor"
-__version__ = "v0.1.0"
 
 
 class LinearGradient(unittest.TestCase):
@@ -46,7 +37,3 @@ class LinearGradient(unittest.TestCase):
         for _start, _end,  _value, _expected in self.known_values:
             result = utils.linear_gradient(_start, _end, _value)
             self.assertEqual(result, _expected)
-
-
-if __name__ == "__main__":
-    unittest.main(exit=False, verbosity=1)
