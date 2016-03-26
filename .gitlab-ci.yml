@@ -29,7 +29,6 @@ python34_x64-pip-install:
     - pip install -r requirements.txt --no-cache-dir
     - pip install -r dev-requirements.txt --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
-#    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
     - pip install --no-cache-dir https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-win_amd64.whl
 
 python34_x64-tests:
@@ -71,7 +70,7 @@ python27_x32-pip-install:
   script:
     - call C:\WinPython27_x32\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - pip install virtualenv
+    - pip install --no-cache-dir virtualenv
     - python -m virtualenv --clear %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
     - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     # Can't upgrade pip in place.
@@ -80,7 +79,6 @@ python27_x32-pip-install:
     - pip install -r requirements.txt --no-cache-dir
     - pip install -r dev-requirements.txt --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
-#    - pip install http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
     - pip install --no-cache-dir https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-cp27m-win32.whl
 
 python27_x32-tests:
