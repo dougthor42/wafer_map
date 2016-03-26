@@ -2,7 +2,7 @@
 
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 ## Important Note!
 wxPython Phoenix is still in development. This program is tested against
@@ -55,7 +55,7 @@ two changes.
     self.CalcBoundingBox()
     ```
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 ## Contents
 
