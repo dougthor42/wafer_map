@@ -33,6 +33,10 @@ python34_x64-pip-install:
     # Build-specific versions shouldn't be in dev-requirements.txt
     - pip install --no-cache-dir https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-win_amd64.whl
 
+    # Manually fix the bugs with wxPythonPhoenix
+    - copy /B /Y /V build_reqs\wx_mods\core.py %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\core.py
+    - copy /B /Y /V build_reqs\wx_mods\FCObjects.py %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\lib\floatcanvas\FCObjects.py
+
 python34_x64-tests:
   stage: test
   when: on_success
@@ -90,6 +94,10 @@ python27_x32-pip-install:
     - pip install -r dev-requirements.txt --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
     - pip install --no-cache-dir https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-cp27m-win32.whl
+
+    # Manually fix the bugs with wxPythonPhoenix
+    - copy /B /Y /V build_reqs\wx_mods\core.py %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\core.py
+    - copy /B /Y /V build_reqs\wx_mods\FCObjects.py %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\lib\floatcanvas\FCObjects.py
 
 python27_x32-tests:
   stage: test
