@@ -54,6 +54,7 @@ class WaferMapWindow(wx.Frame):
                  low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
                  plot_die_centers=False,
+                 show_die_gridlines=True,
                  ):
         """
         __init__(self,
@@ -77,6 +78,7 @@ class WaferMapWindow(wx.Frame):
         self.low_color = low_color
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
+        self.show_die_gridlines = show_die_gridlines
         self._init_ui()
 
     def _init_ui(self):
@@ -114,6 +116,7 @@ class WaferMapWindow(wx.Frame):
                                                low_color=self.low_color,
                                                plot_range=self.plot_range,
                                                plot_die_centers=self.plot_die_centers,
+                                               show_die_gridlines=self.show_die_gridlines,
                                                )
 
     # TODO: There's gotta be a more scalable way to make menu items

@@ -99,16 +99,18 @@ def add_to_existing_app(xyd, wafer_info):
             # Create the wafer map
             self.panel = wm_core.WaferMapPanel(self,
                                                self.xyd,
-                                               self.wafer_info)
+                                               self.wafer_info,
+                                               show_die_gridlines=False,
+                                               )
 
             # set our layout
             self.hbox = wx.BoxSizer(wx.HORIZONTAL)
             self.vbox = wx.BoxSizer(wx.VERTICAL)
 
-            self.vbox.Add(self.panel, 1, wx.EXPAND)
+            self.vbox.Add(self.panel, 3, wx.EXPAND)
             self.vbox.Add(self.button, 1, wx.EXPAND)
             self.hbox.Add(self.listbox, 1, wx.EXPAND)
-            self.hbox.Add(self.vbox, 1, wx.EXPAND)
+            self.hbox.Add(self.vbox, 3, wx.EXPAND)
             self.SetSizer(self.hbox)
 
         def OnQuit(self, event):
@@ -139,6 +141,7 @@ def discrete_data_example(xyd, wafer_info):
                        wafer_info.edge_excl,
                        wafer_info.flat_excl,
                        data_type="discrete",
+                       show_die_gridlines=False,
                        )
 
 

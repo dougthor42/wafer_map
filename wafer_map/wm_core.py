@@ -72,6 +72,7 @@ class WaferMapPanel(wx.Panel):
                  plot_range=None,
                  plot_die_centers=False,
                  discrete_legend_values=None,
+                 show_die_gridlines=True,
                  ):
         """
         __init__(self,
@@ -97,12 +98,14 @@ class WaferMapPanel(wx.Panel):
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
         self.discrete_legend_values = discrete_legend_values
+        self.die_gridlines_bool = show_die_gridlines
 
         ### Other Attributes ################################################
         self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
         self.drag = False
         self.wfr_outline_bool = True
         self.crosshairs_bool = True
+        self.reticle_gridlines_bool = False
         self.legend_bool = True
 
         # timer to give a delay when moving so that buffers aren't
@@ -131,7 +134,7 @@ class WaferMapPanel(wx.Panel):
         # Create the legend
         self._create_legend()
 
-        # Draw the die and wafer objects (outline, crosshairs) on the canvas
+        # Draw the die and wafer objects (outline, crosshairs, etc) on the canvas
         self.draw_die()
         if self.plot_die_centers:
             self.draw_die_center()
@@ -272,6 +275,9 @@ class WaferMapPanel(wx.Panel):
                                                 self.wafer_info.edge_excl,
                                                 self.wafer_info.flat_excl)
         self.canvas.AddObject(self.wafer_outline)
+        if self.die_gridlines_bool:
+            self.die_gridlines = draw_die_gridlines(self.wafer_info)
+            self.canvas.AddObject(self.die_gridlines)
         self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
 
@@ -297,6 +303,16 @@ class WaferMapPanel(wx.Panel):
         else:
             self.canvas.AddObject(self.crosshairs)
             self.crosshairs_bool = True
+        self.canvas.Draw()
+
+    def toggle_die_gridlines(self):
+        """ Toggles the die gridlines on and off """
+        if self.die_gridlines_bool:
+            self.canvas.RemoveObject(self.die_gridlines)
+            self.die_gridlines_bool = False
+        else:
+            self.canvas.AddOb(self.die_gridlines)
+            self.die_gridlines_bool = True
         self.canvas.Draw()
 
     def toggle_legend(self):
@@ -705,6 +721,46 @@ def draw_crosshairs(dia=150, dot=False):
                                  )
 
         return FloatCanvas.Group([xline, yline])
+
+
+def draw_die_gridlines(wf):
+    """
+    Draws the die gridlines.
+
+    Parameters:
+    -----------
+    wf : ``wm_info.WaferInfo`` class
+        The wafer info to calculate gridlines for.
+
+    Returns:
+    --------
+    group : ``FloatCanvas.Group`` object
+        The collection of all die gridlines.
+    """
+    x_size = wf.die_size[0]
+    y_size = wf.die_size[1]
+    grey = wx.Colour(64, 64, 64)
+    edge = (wf.dia / 2) * 1.05
+
+    # calculate the values for the gridlines
+    x_ref = math.modf(wf.center_xy[0])[0] * x_size + (x_size/2)
+    pos_vert = np.arange(x_ref, edge, x_size)
+    neg_vert = np.arange(x_ref, -edge, -x_size)
+
+    y_ref = math.modf(wf.center_xy[1])[0] * y_size + (y_size/2)
+    pos_horiz = np.arange(y_ref, edge, y_size)
+    neg_horiz = np.arange(y_ref, -edge, -y_size)
+
+    # reverse `[::-1]`, remove duplicate `[1:]`, and join
+    x_values = np.concatenate((neg_vert[::-1], pos_vert[1:]))
+    y_values = np.concatenate((neg_horiz[::-1], pos_horiz[1:]))
+
+    line_coords = list([(x, -edge), (x, edge)] for x in x_values)
+    line_coords.extend([(-edge, y), (edge, y)] for y in y_values)
+
+    lines = [FloatCanvas.Line(l, LineColor=grey) for l in line_coords]
+
+    return FloatCanvas.Group(list(lines))
 
 
 def draw_wafer_flat(rad, flat_length):
