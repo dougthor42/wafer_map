@@ -72,6 +72,7 @@ class WaferMapPanel(wx.Panel):
                  plot_range=None,
                  plot_die_centers=False,
                  discrete_legend_values=None,
+                 show_die_gridlines=True,
                  ):
         """
         __init__(self,
@@ -97,13 +98,13 @@ class WaferMapPanel(wx.Panel):
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
         self.discrete_legend_values = discrete_legend_values
+        self.die_gridlines_bool = show_die_gridlines
 
         ### Other Attributes ################################################
         self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
         self.drag = False
         self.wfr_outline_bool = True
         self.crosshairs_bool = True
-        self.die_gridlines_bool = True
         self.reticle_gridlines_bool = False
         self.legend_bool = True
 
@@ -274,8 +275,9 @@ class WaferMapPanel(wx.Panel):
                                                 self.wafer_info.edge_excl,
                                                 self.wafer_info.flat_excl)
         self.canvas.AddObject(self.wafer_outline)
-        self.die_gridlines = draw_die_gridlines(self.wafer_info)
-        self.canvas.AddObject(self.die_gridlines)
+        if self.die_gridlines_bool:
+            self.die_gridlines = draw_die_gridlines(self.wafer_info)
+            self.canvas.AddObject(self.die_gridlines)
         self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
 
