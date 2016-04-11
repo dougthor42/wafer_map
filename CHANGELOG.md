@@ -1,6 +1,10 @@
 # Changelog
 This document highlights high-level changes made to this program.
 
+## 1.0.17 / 2016-04-11
+
+  + Fixed bug in toggle_die_gridlines()
+
 ## 1.0.16 / 2016-04-11
 
   + Fixed imports for Py3

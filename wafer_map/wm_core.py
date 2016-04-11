@@ -316,7 +316,7 @@ class WaferMapPanel(wx.Panel):
             self.canvas.RemoveObject(self.die_gridlines)
             self.die_gridlines_bool = False
         else:
-            self.canvas.AddOb(self.die_gridlines)
+            self.canvas.AddObject(self.die_gridlines)
             self.die_gridlines_bool = True
         self.canvas.Draw()
 
