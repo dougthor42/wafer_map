@@ -59,7 +59,7 @@ python34_x64-tag_bundle:
     - call C:\WinPython34\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
     - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
-    - python setup.py sdist bdist_wheel
+    - python setup.py bdist_wheel
   artifacts:
     paths:
       - dist/*.whl
@@ -122,7 +122,7 @@ python27_x32-tag_bundle:
     - call C:\WinPython27_x32\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
     - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
-    - python setup.py sdist bdist_wheel
+    - python setup.py bdist_wheel
   artifacts:
     paths:
       - dist/*.whl

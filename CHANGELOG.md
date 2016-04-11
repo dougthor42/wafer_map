@@ -1,6 +1,10 @@
 # Changelog
 This document highlights high-level changes made to this program.
 
+## 1.0.14 / 2016-04-11
+
+  + Added option to display die gridlines.
+
 ## 1.0.11 / 2015-10-28
 
   + Implemented #31 - added radius of die and mouse to status bar.

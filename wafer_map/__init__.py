@@ -5,12 +5,12 @@ wafer_map
 
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
-Please see CHANGELOG.md.
+Please see README.md and CHANGELOG.md.
 
 """
 
 ### Constants ###############################################################
-__version__ = "1.0.12"
+__version__ = "1.0.14"
 __project_url__ = "https://github.com/dougthor42/wafer_map"
 __project_name__ = "wafer_map"
 __description__ = "Semiconductor Wafer Mapping"
