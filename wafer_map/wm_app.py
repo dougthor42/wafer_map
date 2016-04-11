@@ -30,10 +30,16 @@ else:
 import wx
 
 # Package / Application
-import wm_frame
-import wm_info
-import gen_fake_data
-import wm_constants as wm_const
+if PY2:
+    import wm_frame
+    import wm_info
+    import gen_fake_data
+    import wm_constants as wm_const
+else:
+    from . import wm_frame
+    from . import wm_info
+    from . import gen_fake_data
+    from . import wm_constants as wm_const
 
 
 class WaferMapApp(object):

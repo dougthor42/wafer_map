@@ -42,9 +42,14 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 # Package / Application
-import wm_legend
-import wm_utils
-import wm_constants as wm_const
+if PY2:
+    import wm_legend
+    import wm_utils
+    import wm_constants as wm_const
+else:
+    from . import wm_legend
+    from . import wm_utils
+    from . import wm_constants as wm_const
 
 
 # Module-level TODO list.

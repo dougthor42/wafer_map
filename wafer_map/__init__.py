@@ -10,7 +10,7 @@ Please see README.md and CHANGELOG.md.
 """
 
 ### Constants ###############################################################
-__version__ = "1.0.15"
+__version__ = "1.0.16"
 __project_url__ = "https://github.com/dougthor42/wafer_map"
 __project_name__ = "wafer_map"
 __description__ = "Semiconductor Wafer Mapping"

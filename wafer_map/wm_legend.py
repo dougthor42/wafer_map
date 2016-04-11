@@ -33,8 +33,12 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 # Package / Application
-import wm_utils
-import wm_constants as wm_const
+if PY2:
+    import wm_utils
+    import wm_constants as wm_const
+else:
+    from . import wm_utils
+    from . import wm_constants as wm_const
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 

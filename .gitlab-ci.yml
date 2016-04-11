@@ -23,6 +23,7 @@ python34_x64-pip-install:
   script:
     - call C:\WinPython34\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+    - echo %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
     - python -m venv --clear %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
     - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     # Can't upgrade pip in place.

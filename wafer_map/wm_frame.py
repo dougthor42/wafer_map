@@ -32,8 +32,12 @@ else:
 import wx
 
 # Package / Application
-import wm_core
-import wm_constants as wm_const
+if PY2:
+    import wm_core
+    import wm_constants as wm_const
+else:
+    from . import wm_core
+    from . import wm_constants as wm_const
 
 
 class WaferMapWindow(wx.Frame):

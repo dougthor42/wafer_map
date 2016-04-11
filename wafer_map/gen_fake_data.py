@@ -28,9 +28,14 @@ else:
 import math
 import random
 
-import wm_info
-import wm_utils
-import wm_constants as wm_const
+if PY2:
+    import wm_info
+    import wm_utils
+    import wm_constants as wm_const
+else:
+    from . import wm_info
+    from . import wm_utils
+    from . import wm_constants as wm_const
 
 
 # Python2 Compatibility

@@ -32,9 +32,14 @@ else:
 # Third-Party
 import wx
 
-import gen_fake_data
-import wm_core
-import wm_app
+if PY2:
+    import gen_fake_data
+    import wm_core
+    import wm_app
+else:
+    from . import gen_fake_data
+    from . import wm_core
+    from . import wm_app
 
 __author__ = "Douglas Thor"
 __version__ = "v0.4.0"
