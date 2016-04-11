@@ -1,6 +1,10 @@
 # Changelog
 This document highlights high-level changes made to this program.
 
+## 1.0.15 / 2016-04-11
+
+  + Version bump because of a messed up PyPI release.
+
 ## 1.0.14 / 2016-04-11
 
   + Added option to display die gridlines.
