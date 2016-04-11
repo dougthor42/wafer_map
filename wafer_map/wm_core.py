@@ -103,6 +103,8 @@ class WaferMapPanel(wx.Panel):
         self.drag = False
         self.wfr_outline_bool = True
         self.crosshairs_bool = True
+        self.die_gridlines_bool = True
+        self.reticle_gridlines_bool = False
         self.legend_bool = True
 
         # timer to give a delay when moving so that buffers aren't
@@ -131,7 +133,7 @@ class WaferMapPanel(wx.Panel):
         # Create the legend
         self._create_legend()
 
-        # Draw the die and wafer objects (outline, crosshairs) on the canvas
+        # Draw the die and wafer objects (outline, crosshairs, etc) on the canvas
         self.draw_die()
         if self.plot_die_centers:
             self.draw_die_center()
@@ -274,6 +276,9 @@ class WaferMapPanel(wx.Panel):
         self.canvas.AddObject(self.wafer_outline)
         self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
+        self.die_gridlines = draw_die_gridlines(self.wafer_info,
+                                                self.die_size)
+        self.canvas.AddObject(self.die_gridlines)
 
     def zoom_fill(self):
         """ Zoom so that everything is displayed """
@@ -297,6 +302,16 @@ class WaferMapPanel(wx.Panel):
         else:
             self.canvas.AddObject(self.crosshairs)
             self.crosshairs_bool = True
+        self.canvas.Draw()
+
+    def toggle_die_gridlines(self):
+        """ Toggles the die gridlines on and off """
+        if self.die_gridlines_bool:
+            self.canvas.RemoveObject(self.die_gridlines)
+            self.die_gridlines_bool = False
+        else:
+            self.canvas.AddOb(self.die_gridlines)
+            self.die_gridlines_bool = True
         self.canvas.Draw()
 
     def toggle_legend(self):
@@ -705,6 +720,24 @@ def draw_crosshairs(dia=150, dot=False):
                                  )
 
         return FloatCanvas.Group([xline, yline])
+
+
+def draw_die_gridlines(wafer_info, die_size):
+    """ Draws the die gridlines """
+    rad = wafer_info.dia / 2
+    grey = wx.Colour(128, 128, 128)
+    edge = rad * 1.05
+
+    # TODO: need to build the lines out from 0 + die offset.
+    xs = list([(x, -edge), (x, edge)] for x in list(np.arange(-edge, edge, die_size[0])))
+    ys = list([(-edge, y), (edge, y)] for y in list(np.arange(-edge, edge, die_size[1])))
+
+    x_lines = [FloatCanvas.Line(l, LineColor=grey) for l in xs]
+    y_lines = [FloatCanvas.Line(l, LineColor=grey) for l in ys]
+
+    x_lines.extend(y_lines)
+
+    return FloatCanvas.Group(list(x_lines))
 
 
 def draw_wafer_flat(rad, flat_length):
