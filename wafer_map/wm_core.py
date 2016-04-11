@@ -274,11 +274,10 @@ class WaferMapPanel(wx.Panel):
                                                 self.wafer_info.edge_excl,
                                                 self.wafer_info.flat_excl)
         self.canvas.AddObject(self.wafer_outline)
+        self.die_gridlines = draw_die_gridlines(self.wafer_info)
+        self.canvas.AddObject(self.die_gridlines)
         self.crosshairs = draw_crosshairs(self.wafer_info.dia, dot=False)
         self.canvas.AddObject(self.crosshairs)
-        self.die_gridlines = draw_die_gridlines(self.wafer_info,
-                                                self.die_size)
-        self.canvas.AddObject(self.die_gridlines)
 
     def zoom_fill(self):
         """ Zoom so that everything is displayed """
@@ -722,22 +721,44 @@ def draw_crosshairs(dia=150, dot=False):
         return FloatCanvas.Group([xline, yline])
 
 
-def draw_die_gridlines(wafer_info, die_size):
-    """ Draws the die gridlines """
-    rad = wafer_info.dia / 2
-    grey = wx.Colour(128, 128, 128)
-    edge = rad * 1.05
+def draw_die_gridlines(wf):
+    """
+    Draws the die gridlines.
 
-    # TODO: need to build the lines out from 0 + die offset.
-    xs = list([(x, -edge), (x, edge)] for x in list(np.arange(-edge, edge, die_size[0])))
-    ys = list([(-edge, y), (edge, y)] for y in list(np.arange(-edge, edge, die_size[1])))
+    Parameters:
+    -----------
+    wf : ``wm_info.WaferInfo`` class
+        The wafer info to calculate gridlines for.
 
-    x_lines = [FloatCanvas.Line(l, LineColor=grey) for l in xs]
-    y_lines = [FloatCanvas.Line(l, LineColor=grey) for l in ys]
+    Returns:
+    --------
+    group : ``FloatCanvas.Group`` object
+        The collection of all die gridlines.
+    """
+    x_size = wf.die_size[0]
+    y_size = wf.die_size[1]
+    grey = wx.Colour(64, 64, 64)
+    edge = (wf.dia / 2) * 1.05
 
-    x_lines.extend(y_lines)
+    # calculate the values for the gridlines
+    x_ref = math.modf(wf.center_xy[0])[0] * x_size + (x_size/2)
+    pos_vert = np.arange(x_ref, edge, x_size)
+    neg_vert = np.arange(x_ref, -edge, -x_size)
 
-    return FloatCanvas.Group(list(x_lines))
+    y_ref = math.modf(wf.center_xy[1])[0] * y_size + (y_size/2)
+    pos_horiz = np.arange(y_ref, edge, y_size)
+    neg_horiz = np.arange(y_ref, -edge, -y_size)
+
+    # reverse `[::-1]`, remove duplicate `[1:]`, and join
+    x_values = np.concatenate((neg_vert[::-1], pos_vert[1:]))
+    y_values = np.concatenate((neg_horiz[::-1], pos_horiz[1:]))
+
+    line_coords = list([(x, -edge), (x, edge)] for x in x_values)
+    line_coords.extend([(-edge, y), (edge, y)] for y in y_values)
+
+    lines = [FloatCanvas.Line(l, LineColor=grey) for l in line_coords]
+
+    return FloatCanvas.Group(list(lines))
 
 
 def draw_wafer_flat(rad, flat_length):
