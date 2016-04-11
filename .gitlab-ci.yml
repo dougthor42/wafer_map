@@ -23,11 +23,13 @@ python34_x64-pip-install:
   script:
     - call C:\WinPython34\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - python -m venv --clear %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - python -m venv --verbose --clear %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
     - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
     - python -m pip install --upgrade --no-cache-dir pip==8.1.0
+    - python -m pip install --upgrade --no-cache-dir setuptools
+    - python -m pip install --upgrade --no-cache-dir wheel
     - pip install -r requirements.txt --no-cache-dir
     - pip install -r dev-requirements.txt --no-cache-dir
     # Build-specific versions shouldn't be in dev-requirements.txt
@@ -85,11 +87,13 @@ python27_x32-pip-install:
     - call C:\WinPython27_x32\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
     - pip install --upgrade --no-cache-dir virtualenv
-    - python -m virtualenv --clear %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - python -m virtualenv --verbose --clear %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
     - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
-    - python -m pip install --upgrade --no-cache-dir pip
+    - python -m pip install --upgrade --no-cache-dir pip==8.1.0
+    - python -m pip install --upgrade --no-cache-dir setuptools
+    - python -m pip install --upgrade --no-cache-dir wheel
     - pip install -r requirements.txt --no-cache-dir
     - pip install -r dev-requirements.txt --no-cache-dir
     - pip install --no-cache-dir nose
