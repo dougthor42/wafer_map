@@ -18,7 +18,7 @@ class WaferInfo(object):
     """
     Contains the wafer info:
     Die Size
-    Center XY
+    Grid Center XY
     Wafer Diameter
     Edge Exclusion
     Flat Exclusion
@@ -34,7 +34,7 @@ class WaferInfo(object):
         string = """
 Wafer Die: {}mm
 Die Size: {}
-Center XY: {}
+Grid Center XY: {}
 Edge Excl: {}
 Flat Excl: {}
 """
