@@ -49,7 +49,7 @@ python34_x64-tests:
     - call C:\WinPython34\scripts\env.bat
     - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
     - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
-    - green -vvv -s 1 wafer_map
+    - green -vvv -s 1 -W -t wafer_map
 
 python34_x64-tag_bundle:
   stage: tag_deploy
