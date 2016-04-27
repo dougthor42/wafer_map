@@ -8,9 +8,8 @@ variables:
   VENV_ROOT: C:\temp\builds
 
 # Set environment vars
-#before_script:
-#  - call C:\WinPython34\scripts\env.bat
-#  - python -c "import sys;print(sys.version)"
+before_script:
+  - rd /S /Q C:\Users\tph-buildbot\AppData\Local\pip\Cache
 
 #################################################
 ### Python34_x64 jobs                         ###
