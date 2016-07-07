@@ -32,7 +32,7 @@ class WaferInfo(object):
 
     def __str__(self):
         string = """
-Wafer Die: {}mm
+Wafer Dia: {}mm
 Die Size: {}
 Grid Center XY: {}
 Edge Excl: {}
