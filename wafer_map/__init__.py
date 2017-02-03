@@ -12,14 +12,14 @@ import sys
 import wx
 
 ### Constants ###############################################################
-__version__ = "1.0.17"
+__version__ = "1.0.18"
 __project_url__ = "https://github.com/dougthor42/wafer_map"
 __project_name__ = "Wafer Map"
 __description__ = "Semiconductor Wafer Mapping"
 __package_name__ = "wafer_map"
 __long_descr__ = __doc__
-__released__ = ""
-__created__ = "Some time ago."
+__released__ = "2017-02-03"
+__created__ = "2014-11-25"
 #__all__ = ['wm_app', 'wm_constants', 'wm_core', 'wm_frame', 'wm_info',
 #           'wm_legend', 'wm_utils']
 
