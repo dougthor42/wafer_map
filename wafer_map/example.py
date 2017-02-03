@@ -21,25 +21,15 @@ Description:
 # ---------------------------------------------------------------------------
 # Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
-import sys
-if sys.version_info < (3, ):
-    PY2 = True
-elif sys.version_info < (2, 6):
-    raise RuntimeError("Only Python >= 2.7 is supported.")
-else:
-    PY2 = False
 
 # Third-Party
 import wx
 
-if PY2:
-    import gen_fake_data
-    import wm_core
-    import wm_app
-else:
-    from . import gen_fake_data
-    from . import wm_core
-    from . import wm_app
+# Package/Application
+from . import gen_fake_data
+from . import wm_core
+from . import wm_app
+
 
 __author__ = "Douglas Thor"
 __version__ = "v0.4.0"
