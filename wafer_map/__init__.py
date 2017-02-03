@@ -8,8 +8,9 @@ Plots up a wafer map. Used in semiconductor processing and analysis.
 Please see README.md and CHANGELOG.md.
 
 """
+import os
 import sys
-import wx
+
 
 ### Constants ###############################################################
 __version__ = "1.0.18"
@@ -32,10 +33,15 @@ else:
     PY2 = False
 
 
-# Fix hashing for wx.Colour
-# See https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII
-ok = getattr(wx.Colour, "__hash__")
-if ok is None:
-    def _Colour___hash(self):
-        return hash(tuple(self.Get()))
-    wx.Colour.__hash__ = _Colour___hash
+# if we're building docs, don't try and import or monkeypatch wxPython.
+if os.getenv("READTHEDOCS", "False") == "True":
+    pass
+else:
+    # Fix hashing for wx.Colour
+    # See https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII
+    import wx
+    ok = getattr(wx.Colour, "__hash__")
+    if ok is None:
+        def _Colour___hash(self):
+            return hash(tuple(self.Get()))
+        wx.Colour.__hash__ = _Colour___hash
