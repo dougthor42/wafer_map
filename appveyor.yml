@@ -34,7 +34,7 @@ environment:
 
 install:
   # Check that we have the expected version and architecture for Python
-  - "%PYTHON%\\python.exe -c 'import sys;print(sys.version)'"
+  - "%PYTHON%\\python.exe --version"
 
   # install dependencies
   - "%PYTHON%\\python.exe -m pip install --upgrade pip"
