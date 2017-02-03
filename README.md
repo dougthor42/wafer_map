@@ -2,60 +2,6 @@
 
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
---------------------------------------------------------------------------
-
-## Important Note!
-wxPython Phoenix is still in development. This program is tested against
-`wxPython_Phoenix-3.0.3.dev1956+aab2833` (2016-03-04 02:08) with the following
-two changes.
-
-1.  **Add a hash attribute to wx.Colour.**
-    [(more info)](https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII)
-
-    In `wx/core.py`, add the following lines at line 558:
-    ```python
-    def _Colour___hash__(self):
-        return hash(tuple(self.Get()))
-    Colour.__hash__ = _Colour___hash__
-    del _Colour___hash__
-    ```
-
-    With context lines, it should look like:
-
-    ```python
-    Colour.__setitem__ = _Colour___setitem__
-    del _Colour___setitem__
-    def _Colour___hash__(self):                 # <-- add this line
-        return hash(tuple(self.Get()))          # <-- add this line
-    Colour.__hash__ = _Colour___hash__          # <-- add this line
-    del _Colour___hash__                        # <-- add this line
-    Colour.__safe_for_unpickling__ = True
-
-    # These stock colours will be initialized when the wx.App object is created.
-    ```
-
-2.  **Fix a regression in wxPython_Phoenix.**
-    [(wxWidgets/Phoenix #55)](https://github.com/wxWidgets/Phoenix/pull/55)
-
-    In `wx/lib/floatcanvas/FCObjects.py`, add the following to line 2727:
-
-    ```python
-    self.CalcBoundingBox()
-    ```
-
-    With context lines, it should look like:
-
-    ```python
-    # this one uses a proprty for _Canvas...
-    self._Actual_Canvas = None
-
-    self.CalcBoundingBox()         # <-- add this line
-    for obj in ObjectList:
-        self.AddObject(obj)
-    self.CalcBoundingBox()
-    ```
-
---------------------------------------------------------------------------
 
 ## Contents
 
@@ -70,6 +16,7 @@ two changes.
 + [Notes](#notes)
   + [Current capabilities](#current-capabilities)
 + [Changelog](#changelog)
+
 
 ## Features
 
@@ -89,21 +36,16 @@ Install from PyPI.
 
 `pip install wafer_map`
 
+
 ## Requirements
 
 wafer_map requires the following non-built-in packages:
 
-- wxPython Phoenix (https://github.com/wxWidgets/Phoenix)
-  + If installing on 64-bit Linux for Python 2.7 or 3.4, you can use the
-    wheels found [here](https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/tree/master/ubuntu-12.04.5-desktop-amd64).
-    Those already have the two requried changes made.
-    Alternatively, you can buid from source and make the above changes
-    yourself.
+- [wxPython Phoenix](https://github.com/wxWidgets/Phoenix)
   + If installing on Windows or Mac, use the wheels found at the [Phoenix
-    snapshot builds](http://wxpython.org/Phoenix/snapshot-builds/) and
-    make the two changes listed above.
-- numpy (https://pypi.python.org/pypi/numpy)
-- colour (https://pypi.python.org/pypi/colour)
+    snapshot builds](http://wxpython.org/Phoenix/snapshot-builds/).
+- [numpy](https://pypi.python.org/pypi/numpy)
+- [colour](https://pypi.python.org/pypi/colour)
 
 and the following core (built-in) packages:
 

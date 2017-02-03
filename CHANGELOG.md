@@ -1,25 +1,41 @@
 # Changelog
 This document highlights high-level changes made to this program.
 
+
+## 1.0.18 / 2017-02-03
+
+  + Added Sphinx auto-documentation. So far it's only hosted locally. Sorry
+    everyone! I plan to put it on ReadTheDocs soon.
+  + Cleaned up imports 'cause they were crap.
+  + Monkeypatched `wx.Colour`. Now you don't have to muck with your wxPython
+    installation, yay!
+  + Fixed Appveyor CI.
+
+
 ## 1.0.17 / 2016-04-11
 
   + Fixed bug in toggle_die_gridlines()
+
 
 ## 1.0.16 / 2016-04-11
 
   + Fixed imports for Py3
 
+
 ## 1.0.15 / 2016-04-11
 
   + Version bump because of a messed up PyPI release.
+
 
 ## 1.0.14 / 2016-04-11
 
   + Added option to display die gridlines.
 
+
 ## 1.0.11 / 2015-10-28
 
   + Implemented #31 - added radius of die and mouse to status bar.
+
 
 ## 1.0.10 / 2015-05-04
 
@@ -29,19 +45,23 @@ This document highlights high-level changes made to this program.
     released (site-packages) directory.
   + Fixed Issue #30
 
+
 ## 1.0.9 / 2015-05-04
 
   + Fixed flicker issue.
+
 
 ## 1.0.8 / 2015-05-04
 
   + I messed up on the PyPI release, so I have to release under a new file
     name. Oh well...
 
+
 ## 1.0.7 / 2015-05-04
 
   + Minor import refactoring
   + Added some docstrings
+
 
 ## 1.0.6 / 2015-04-01
 
@@ -54,6 +74,7 @@ This document highlights high-level changes made to this program.
   + Fixed issue where an exclusion of 0 would prevent the flat exclusion from
     being drawn.
 
+
 ## 1.0.5 / 2015-03-30
 
   + Added optional "grid_center" input to gen_fake_data
@@ -64,9 +85,11 @@ This document highlights high-level changes made to this program.
   + Added option to have the wafer map use a constant number of items for
     discrete legend.
 
+
 ## 1.0.4 / 2014-12-29
 
   + Changed import statements to not be weird.
+
 
 ## 1.0.3 / 2014-12-17
 
@@ -99,6 +122,7 @@ This document highlights high-level changes made to this program.
   + Official release.
   + The Legend should now work as intended.
 
+
 ## 0.6.0 / 2014-12-04
 
   + Closed issues #1, 2, 3, 4, and 6 in the tracker.
@@ -110,6 +134,7 @@ This document highlights high-level changes made to this program.
   + **Last Update before release, yay!** All that's left is to get the
     legend working.
 
+
 ## 0.5.0 / 2014-12-02
 
   + renamed wafer_map.py to wm_core.py.
@@ -117,10 +142,12 @@ This document highlights high-level changes made to this program.
     own dev directory vs running in "production" from the site-packages
     directory.
 
+
 ## 0.4.0 / 2014-12-02
 
   + Massive change to package hierarchy - separated app, frame, info, and fake
     data into individual modules.
+
 
 ## 0.3.0 / 2014-12-01
 
@@ -129,15 +156,18 @@ This document highlights high-level changes made to this program.
   + Added placeholder for legend and kb shortcut for display toggle.
   + Added option for plotting discrete data.
 
+
 ## 0.2.0 / 2014-11-26
 
   + Made it so a wafer map can be plotted with a single
     command.
   + Updated example.py to demo single-command usage.
 
+
 ## 0.1.0 / 2014-11-25
 
   + First working code. Added example file.
+
 
 ## 0.0.1 / 2014-11-25
 
