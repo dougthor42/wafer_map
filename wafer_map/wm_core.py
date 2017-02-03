@@ -26,13 +26,6 @@ See README.rst
 # ---------------------------------------------------------------------------
 # Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
-import sys
-if sys.version_info < (3, ):
-    PY2 = True
-elif sys.version_info < (2, 6):
-    raise RuntimeError("Only Python >= 2.7 is supported.")
-else:
-    PY2 = False
 import math
 
 # Third-Party
@@ -42,14 +35,9 @@ from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
 # Package / Application
-if PY2:
-    import wm_legend
-    import wm_utils
-    import wm_constants as wm_const
-else:
-    from . import wm_legend
-    from . import wm_utils
-    from . import wm_constants as wm_const
+from . import wm_legend
+from . import wm_utils
+from . import wm_constants as wm_const
 
 
 # Module-level TODO list.

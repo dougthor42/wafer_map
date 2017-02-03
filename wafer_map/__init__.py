@@ -19,6 +19,15 @@ __long_descr__ = __doc__
 #           'wm_legend', 'wm_utils']
 
 
+import sys
+if sys.version_info < (3, ):
+    PY2 = True
+elif sys.version_info < (2, 6):
+    raise RuntimeError("Only Python >= 2.7 is supported.")
+else:
+    PY2 = False
+
+
 # Fix hashing for wx.Colour
 # See https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII
 import wx

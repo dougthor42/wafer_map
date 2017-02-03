@@ -20,17 +20,13 @@ Options:
 # ---------------------------------------------------------------------------
 # Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
-import sys
-if sys.version_info < (3, ):
-    PY2 = True
-elif sys.version_info < (2, 6):
-    raise RuntimeError("Only Python >= 2.7 is supported.")
-else:
-    PY2 = False
 
 # Third-Party
 import numpy as np
 from colour import Color
+
+# Package/Application
+from wafer_map import PY2
 
 
 # Python2 Compatibility

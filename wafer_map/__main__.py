@@ -15,6 +15,6 @@ Options:
 
 """
 
-import example
+from . import example
 
 example.main()
