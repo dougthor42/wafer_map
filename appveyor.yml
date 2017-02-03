@@ -1,97 +1,55 @@
-﻿# This file taken directly from DRMaclver's hypothesis package.
-# https://github.com/DRMacIver/hypothesis
-# I will edit accordingly once I get my project going
-#
-# Also taken from
-# https://github.com/ogrisel/python-appveyor-demo/blob/master/appveyor.yml
-
-#   - Minimal appveyor.yml file is an empty file. All sections are optional.
-#   - Indent each level of configuration with 2 spaces. Do not use tabs!
-#   - All section names are case-sensitive.
-#   - Section names should be unique on each level.
-
-### ----------------------
+﻿### ----------------------
 ### General Configuration
 ### ----------------------
 
 environment:
   global:
-    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
-    # /E:ON and /V:ON options are not enabled in the batch script intepreter
-    # See: http://stackoverflow.com/a/13751649/163740
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+    WXPYTHON_SNAPSHOTS: "https://wxpython.org/Phoenix/snapshot-builds"
 
   matrix:
     - PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7.10"
+      PYTHON_VERSION: "2.7.13"
       PYTHON_ARCH: "32"
-      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
 
     - PYTHON: "C:\\Python27-x64"
-      PYTHON_VERSION: "2.7.10"
+      PYTHON_VERSION: "2.7.13"
       PYTHON_ARCH: "64"
-      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win_amd64.whl
 
-#    - PYTHON: "C:\\Python33"
-#      PYTHON_VERSION: "3.3.5"
-#      PYTHON_ARCH: "32"
-#
-#    - PYTHON: "C:\\Python33-x64"
-#      PYTHON_VERSION: "3.3.5"
-#      PYTHON_ARCH: "64"
+    - PYTHON: "C:\\Python35"
+      PYTHON_VERSION: "3.5.2"
+      PYTHON_ARCH: "32"
 
-#   - PYTHON: "C:\\Python34"
-#     PYTHON_VERSION: "3.4.1"
-#     PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python34-x64"
-      PYTHON_VERSION: "3.4.3"
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5.2"
       PYTHON_ARCH: "64"
-      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
+
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.0"
+      PYTHON_ARCH: "64"
 
 install:
-  - ECHO "Filesystem root:"
-  - ps: new-item "C:\\temp" -itemtype directory
-  - ps: ls "C:\\"
-
-  - ECHO "Powershell Version:"
-  - ps: $PSVersionTable.PSVersion
-
-#  - ECHO "Installed SDKs:"
-#  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
-
-  # Install Python (from the official .msi of http://python.org) and pip when
-  # not already installed.
-  - "powershell ./appveyor/install.ps1"
-
-  # Prepend newly installed Python to the PATH of this build (this cannot be
-  # done from inside the powershell script as it would require to restart
-  # the parent CMD process).
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-
   # Check that we have the expected version and architecture for Python
-#  - python -c "import sys;print(sys.version)"
-#  - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
+  - "%PYTHON%\\python.exe --version"
 
   # install dependencies
-  - "%CMD_IN_ENV% python -m pip install --upgrade pip"
-  - "%CMD_IN_ENV% pip install wheel"
-  - "%CMD_IN_ENV% pip install %WXPYTHON%"
-  - "%CMD_IN_ENV% pip install -r requirements.txt"
-  - "%CMD_IN_ENV% pip install -r dev-requirements.txt"
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
+  - "%PYTHON%\\python.exe -m pip install wheel"
+  #- "%PYTHON%\\python.exe -m pip install %WXPYTHON%"
+  - "%PYTHON%\\python.exe -m pip install --only-binary :all: --pre -f %WXPYTHON_SNAPSHOTS% wxPython_Phoenix"
+  - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
+  - "%PYTHON%\\python.exe -m pip install -r dev-requirements.txt"
 
-build: false  # Not a C# project, build stuff at the test step instead.
+build: off  # Not a C# project, build stuff at the test step instead.
 
 test_script:
   # Build the compiled extension and run the project tests
-  - "%CMD_IN_ENV% python --version"
-  - "%CMD_IN_ENV% green -vvv wafer_map"
+  - "%PYTHON%\\python.exe --version"
+  - "%PYTHON%\\python.exe -m green -vvv wafer_map"
 
-#after_test:
+after_test:
   # if tests OK, create whl package
-#  - "%CMD_IN_ENV% python setup.py sdist bdist_wheel"
+  - "%PYTHON%\\python.exe setup.py sdist bdist_wheel"
 
-#artifacts:
+artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
-#  - path: dist\*.whl
-
+  - path: dist\*.whl
