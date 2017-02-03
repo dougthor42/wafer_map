@@ -8,6 +8,8 @@ Plots up a wafer map. Used in semiconductor processing and analysis.
 Please see README.md and CHANGELOG.md.
 
 """
+import sys
+import wx
 
 ### Constants ###############################################################
 __version__ = "1.0.17"
@@ -19,7 +21,6 @@ __long_descr__ = __doc__
 #           'wm_legend', 'wm_utils']
 
 
-import sys
 if sys.version_info < (3, ):
     PY2 = True
 elif sys.version_info < (2, 6):
@@ -30,7 +31,6 @@ else:
 
 # Fix hashing for wx.Colour
 # See https://groups.google.com/forum/#!topic/wxpython-dev/NLd4CZv9rII
-import wx
 ok = getattr(wx.Colour, "__hash__")
 if ok is None:
     def _Colour___hash(self):

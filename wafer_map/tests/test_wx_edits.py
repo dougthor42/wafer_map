@@ -25,7 +25,6 @@ class TestWxPython(unittest.TestCase):
         except TypeError:
             self.fail("Has wx/core.py been edited correctly?")
 
-
     def test_floatcanvas_group(self):
         item1 = FloatCanvas.Circle((0, 0), 10)
         item2 = FloatCanvas.Circle((0, 5), 10)
