@@ -34,14 +34,14 @@ environment:
 
 install:
   # Check that we have the expected version and architecture for Python
-  - "%%PYTHON%\\python.exe -c 'import sys;print(sys.version)'"
+  - "%PYTHON%\\python.exe -c 'import sys;print(sys.version)'"
 
   # install dependencies
-  - "%%PYTHON%\\python.exe -m pip install --upgrade pip"
-  - "%%PYTHON%\\python.exe -m pip install wheel"
-  - "%%PYTHON%\\python.exe -m pip install %WXPYTHON%"
-  - "%%PYTHON%\\python.exe -m pip install -r requirements.txt"
-  - "%%PYTHON%\\python.exe -m pip install -r dev-requirements.txt"
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
+  - "%PYTHON%\\python.exe -m pip install wheel"
+  - "%PYTHON%\\python.exe -m pip install %WXPYTHON%"
+  - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
+  - "%PYTHON%\\python.exe -m pip install -r dev-requirements.txt"
 
 build: off  # Not a C# project, build stuff at the test step instead.
 
