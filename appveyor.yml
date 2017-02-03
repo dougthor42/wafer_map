@@ -3,16 +3,19 @@
 ### ----------------------
 
 environment:
+  global:
+    WXPYTHON_SNAPSHOTS: "https://wxpython.org/Phoenix/snapshot-builds"
+
   matrix:
     - PYTHON: "C:\\Python27"
       PYTHON_VERSION: "2.7.10"
       PYTHON_ARCH: "32"
-      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
+      #WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win32.whl
 
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.10"
       PYTHON_ARCH: "64"
-      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win_amd64.whl
+      #WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp27-cp27m-win_amd64.whl
 
 #    - PYTHON: "C:\\Python33"
 #      PYTHON_VERSION: "3.3.5"
@@ -30,7 +33,7 @@ environment:
       PYTHON_VERSION: "3.4.3"
       PYTHON_ARCH: "64"
       DISTUTILS_USE_SDK: "1"
-      WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
+      #WXPYTHON: http://dougthor42.github.io/tools/wxPython_Phoenix-3.0.3.dev1956-cp34-cp34m-win_amd64.whl
 
 install:
   # Check that we have the expected version and architecture for Python
@@ -39,7 +42,8 @@ install:
   # install dependencies
   - "%PYTHON%\\python.exe -m pip install --upgrade pip"
   - "%PYTHON%\\python.exe -m pip install wheel"
-  - "%PYTHON%\\python.exe -m pip install %WXPYTHON%"
+  #- "%PYTHON%\\python.exe -m pip install %WXPYTHON%"
+  - "%PYTHON%\\python.exe -m pip install --only-binary :all: --pre -f %WXPYTHON_SNAPSHOTS% wxPython_Phoenix"
   - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
   - "%PYTHON%\\python.exe -m pip install -r dev-requirements.txt"
 
