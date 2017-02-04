@@ -2,6 +2,11 @@
 This document highlights high-level changes made to this program.
 
 
+# 1.0.19 / 2017-02-03
+
+  + Fixed PyPI package name.
+
+
 ## 1.0.18 / 2017-02-03
 
   + Added Sphinx auto-documentation. So far it's only hosted locally. Sorry

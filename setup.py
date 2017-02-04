@@ -13,7 +13,7 @@ import logging
 # Package / Application
 from wafer_map import (__version__,
                        __project_url__,
-                       __project_name__,
+                       __package_name__,
                        __long_descr__,
                        )
 
@@ -21,7 +21,7 @@ from wafer_map import (__version__,
 logging.disable(logging.CRITICAL)
 
 setup(
-    name=__project_name__,
+    name=__package_name__,
     packages=find_packages(),
     version=__version__,
     description="Semiconductor Wafer Mapping",

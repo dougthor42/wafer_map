@@ -13,7 +13,7 @@ import sys
 
 
 ### Constants ###############################################################
-__version__ = "1.0.18"
+__version__ = "1.0.19"
 __project_url__ = "https://github.com/dougthor42/wafer_map"
 __project_name__ = "Wafer Map"
 __description__ = "Semiconductor Wafer Mapping"
