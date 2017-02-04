@@ -6,9 +6,34 @@ stages:
 
 variables:
   VENV_ROOT: C:\temp\builds
+  VENV_PY27: C:\temp\builds\python27_x32
+  VENV_PY35: C:\temp\builds\python35_x64
+  WXPYTHON_SNAPSHOTS: https://wxpython.org/Phoenix/snapshot-builds
 
 # Set environment vars
 before_script:
+
+  - REM ==================== Before Script ====================
+
+  # Create the build dir environment variable.
+  - set BUILD_DIR=%VENV_PY35%\%CI_PROJECT_ID%
+  - set BUILD_DIR=%BUILD_DIR%__%CI_PROJECT_NAMESPACE%
+  - set BUILD_DIR=%BUILD_DIR%__%CI_PROJECT_NAME%
+  - set BUILD_DIR=%BUILD_DIR%__%CI_PIPELINE_ID%
+  - set BUILD_DIR=%BUILD_DIR%__%CI_BUILD_REF_NAME%
+  - echo %BUILD_DIR%
+
+  # And also for Py27
+  - set BUILD_DIR27=%VENV_PY27%\%CI_PROJECT_ID%
+  - set BUILD_DIR27=%BUILD_DIR27%__%CI_PROJECT_NAMESPACE%
+  - set BUILD_DIR27=%BUILD_DIR27%__%CI_PROJECT_NAME%
+  - set BUILD_DIR27=%BUILD_DIR27%__%CI_PIPELINE_ID%
+  - set BUILD_DIR27=%BUILD_DIR27%__%CI_BUILD_REF_NAME%
+  - echo %BUILD_DIR27%
+
+  - REM ~~~~~~~~~~~~~~~~~~~~ End Before Script ~~~~~~~~~~~~~~~~~~~~
+
+  # Clear pip cache because it sometimes causes issues.
   - rd /S /Q C:\Users\tph-buildbot\AppData\Local\pip\Cache
 
 #################################################
@@ -20,24 +45,20 @@ python34_x64-pip-install:
   tags:
     - python
   script:
+    - "REM ==================== pip-install ===================="
     - call C:\WinPython34\scripts\env.bat
-    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - echo %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
-    - python -m venv --clear %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
-    - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+
+    - python -m venv --clear %BUILD_DIR%
+    - call %BUILD_DIR%\Scripts\activate.bat
+
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
-    - python -m pip install --upgrade --no-cache-dir pip==8.1.0
-    - python -m pip install --upgrade --no-cache-dir setuptools
-    - python -m pip install --upgrade --no-cache-dir wheel
-    - pip install -r requirements.txt --no-cache-dir
-    - pip install -r dev-requirements.txt --no-cache-dir
-    # Build-specific versions shouldn't be in dev-requirements.txt
-    - pip install --no-cache-dir https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-win_amd64.whl
+    - python -m pip install --upgrade --no-cache-dir pip setuptools wheel
 
-    # Manually fix the bugs with wxPythonPhoenix
-    - copy /B /Y /V build_reqs\wx_mods\core.py %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\core.py
-    - copy /B /Y /V build_reqs\wx_mods\FCObjects.py %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\lib\floatcanvas\FCObjects.py
+    - "python -m pip install --only-binary :all: --pre -f %WXPYTHON_SNAPSHOTS% wxPython_Phoenix"
+
+    - python -m pip install -r requirements.txt --no-cache-dir
+    - python -m pip install -r dev-requirements.txt --no-cache-dir
 
 python34_x64-tests:
   stage: test
@@ -46,8 +67,7 @@ python34_x64-tests:
     - python
   script:
     - call C:\WinPython34\scripts\env.bat
-    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - call %BUILD_DIR%\Scripts\activate.bat
     - green -vvv -s 1 -W -t wafer_map
 
 python34_x64-tag_bundle:
@@ -59,8 +79,7 @@ python34_x64-tag_bundle:
     - tags
   script:
     - call C:\WinPython34\scripts\env.bat
-    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - call %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - call %BUILD_DIR%\Scripts\activate.bat
     - python setup.py bdist_wheel
   artifacts:
     paths:
@@ -72,7 +91,7 @@ python34_x64-clean-up:
   tags:
     - python
   script:
-    - rd /S /Q %VENV_ROOT%\python34_x64\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - rd /S /Q %BUILD_DIR%
 
 
 #################################################
@@ -84,25 +103,24 @@ python27_x32-pip-install:
   tags:
     - python
   script:
+    - REM ==================== pip-install ====================
     - call C:\WinPython27_x32\scripts\env.bat
-    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - pip install --upgrade --no-cache-dir virtualenv
-    - python -m virtualenv %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME% --no-setuptools
-    - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - python -m pip install virtualenv
+
+    - python -m virtualenv --clear %BUILD_DIR27% --no-pip --no-setuptools --no-wheel
+    - call %BUILD_DIR27%\Scripts\activate.bat
+
+    # Python27 hangs
+    - python "C:\temp\builds\get-pip.py" --no-index --find-links="C:\temp\builds"
+
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
-    - python -m pip install --upgrade --no-cache-dir pip==8.1.0
-    - python -m pip install --upgrade --no-cache-dir setuptools
-    - python -m pip install --upgrade --no-cache-dir wheel
-    - pip install -r requirements.txt --no-cache-dir
-    - pip install -r dev-requirements.txt --no-cache-dir
-    - pip install --no-cache-dir nose
-    # Build-specific versions shouldn't be in dev-requirements.txt
-    - pip install --no-cache-dir https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/from_snapshot_builds/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp27-cp27m-win32.whl
+    - python -m pip install --upgrade --no-cache-dir pip setuptools wheel
 
-    # Manually fix the bugs with wxPythonPhoenix
-    - copy /B /Y /V build_reqs\wx_mods\core.py %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\core.py
-    - copy /B /Y /V build_reqs\wx_mods\FCObjects.py %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Lib\site-packages\wx\lib\floatcanvas\FCObjects.py
+    - "python -m pip install --only-binary :all: --pre -f %WXPYTHON_SNAPSHOTS% wxPython_Phoenix"
+
+    - python -m pip install -r requirements.txt --no-cache-dir
+    - python -m pip install -r dev-requirements.txt --no-cache-dir
 
 python27_x32-tests:
   stage: test
@@ -111,11 +129,8 @@ python27_x32-tests:
     - python
   script:
     - call C:\WinPython27_x32\scripts\env.bat
-    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
-#    - green -vvv -s 1 wafer_map
-    - nosetests -v wafer_map
-#    - python -c "print('This is where the tests go')"
+    - call %BUILD_DIR27%\Scripts\activate.bat
+    - green -vvv -s 1 -W -t wafer_map
 
 python27_x32-tag_bundle:
   stage: tag_deploy
@@ -126,8 +141,7 @@ python27_x32-tag_bundle:
     - tags
   script:
     - call C:\WinPython27_x32\scripts\env.bat
-    - python -c "import sys;print('='*80+'\n{}\n'.format(sys.version)+'-'*80)"
-    - call %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%\Scripts\activate.bat
+    - call %BUILD_DIR27%\Scripts\activate.bat
     - python setup.py bdist_wheel
   artifacts:
     paths:
@@ -139,4 +153,4 @@ python27_x32-clean-up:
   tags:
     - python
   script:
-    - rd /S /Q %VENV_ROOT%\python27_x32\%CI_PROJECT_ID%__%CI_BUILD_REF_NAME%
+    - rd /S /Q %BUILD_DIR27%
