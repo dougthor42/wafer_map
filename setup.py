@@ -5,44 +5,56 @@
 ### Imports
 # ---------------------------------------------------------------------------
 # Standard Library
+import os
 from setuptools import setup, find_packages
-import logging
+import sys
 
 # Third Party
 
 # Package / Application
-from wafer_map import (__version__,
-                       __project_url__,
-                       __package_name__,
-                       __long_descr__,
-                       )
 
-# turn off logging if we're going to build a distribution
-logging.disable(logging.CRITICAL)
+# Read the "__about__.py" file.
+# This is how the `cryptography` package does it. Seems like a decent
+# way because it prevents the main package from being imported.
+# I'm not sure how I feel about `exec()` though...
+about = {}
+base_dir = os.path.dirname(__file__)
+sys.path.insert(0, base_dir)
+with open(os.path.join(base_dir, "wafer_map", "__about__.py")) as f:
+    exec(f.read(), about)
+
+with open(os.path.join(base_dir, "README.md")) as f:
+    long_description = f.read()
+
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Manufacturing",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
 
 setup(
-    name=__package_name__,
+    name=about["__package_name__"],
+    version=about["__version__"],
+
+    description=about["__description__"],
+    long_description=long_description,
+    url=about["__project_url__"],
+
+    author=about["__author__"],
+    license=about["__license__"],
+
     packages=find_packages(),
-    version=__version__,
-    description="Semiconductor Wafer Mapping",
-    author="Douglas Thor",
-    author_email="doug.thor@gmail.com",
-    url=__project_url__,
-    classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Manufacturing",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python",
-#        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Topic :: Scientific/Engineering",
-        "Topic :: Scientific/Engineering :: Information Analysis",
-        "Topic :: Scientific/Engineering :: Visualization",
-        ],
+    classifiers=classifiers,
+
     requires=["wxPython_Phoenix"],
-    long_description=__long_descr__,
     )
