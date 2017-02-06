@@ -19,6 +19,12 @@ from wx.lib.floatcanvas import FloatCanvas
 
 class TestWxPython(unittest.TestCase):
 
+    def setUp(cls):
+        cls.app = wx.App()
+
+    def tearDown(cls):
+        pass
+
     def test_colour_hashable(self):
         try:
             hash(wx.Colour(0, 0, 0))
