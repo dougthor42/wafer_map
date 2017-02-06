@@ -45,7 +45,7 @@ install:
 
   # Start the install of everything
   - pip install --upgrade pip
-  - "pip install --pre --only-binary :all: -f https://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix"
+  - "pip install --pre --only-binary :all: -f https://wxpython.org/Phoenix/snapshot-builds/linux/3.0.3.dev2749+f803d20/ubuntu-16.04/gtk3/ wxPython_Phoenix"
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
 #  - pip install $WXPYTHON
