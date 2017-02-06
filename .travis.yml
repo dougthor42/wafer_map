@@ -5,9 +5,9 @@ language: python
 
 sudo: false
 
-addons:
-  apt:
-    packages:
+#addons:
+#  apt:
+#    packages:
 #    - dpkg-dev
 #    - build-essential
 #    - libwebkitgtk-dev
@@ -31,7 +31,6 @@ matrix:
       # wxPython_Phoenix-3.0.3-dev1956+aab2833 with fixes
       - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-15.10-server-amd64/wxPython_Phoenix-3.0.3.dev1956+aab2833-cp34-cp34m-linux_x86_64.whl
 
-
 notifications:
   email: false
 
@@ -46,9 +45,10 @@ install:
 
   # Start the install of everything
   - pip install --upgrade pip
+  - "pip install --pre --only-binary :all: -f https://wxpython.org/Phoenix/snapshot-builds/ wxPython_Phoenix"
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
-  - pip install $WXPYTHON
+#  - pip install $WXPYTHON
 
 script:
   - echo "----- script -----"
