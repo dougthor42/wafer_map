@@ -52,10 +52,7 @@ install:
 
 script:
   - echo "----- script -----"
-  - python -c "import sys;print(sys.version);print(sys.path)"
-  - python -c "import wx;print(wx.VERSION_STRING)"
-#  - grep -C 5 '_Colour___hash__'
-  - green wafer_map -vv --run-coverage
+  - green wafer_map -vvv --run-coverage
 
 after_success:
   - echo "----- after_success -----"
