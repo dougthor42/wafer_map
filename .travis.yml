@@ -5,20 +5,10 @@ language: python
 
 sudo: false
 
-#addons:
-#  apt:
-#    packages:
-#    - dpkg-dev
-#    - build-essential
-#    - libwebkitgtk-dev
-#    - libjpeg-dev
-#    - libtiff4-dev
-#    - libgtk2.0-dev
-#    - libsdl1.2-dev
-#    - libgstreamer-plugins-base0.10-dev
-#    - libnotify-dev
-#    - freeglut3
-#    - freeglut3-dev
+addons:
+  apt:
+    packages:
+    - xvfb
 
 matrix:
   include:
@@ -50,6 +40,12 @@ install:
 
 script:
   - echo "----- script -----"
+
+  # Set up a fake x11 server.
+  - "Xvfb :1 -screen 0 800x600x16 &"
+  - "DISPLAY=:1.0"
+  - export DISPLAY
+
   - green wafer_map -vvv --run-coverage
 
 after_success:
