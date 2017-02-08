@@ -47,6 +47,7 @@ extensions = [
     'sphinx.ext.coverage',
 #    'sphinx.ext.imgmath',
     'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
 ]
 
 # Napoleon Settings
