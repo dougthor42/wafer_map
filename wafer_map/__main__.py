@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-<insert 1-line description here>
+Main entry point for wafer_map.
 
-Created on Mon Mar 21 14:08:06 2016
-
-@author: dthor
-
-Usage:
-    __main__.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
-
+Runs the examples when called with `python -m wafer_map`.
 """
 
 from . import example
