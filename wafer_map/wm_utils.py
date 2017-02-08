@@ -2,18 +2,7 @@
 # pylint: disable=C0103
 #         C0103 = invalid variable name
 """
-@name:          new_program.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Thu Dec 04 16:12:07 2014
-@descr:         A new file
-
-Usage:
-    new_program.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+Holds various utilities used by ``wafer_map``.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -40,6 +29,7 @@ class Gradient(object):
 
     Currently does nothing.
     """
+
     pass
 
 
@@ -47,34 +37,35 @@ class LinearGradient(Gradient):
     """
     Linear gradient between two colors.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     initial_color :
         The starting color for the linear gradient.
 
     dest_color :
         sdfsd
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     self.initial_color :
         asad
 
     self.dest_color :
         asdads
 
-    Methods:
-    --------
+    Methods
+    -------
     get_color(self, value) :
         Returns a color that is ``value`` between self.initial_color and
         self.final_color
     """
+
     def __init__(self, initial_color, dest_color):
         self.initial_color = initial_color
         self.dest_color = dest_color
 
     def get_color(self, value):
-        """ Gets a color along the gradient. Value = 0 to 1 inclusive"""
+        """Get a color along the gradient. Value = 0 to 1 inclusive."""
         return linear_gradient(self.initial_color, self.dest_color, value)
 
 
@@ -84,14 +75,14 @@ class PolylinearGradient(Gradient):
 
     Acts as a LinearGradient if ``n == 2``.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     colors : iterable
         A list or tuple of RGB or RGBa tuples (or wx.Colour objects). Each
         color in this list is a vertex of the polylinear gradient.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     self.colors : iterable
         The list of colors (or wx.Colour objects) which are the verticies
         of the poly gradient.
@@ -102,18 +93,19 @@ class PolylinearGradient(Gradient):
     self.dest_color : tuple or wx.Colour object
         The final color of the gradient.
 
-    Methods:
-    --------
+    Methods
+    -------
     get_color(self, value):
         Returns a color that is ``value`` along the gradient.
     """
+
     def __init__(self, *colors):
         self.colors = colors
         self.initial_color = self.colors[0]
         self.dest_color = self.colors[-1]
 
     def get_color(self, value):
-        """ Gets a color value """
+        """Get a color value."""
         return polylinear_gradient(self.colors, value)
 
 
@@ -123,13 +115,14 @@ class BeizerGradient(Gradient):
 
     Not implemented.
     """
+
     def __init__(self, initial_color, arc_color, dest_color):
         self.initial_color = initial_color
         self.arc_color = arc_color
         self.dest_color = dest_color
 
     def get_color(self, value):
-        """ Gets a color """
+        """Get a color."""
         pass
 
 
@@ -137,8 +130,8 @@ def linear_gradient(initial_color, dest_color, value):
     """
     Find the color that is ``value`` between initial_color and dest_color.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     initial_color : tuple
         A 3- or 4-tuple of RGB or RGBa values representing the starting
         color for the gradient. Each color channel should be
@@ -155,14 +148,14 @@ def linear_gradient(initial_color, dest_color, value):
         of ``0`` returns ``initial_color`` while a value of ``1`` returns
         ``dest_color``.
 
-    Returns:
-    --------
+    Returns
+    -------
     (r, g, b) : tuple
         A 3-tuple representing the color that is ``value * 100`` percent
         along the gradient. Each color channel is 0-255 inclusive.
 
-    Implementation Details:
-    -----------------------
+    Implementation Details
+    ----------------------
     All of this package works in the RGB colorspace. However, as is seen in
     https://www.youtube.com/watch?v=LKnqECcg6Gw and
     https://www.youtube.com/watch?v=sPiWg5jSoZI, the RGB color space does
@@ -174,8 +167,8 @@ def linear_gradient(initial_color, dest_color, value):
     take the linear average of my two colors (via ``rescale``) and then
     convert back to RGB.
 
-    Examples:
-    ---------
+    Examples
+    --------
     Halfway between Red and Green is Yellow. This really should return
     (255, 255, 0), but it's close enough for now.
 
@@ -226,6 +219,8 @@ def linear_gradient(initial_color, dest_color, value):
 
 def polylinear_gradient(colors, value):
     """
+    Create a gradient.
+
     colors is a list or tuple of length 2 or more. If length 2, then it's
     the same as LinearGradient
     Value is the 0-1 value between colors[0] and colors[-1].
@@ -257,8 +252,10 @@ def polylinear_gradient(colors, value):
 
 def beizer_gradient(initial_color, arc_color, dest_color, value):
     """
-    Calculates the color value along a Beizer Cuve who's control colors are
-    defined by initial_color, arc_color, and final_color.
+    Calculate the color value along a Beizer Curve.
+
+    The Beizer Curve's control colors are defined by initial_color,
+    arc_color, and final_color.
     """
     pass
 
@@ -269,14 +266,16 @@ def _GradientFillLinear(rect,
                         direction,
                         ):
     """
-    Reimplements the ``wxDCImpl::DoGradientFillLinear`` algorithm found in
-    wxWidgets-3.0.2\src\common\dcbase.cpp, line 862.
+    Reimplement the ``wxDCImpl::DoGradientFillLinear`` algorithm.
+
+    This algorithm can be found in
+    ``wxWidgets-3.0.2/src/common/dcbase.cpp``, line 862.
 
     wxWidgets uses the native MS Windows (msw) function if it can:
         wxMSIMG32DLL.GetSymbol(wxT("GradientFill")
 
     See function ``wxMSWDCImpl::DoGradientFillLinear`` in
-    wxWidgets-3.0.2\src\msw\dc.cpp, line 2870
+    wxWidgets-3.0.2/src/msw/dc.cpp, line 2870
 
     Allows user to put in a value from 0 (intial_color) to 1 (dest_color).
 
@@ -290,7 +289,7 @@ def _GradientFillLinear(rect,
     I'm an idiot! This is just linear algebra, I can solve this!
     """
     pass
-"""
+r"""
     void wxDCImpl::DoGradientFillLinear(const wxRect& rect,
                                         const wxColour& initialColour,
                                         const wxColour& destColour,
@@ -389,7 +388,7 @@ def _GradientFillLinear(rect,
 
 
 def frange(start, stop, step):
-    """ Generator that creates an arbitrary-stepsize range. """
+    """Generator that creates an arbitrary-stepsize range."""
     r = start
     while r < stop:
         yield r
@@ -398,10 +397,10 @@ def frange(start, stop, step):
 
 def coord_to_grid(coord, die_size, grid_center):
     """
-    Converts a panel coordinate to a grid value.
+    Convert a panel coordinate to a grid value.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     coord : tuple
         A 2-tuple of (x, y) floating point values for the panel coordinate
 
@@ -412,8 +411,8 @@ def coord_to_grid(coord, die_size, grid_center):
         A 2-tuple of (grid_x, grid_y) values that represents the origin of
         the wafer in grid coordinates.
 
-    Returns:
-    --------
+    Returns
+    -------
     (grid_x, grid_y) : tuple
         The grid coordinates. Also known as (column, row).
     """
@@ -427,7 +426,7 @@ def coord_to_grid(coord, die_size, grid_center):
 
 def grid_to_rect_coord(grid, die_size, grid_center):
     """
-    Converts a die's grid value to the origin point of the rectangle to draw.
+    Convert a die's grid value to the origin point of the rectangle to draw.
 
     Adjusts for the fact that the grid falls on the center of a die by
     subtracting die_size/2 from the coordinate.
@@ -443,8 +442,7 @@ def grid_to_rect_coord(grid, die_size, grid_center):
 
 def nanpercentile(a, percentile):
     """
-    Performs a numpy.percentile(a, percentile) calculation while
-    ignoring NaN values.
+    Perform ``numpy.percentile(a, percentile)`` while ignoring NaN values.
 
     Only works on a 1D array.
     """
@@ -455,9 +453,9 @@ def nanpercentile(a, percentile):
 
 def max_dist_sqrd(center, size):
     """
-    Calculates the squared distance from the orgin (0, 0) to the
-    farthest corner of a rectangle, where the center of the rectangle's
-    coordinates are known.
+    Calculate the squared distnace to the furthest corner of a rectangle.
+
+    Assumes that the origin is ``(0, 0)``.
 
     Does not take the square of the distance for the sake of speed.
 
@@ -470,22 +468,22 @@ def max_dist_sqrd(center, size):
     Used primarily for calculating if a die has any part outside of wafer's
     edge exclusion.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     center : tuple of length 2, numerics
         (x, y) tuple defining the rectangle's center coordinates
 
     size : tuple of length 2
         (x, y) tuple that defines the size of the rectangle.
 
-    Returns:
-    --------
+    Returns
+    -------
     dist : numeric
         The distance from the origin (0, 0) to the farthest corner of the
         rectangle.
 
-    See Also:
-    ---------
+    See Also
+    --------
     max_dist :
         Calculates the distance from the orgin (0, 0) to the
         farthest corner of a rectangle.
@@ -502,7 +500,7 @@ def max_dist_sqrd(center, size):
 
 def rescale(x, orig_scale, new_scale=(0, 1)):
     """
-    Rescales x to run over a new range.
+    Rescale ``x`` to run over a new range.
 
     Rescales x (which was part of scale original_min to original_max)
     to run over a range new_min to new_max such
@@ -511,8 +509,8 @@ def rescale(x, orig_scale, new_scale=(0, 1)):
 
     Default new scale range is 0 to 1 inclusive.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     x : numeric
         The value to rescale.
 
@@ -522,13 +520,13 @@ def rescale(x, orig_scale, new_scale=(0, 1)):
     new_scale : sequence of numerics, length 2, optional
         The new (min, max) value that the rescaled ``x`` should reference
 
-    Returns:
-    --------
+    Returns
+    -------
     result : float
         The rescaled ``x`` value
 
-    Examples:
-    ---------
+    Examples
+    --------
     >>> rescale(5, (10, 20), (0, 1))
     -0.5
     >>> rescale(27, (0, 200), (0, 5))
@@ -551,14 +549,20 @@ def rescale(x, orig_scale, new_scale=(0, 1)):
 
 def rescale_clip(x, orig_scale, new_scale=(0, 1)):
     """
+    Rescale and clip ``x`` to run over a new range.
+
     Same as rescale, but also clips the new data. Any result that is
     below new_min or above new_max is listed as new_min or
     new_max, respectively
 
-    Example:
-    rescale_clip(5, (10, 20), (0, 1)) = 0
-    rescale_clip(15, (10, 20), (0, 1)) = 0.5
-    rescale_clip(25, (10, 20), (0, 1)) = 1
+    Examples
+    --------
+    >>> rescale_clip(5, (10, 20), (0, 1))
+    0
+    >>> rescale_clip(15, (10, 20), (0, 1))
+    0.5
+    >>> rescale_clip(25, (10, 20), (0, 1))
+    1
     """
     original_min, original_max = orig_scale
     new_min, new_max = new_scale

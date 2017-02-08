@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-@name:          new_program.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Tue Dec 02 10:04:25 2014
-@descr:         A new file
-
-Usage:
-    new_program.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+The :class:`wafer_map.wm_info.WaferInfo` class.
 """
 
 class WaferInfo(object):
     """
-    Contains the wafer info:
-    Die Size
-    Grid Center XY
-    Wafer Diameter
-    Edge Exclusion
-    Flat Exclusion
+    Contains the wafer information.
+
+    Parameters
+    ----------
+    die_size : tuple
+        The die size in mm as a ``(width, height)`` tuple.
+    center_xy : tuple
+        The center grid coordinate as a ``(x_grid, y_grid)`` tuple.
+    dia : float, optional
+        The wafer diameter in mm. Defaults to `150`.
+    edge_excl : float, optional
+        The distance in mm from the edge of the wafer that should be
+        considered bad die. Defaults to 5mm.
+    flat_excl : float, optional
+        The distance in mm from the wafer flat that should be
+        considered bad die. Defaults to 5mm.
     """
+
     def __init__(self, die_size, center_xy, dia=150, edge_excl=5, flat_excl=5):
         self.die_size = die_size
         self.center_xy = center_xy
@@ -47,7 +47,7 @@ Flat Excl: {}
 
 
 def main():
-    """ Main Code """
+    """Run when called as a module."""
     raise RuntimeError("This module is not meant to be run by itself.")
 
 
