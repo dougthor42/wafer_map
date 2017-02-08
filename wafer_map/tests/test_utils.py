@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Unittests for the wafer_map.utils module.
-
-Created on Wed Dec 17 08:46:21 2014
-
-@author: dthor
+Unittests for the :module:`wafer_map.utils` module.
 """
 # ---------------------------------------------------------------------------
 ### Imports

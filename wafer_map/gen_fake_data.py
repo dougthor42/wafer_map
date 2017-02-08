@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-@name:          new_program.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Tue Dec 02 10:33:58 2014
-@descr:         A new file
+Generate fake data for the wafer_map demo.
 
-Usage:
-    new_program.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+Typically not used by anything but the example. It's also a pretty shitty
+peice of code so... ye be warned.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -35,11 +27,10 @@ if PY2:
 
 def generate_fake_data(**kwargs):
     """
-    Generates fake data for wafer_map.
+    Generate fake data for wafer_map.
 
-    Keyword Arguments:
-    ------------------
-
+    Parameters
+    ----------
     die_x : float
         Die x size in mm
     die_y : float
@@ -69,7 +60,6 @@ def generate_fake_data(**kwargs):
 
     Examples of Offsets:
     --------------------
-
     The ``X`` denotes the center of the wafer::
 
       x_offset = 0          x_offset = 0
@@ -90,7 +80,6 @@ def generate_fake_data(**kwargs):
 
     Notes:
     ------
-
     Another rewrite, this time starting from the top. We will not look at
     the wafer map until I'm satisfied with the numerical values.
 
@@ -223,7 +212,7 @@ def generate_fake_data(**kwargs):
 
 
 def main():
-    """ Main Code """
+    """Run when called as a module."""
     wafer, data = generate_fake_data(dtype='discrete')
     from pprint import pprint
     pprint(data)

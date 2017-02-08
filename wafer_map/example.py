@@ -1,20 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-@name:          example.py
-@vers:          0.4.0
-@author:        dthor
-@created:       Tue Nov 25 13:13:33 2014
-@descr:         Provides examples on how to call wafer_map.py
+Provides examples on how to use the ``wafer_map`` package.
 
-Usage:
-    example.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
-
-Description:
-    Provides an example on how to use the wafer_map module.
+This module is called when running ``python -m wafer_map``.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -39,13 +27,23 @@ def standalone_app(xyd, wafer_info):
     """
     Example of running wafer_map as a standalone application.
 
-    All you need to do once you have your data in the correct
-
-      ``[(grid_x_1, grid_y_1, data_1), (grid_x_2, grid_y_2, data_2), ..., ]``
-
-    format, is to call ``wm_app.WaferMapApp`` with your keyword arguments
+    All you need to do once you have your data in the correct format is
+    to call ``wm_app.WaferMapApp`` with your keyword arguments
     which define the wafer and die parameters such as die size, the wafer
     diameter, and the edge exclusion.
+
+    Parameters
+    ----------
+    xyd : list of 3-tuples
+        The data to plot.
+    wafer_info : :class:`wafer_map.wm_info.WaferInfo`
+        The wafer information such as die size, diameter, etc.
+
+    Notes
+    -----
+    The ``xyd`` values need to have this format::
+
+      [(grid_x_1, grid_y_1, data_1), (grid_x_2, grid_y_2, data_2), ..., ]
     """
     wm_app.WaferMapApp(xyd,
                        wafer_info.die_size,
@@ -63,11 +61,19 @@ def add_to_existing_app(xyd, wafer_info):
     To add a wafer map to an existing application, instance the
     ``wm_core.WaferMapPanel()`` class with your data and wafer info. The
     wafer info must be a ``wm_info.WaferInfo`` object.
+
+    Parameters
+    ----------
+    xyd : list of 3-tuples
+        The data to plot.
+    wafer_info : :class:`wafer_map.wm_info.WaferInfo`
+        The wafer information such as die size, diameter, etc.
     """
     app = wx.App()
 
     class ExampleFrame(wx.Frame):
-        """ Base Frame """
+        """Base Frame."""
+
         def __init__(self, title, xyd, wafer_info):
             wx.Frame.__init__(self,
                               None,                         # Window Parent
@@ -121,7 +127,14 @@ def discrete_data_example(xyd, wafer_info):
     Example of plotting discrete data using the standalone app version.
 
     Plotting discrete data is the same as continuous data, but you need to
-    add the ``data_type`` arguement to the class initialization.
+    add the ``data_type`` argument to the class initialization.
+
+    Parameters
+    ----------
+    xyd : list of 3-tuples
+        The data to plot.
+    wafer_info : :class:`wafer_map.wm_info.WaferInfo`
+        The wafer information such as die size, diameter, etc.
     """
     import random
     bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
@@ -141,7 +154,7 @@ def discrete_data_example(xyd, wafer_info):
 
 
 def main():
-    """ Main Code """
+    """Run when called as a module."""
     # Generate some fake data
     wafer_info, xyd = gen_fake_data.generate_fake_data()
 
