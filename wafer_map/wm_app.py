@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@name:          wm_app.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Tue Dec 02 09:58:48 2014
-@descr:         A self-contained Window for a Wafer Map.
-
-Usage:
-    wm_app.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+A self-contained Window for a Wafer Map.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -32,7 +21,42 @@ from . import wm_constants as wm_const
 class WaferMapApp(object):
     """
     A self-contained Window for a Wafer Map.
+
+    Parameters
+    ----------
+    xyd : list of 3-tuples
+        The data to plot.
+    die_size : tuple
+        The die size in mm as a ``(width, height)`` tuple.
+    center_xy : tuple, optional
+        The center grid coordinate as a ``(x_grid, y_grid)`` tuple.
+    dia : float, optional
+        The wafer diameter in mm. Defaults to `150`.
+    edge_excl : float, optional
+        The distance in mm from the edge of the wafer that should be
+        considered bad die. Defaults to 5mm.
+    flat_excl : float, optional
+        The distance in mm from the wafer flat that should be
+        considered bad die. Defaults to 5mm.
+    data_type : str, optional
+        The type of data to plot. Must be one of `continuous` or `discrete`.
+    high_color : :class:`wx.Colour`, optional
+        The color to display if a value is above the plot range. Defaults
+        to `wm_constants.wm_HIGH_COLOR`.
+    low_color : :class:`wx.Colour`, optional
+        The color to display if a value is below the plot range. Defaults
+        to `wm_constants.wm_LOW_COLOR`.
+    plot_range : tuple, optional
+        The plot range to display. If ``None``, then auto-ranges. Defaults
+        to auto-ranging.
+    plot_die_centers : bool, optional
+        If ``True``, display small red circles denoting the die centers.
+        Defaults to ``False``.
+    show_die_gridlines : bool, optional
+        If ``True``, displayes gridlines along the die edges. Defaults to
+        ``True``.
     """
+
     def __init__(self,
                  xyd,
                  die_size,
@@ -47,17 +71,6 @@ class WaferMapApp(object):
                  plot_die_centers=False,
                  show_die_gridlines=True,
                  ):
-        """
-        __init__(self,
-                 list xyd,
-                 tuple die_size,
-                 tuple center_xy=(0, 0),center_xy
-                 float dia=150,
-                 float edge_excl=5,
-                 float flat_exlc=5,
-                 string data_type='continuous',
-                 ) -> object
-        """
         self.app = wx.App()
 
         self.wafer_info = wm_info.WaferInfo(die_size,
@@ -93,7 +106,7 @@ class WaferMapApp(object):
 
 
 def main():
-    """ Main Code """
+    """Run when called as a module."""
     wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=5.43,
                                                        die_y=6.3,
                                                        dia=150,
