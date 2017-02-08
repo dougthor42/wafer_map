@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@name:          wm_legend.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Tue Dec 02 16:39:58 2014
-@descr:         Draws the wafer map legend
-
-Usage:
-    wm_legend.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+Draws the wafer map legend.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -43,6 +32,7 @@ class Legend(object):
 
     Not currently used. Not even sure if I will use it.
     """
+
     pass
 
 
@@ -53,30 +43,28 @@ class ContinuousLegend(wx.Panel):
     Creates a color scale for plotting. The scale fills all available
     vertical space. By default, 11 ticks are printed.
 
-    Inputs:
-    -------
-
-    parent: wxWindow
+    Parameters
+    ----------
+    parent : wxWindow
         The parent window that the legend belongs to.
-    plot_range: tuple, length 2
+    plot_range : tuple, length 2
         The plot range that the legend should cover: (min, max). Anything
         outside this range will be plotted using different colors.
-    high_color: wxColour (wm_HIGH_COLOR)
+    high_color : wxColour (wm_HIGH_COLOR)
         The color that values closer to +inf should be.
-    low_color: wxColour (wm_LOW_COLOR)
+    low_color : wxColour (wm_LOW_COLOR)
         The color that values closer to -inf should be.
-    num_ticks: int (wm_TICK_COUNT)
+    num_ticks : int (wm_TICK_COUNT)
         How many ticks should be plotted. Minimum of 2.
-    oor_high_color: wxColour (wm_OOR_HIGH_COLOR)
+    oor_high_color : wxColour (wm_OOR_HIGH_COLOR)
         This is the color that should be used for any values that are
         greater than plot_range[1].
-    oor_low_color: wxColour (wm_OOR_LOW_COLOR)
+    oor_low_color : wxColour (wm_OOR_LOW_COLOR)
         This is the color that should be used for any values that are
         lesser than plot_range[0].
 
-    Bound Events:
-    -------------
-
+    Bound Events
+    ------------
     EVT_PAINT:
         Copy MemoryDC buffer to screen.
     EVT_SIZE:
@@ -88,9 +76,8 @@ class ContinuousLegend(wx.Panel):
         Used for debugging. Prints the pixel and color of the mouse
         click. Uses the get_color() method
 
-    Logic Overview:
-    ---------------
-
+    Logic Overview
+    --------------
     1.  Create a wx.MemoryDC and initialize it with an empty bitmap that's
         the size of the window.
     2.  Draw items to the MemoryDC.
@@ -100,14 +87,16 @@ class ContinuousLegend(wx.Panel):
     4.  Any time an outside function needs to get a color for a value,
         we access the Gradient class (currently found in wm_utils) - this
         class calculates the color directly.
-            Previously, I'd get the color by figuring out which pixel the
-            value would be on and then get the pixel's color.
 
-            This has issues because it limits things like dynamic color
+        +   Previously, I'd get the color by figuring out which pixel the
+            value would be on and then get the pixel's color.
+        +   This has issues because it limits things like dynamic color
             changing or multi-color scales.
+
     5.  ???
     6.  Profit.
     """
+
     def __init__(self,
                  parent,
                  plot_range,
@@ -117,17 +106,6 @@ class ContinuousLegend(wx.Panel):
                  oor_high_color=wm_const.wm_OOR_HIGH_COLOR,
                  oor_low_color=wm_const.wm_OOR_LOW_COLOR,
                  ):
-        """
-        __init__(self,
-                 wxPanel parent,
-                 tuple plot_range,
-                 wxColour high_color=wm_HIGH_COLOR,
-                 wxColour low_color=wm_LOW_COLOR,
-                 int num_ticks=wm_TICK_COUNT,
-                 wxColour oor_high_color=wm_OOR_HIGH_COLOR,
-                 wxColour oor_low_color=wm_OOR_LOW_COLOR,
-                 ) -> wxPanel
-        """
         wx.Panel.__init__(self, parent)
 
         ### Inputs ##########################################################
@@ -191,15 +169,13 @@ class ContinuousLegend(wx.Panel):
     ### #--------------------------------------------------------------------
 
     def _init_ui(self):
-        """
-        Add a Sizer that is the same size as the MemoryDC
-        """
+        """Add a Sizer that is the same size as the MemoryDC."""
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
         self.hbox.Add((self.dc_w, self.dc_h))
         self.SetSizer(self.hbox)
 
     def _bind_events(self):
-        """ Bind events to various event handlers """
+        """Bind events to various event handlers."""
         self.Bind(wx.EVT_PAINT, self._on_paint)
         self.Bind(wx.EVT_SIZE, self._on_size)
 #        self.Bind(wx.EVT_MOTION, self.on_mouse_move)
@@ -207,9 +183,7 @@ class ContinuousLegend(wx.Panel):
 #        self.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
 
     def get_color(self, value):
-        """
-        Gets a color from the gradient.
-        """
+        """Get a color from the gradient."""
         # TODO: determine how wxPython's GradientFillLinear works and use that
         # instead of grabbing the color from the gradient.
         if value > self.plot_range[1]:
@@ -239,7 +213,7 @@ class ContinuousLegend(wx.Panel):
 
     def calc_ticks(self):
         """
-        Calculates the tick marks' display string, value, and pixel value.
+        Calculate the tick marks' display string, value, and pixel value.
 
         High values are at the top of the scale, low at the bottom.
         """
@@ -267,7 +241,11 @@ class ContinuousLegend(wx.Panel):
 
     def draw_ticks(self, ticks):
         """
-        prints the tickmarks. ticks is a list of (string, value, pixel) tuples
+        Print the tickmarks.
+
+        Parameters
+        ----------
+        ticks : list of (string, value, pixel) tuples
         """
         pen = wx.Pen(wx.BLACK)
         self.mdc.SetPen(pen)
@@ -287,7 +265,7 @@ class ContinuousLegend(wx.Panel):
 
     def set_sizes(self):
         """
-        Sets various instance attributes for item sizes and locations.
+        Set various instance attributes for item sizes and locations.
 
         Uses the current client size and Text Height to set set some items.
         """
@@ -316,8 +294,9 @@ class ContinuousLegend(wx.Panel):
 
     def draw_background(self):
         """
-        Draws the background box. If I don't do this, then the background is
-        black.
+        Draw the background box.
+
+        If I don't do this, then the background is black.
 
         Could I change wx.EmptyBitmap() so that it defaults to white rather
         than black?
@@ -333,8 +312,10 @@ class ContinuousLegend(wx.Panel):
 
     def draw_scale(self):
         """
-        Draws the entire scale area: background, gradient, OOR colors,
-        ticks, and labels.
+        Draw the entire scale area.
+
+        The scale area is: background, gradient, OOR colors, ticks,
+        and labels.
         """
         self.draw_background()
 
@@ -366,7 +347,7 @@ class ContinuousLegend(wx.Panel):
         self.draw_ticks(self.ticks)
 
     def draw_gradient(self):
-        """ Draws the Gradient, painted from North (high) to South (low) """
+        """Draw the Gradient, painted from North (high) to South (low)."""
 #        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
 #                                     self.grad_w, self.grad_h),
 #                                    self.high_color,
@@ -403,7 +384,11 @@ class ContinuousLegend(wx.Panel):
         self.mdc.SetBrush(old_brush)
 
     def get_max_text_w(self, ticks):
-        """ Get the maximum label sizes. There's probably a better way... """
+        """
+        Get the maximum label sizes.
+
+        There's probably a better way...
+        """
         return max([self.mdc.GetTextExtent(i[0])[0] for i in ticks])
 
 
@@ -412,7 +397,7 @@ class ContinuousLegend(wx.Panel):
     ### #--------------------------------------------------------------------
 
     def _on_size(self, event):
-        """ Redraw everything with the new sizes. """
+        """Redraw everything with the new sizes."""
         # TODO: Also reduce number of ticks when text starts to overlap
         #       or add ticks when there's extra space.
         self.set_sizes()
@@ -424,14 +409,15 @@ class ContinuousLegend(wx.Panel):
         self.Refresh()
 
     def _on_paint(self, event):
-        """ Push the MemoryDC bitmap to the displayed PaintDC """
+        """Push the MemoryDC bitmap to the displayed PaintDC."""
         dc = wx.PaintDC(self)
         dc.Blit(0, 0, self.dc_w, self.dc_h, self.mdc, 0, 0)
 
     def on_color_change(self, event):
         """
-        Change the plot colors by updating self.gradient and by calling
-        self.draw_scale()
+        Change the plot colors.
+
+        This is done by updating self.gradient and calling self.draw_scale()
         """
         if event['low'] is not None:
             self.low_color = event['low']
@@ -449,9 +435,7 @@ class ContinuousLegend(wx.Panel):
         self.draw_scale()
 
     def on_scale_change(self, event):
-        """
-        Redraws things on scale change
-        """
+        """Redraw things on scale change."""
         self.gradient = wm_utils.LinearGradient(self.low_color,
                                                 self.high_color)
 
@@ -463,12 +447,12 @@ class ContinuousLegend(wx.Panel):
         self.draw_scale()
 
     def on_mouse_move(self, event):
-        """ Used for debugging """
+        """Used for debugging."""
         pt = self.mdc.GetPixelPoint(event.GetPosition())
         print(pt)
 
     def on_mouse_left_down(self, event):
-        """ Used for debugging """
+        """Used for debugging."""
         print("Left-click - color from self.mdc.GetPixelPoint.")
         pos = event.GetPosition()
         w, h = self.mdc.GetSize()       # change to gradient area
@@ -480,7 +464,7 @@ class ContinuousLegend(wx.Panel):
             print("{}\t{}\t{}".format(pos, a, val))
 
     def on_mouse_right_down(self, event):
-        """ Used for debugging """
+        """Used for debugging."""
         print("Right-click - color from get_color()")
         pos = event.GetPosition()
         w, h = self.mdc.GetSize()       # change to gradient area
@@ -499,20 +483,24 @@ class ContinuousLegend(wx.Panel):
 
 class DiscreteLegend(wx.Panel):
     """
-    Legend for discrete values
+    Legend for discrete values.
 
     Is basically a 2D table of label-color rows. The colors are actually
     buttons that can be clicked on - a color picker appears. However, as of
     2014-12-03, changing the color does not do anything.
+
+    Parameters
+    ----------
+    parent : wx.Panel
+    labels : list
+    colors : list, optional
     """
+
     def __init__(self,
                  parent,
                  labels,
                  colors=None,
                  ):
-        """
-        __init__(self, wx.Panel parent, list labels, list colors) -> wx.Panel
-        """
         wx.Panel.__init__(self, parent)
         self.parent = parent
         self.labels = labels
@@ -526,7 +514,7 @@ class DiscreteLegend(wx.Panel):
         self._init_ui()
 
     def _init_ui(self):
-        """ Initialize UI components """
+        """Initialize UI components."""
         # Add layout management
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
         self.fgs = wx.FlexGridSizer(rows=self.n_items, cols=2, vgap=0, hgap=2)
@@ -588,7 +576,7 @@ class DiscreteLegend(wx.Panel):
 
     def create_color_dict(self):
         """
-        Takes the value and color lists and creates a dict from them.
+        Take the value and color lists and creates a dict from them.
 
         This may eventually become a public function with two inputs:
         lables, colors.
@@ -598,10 +586,7 @@ class DiscreteLegend(wx.Panel):
         return self.color_dict
 
     def on_color_pick(self, event):
-        """
-        Recreate the label: color dictionary and send the event to the
-        parent panel.
-        """
+        """Recreate the {label: color} dict and send to the parent."""
 #        print(event.GetId())
         self.colors[event.GetId()] = event.GetValue().Get()
         self.create_color_dict()
@@ -610,7 +595,8 @@ class DiscreteLegend(wx.Panel):
 
 
 class LegendOverlay(FloatCanvas.Text):
-    """ Demo of drawing overlay - to be used for legend """
+    """Demo of drawing overlay - to be used for legend."""
+
     def __init__(self,
                  String,
                  xy,
@@ -636,8 +622,10 @@ class LegendOverlay(FloatCanvas.Text):
 
     def _Draw(self, dc, Canvas):
         """
-        _Draw method for Overlay
-         note: this is a differeent signarture than the DrawObject Draw
+        _Draw method for Overlay.
+
+        .. note::
+           This is a differeent signarture than the DrawObject Draw
         """
         dc.SetFont(self.Font)
         dc.SetTextForeground(self.Color)
@@ -650,8 +638,7 @@ class LegendOverlay(FloatCanvas.Text):
 
 
 def main():
-    """ Display the Legend when module is run directly """
-
+    """Display the Legend when module is run directly."""
     legend_labels = ["A", "Banana!", "C", "Donut", "E"]
 #    legend_labels = [str(_i) for _i in range(10)]
 
@@ -660,7 +647,8 @@ def main():
     continuous_range = (10, 50)
 
     class ExampleFrame(wx.Frame):
-        """ Base Frame """
+        """Base Frame."""
+
         def __init__(self, title):
             wx.Frame.__init__(self,
                               None,                         # Window Parent

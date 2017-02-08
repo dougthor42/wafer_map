@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-wafer_map
-=========
-
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
 Please see README.md and CHANGELOG.md at
@@ -12,7 +9,7 @@ https://github.com/dougthor42/wafer_map
 
 import os
 
-__all__ = [
+__all__ = (
     "__author__",
     "__email__",
     "__license__",
@@ -24,7 +21,7 @@ __all__ = [
     "__package_name__",
     "__description__",
     "__long_descr__",
-]
+)
 
 
 __author__ = "Douglas Thor"

@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-wafer_map
-=========
+__init__ for wafer_map.
 
-Plots up a wafer map. Used in semiconductor processing and analysis.
-
-Please see README.md and CHANGELOG.md.
-
+Determines the python version and monkeypatches wx.Colour.
 """
 import os
 import sys

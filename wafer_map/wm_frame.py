@@ -2,18 +2,7 @@
 # pylint: disable=E1101
 #   E1101 = Module X has no Y member
 """
-@name:          wm_frame.py
-@vers:          0.1.0
-@author:        dthor
-@created:       Tue Dec 02 09:30:21 2014
-@descr:         This is the main window of the Wafer Map application.
-
-Usage:
-    wm_frame.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
+This is the main window of the Wafer Map application.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -31,12 +20,44 @@ from . import wm_constants as wm_const
 
 class WaferMapWindow(wx.Frame):
     """
-    This is the main window of the application. It contains the WaferMapPanel
-    and the MenuBar.
+    This is the main window of the application.
+
+    It contains the WaferMapPanel and the MenuBar.
 
     Although technically I don't need to have only 1 panel in the MainWindow,
     I can have multiple panels. But I think I'll stick with this for now.
+
+    Parameters
+    ----------
+    title : str
+        The title to display.
+    xyd : list of 3-tuples
+        The data to plot.
+    wafer_info : :class:`wx_info.WaferInfo`
+        The wafer information.
+    size : tuple, optional
+        The windows size in ``(width, height)``. Values must be ``int``s.
+        Defaults to ``(800, 600)``.
+    data_type : str, optional
+        The type of data to plot. Must be one of `continuous` or `discrete`.
+        Defaults to `continuous`.
+    high_color : :class:`wx.Colour`, optional
+        The color to display if a value is above the plot range. Defaults
+        to `wm_constants.wm_HIGH_COLOR`.
+    low_color : :class:`wx.Colour`, optional
+        The color to display if a value is below the plot range. Defaults
+        to `wm_constants.wm_LOW_COLOR`.
+    plot_range : tuple, optional
+        The plot range to display. If ``None``, then auto-ranges. Defaults
+        to auto-ranging.
+    plot_die_centers : bool, optional
+        If ``True``, display small red circles denoting the die centers.
+        Defaults to ``False``.
+    show_die_gridlines : bool, optional
+        If ``True``, displayes gridlines along the die edges. Defaults to
+        ``True``.
     """
+
     def __init__(self,
                  title,
                  xyd,
@@ -49,15 +70,6 @@ class WaferMapWindow(wx.Frame):
                  plot_die_centers=False,
                  show_die_gridlines=True,
                  ):
-        """
-        __init__(self,
-                 string title,
-                 list xyd,
-                 WaferInfo wafer_info,
-                 tuple size=(800, 800),
-                 string data_type='continuous',
-                 ) -> wx.Frame
-        """
         wx.Frame.__init__(self,
                           None,
                           wx.ID_ANY,
@@ -75,10 +87,7 @@ class WaferMapWindow(wx.Frame):
         self._init_ui()
 
     def _init_ui(self):
-        """
-        Init the UI components.
-        """
-
+        """Init the UI components."""
         # Create menu bar
         self.menu_bar = wx.MenuBar()
 
@@ -117,14 +126,14 @@ class WaferMapWindow(wx.Frame):
     #       If I use numbers, as displayed in wxPython Demo, then things
     #       become confusing if I want to reorder things.
     def _create_menus(self):
-        """ Create each menu for the menu bar """
+        """Create each menu for the menu bar."""
         self.mfile = wx.Menu()
         self.medit = wx.Menu()
         self.mview = wx.Menu()
         self.mopts = wx.Menu()
 
     def _create_menu_items(self):
-        """ Create each item for each menu """
+        """Create each item for each menu."""
         ### Menu: File (mf_) ###
 #        self.mf_new = wx.MenuItem(self.mfile,
 #                                  wx.ID_ANY,
@@ -190,7 +199,7 @@ class WaferMapWindow(wx.Frame):
                                         )
 
     def _add_menu_items(self):
-        """ Appends MenuItems to each menu """
+        """Append MenuItems to each menu."""
 #        self.mfile.Append(self.mf_new)
 #        self.mfile.Append(self.mf_open)
         self.mfile.Append(self.mf_close)
@@ -210,14 +219,14 @@ class WaferMapWindow(wx.Frame):
         self.mopts.Append(self.mo_low_color)
 
     def _add_menus(self):
-        """ Appends each menu to the menu bar """
+        """Append each menu to the menu bar."""
         self.menu_bar.Append(self.mfile, "&File")
         self.menu_bar.Append(self.medit, "&Edit")
         self.menu_bar.Append(self.mview, "&View")
         self.menu_bar.Append(self.mopts, "&Options")
 
     def _bind_events(self):
-        """ Binds events to varoius MenuItems """
+        """Bind events to varoius MenuItems."""
         self.Bind(wx.EVT_MENU, self.on_quit, self.mf_close)
         self.Bind(wx.EVT_MENU, self.on_zoom_fit, self.mv_zoomfit)
         self.Bind(wx.EVT_MENU, self.on_toggle_crosshairs, self.mv_crosshairs)
@@ -232,23 +241,23 @@ class WaferMapWindow(wx.Frame):
         #self.Bind(wx.EVT_MENU, self.on_zoom_fit, id=402)
 
     def on_quit(self, event):
-        """ Actions for the quit event """
+        """Action for the quit event."""
         self.Close(True)
 
     # TODO: I don't think I need a separate method for this
     def on_zoom_fit(self, event):
-        """ Call the WaferMapPanel.zoom_fill() method """
+        """Call :meth:`wafer_map.wm_core.WaferMapPanel.zoom_fill()`."""
         print("Frame Event!")
         self.panel.zoom_fill()
 
     # TODO: I don't think I need a separate method for this
     def on_toggle_crosshairs(self, event):
-        """ Call the WaferMapPanel toggle_crosshairs() method """
+        """Call :meth:`wafer_map.wm_core.WaferMapPanel.toggle_crosshairs()`."""
         self.panel.toggle_crosshairs()
 
     # TODO: I don't think I need a separate method for this
     def on_toggle_outline(self, event):
-        """ Call the WaferMapPanel.toggle_outline() method """
+        """Call the WaferMapPanel.toggle_outline() method."""
         self.panel.toggle_outline()
 
     # TODO: I don't think I need a separate method for this
@@ -256,12 +265,12 @@ class WaferMapWindow(wx.Frame):
     #           1) instance self.panel at the start of __init__
     #           2) make it so that self.panel.toggle_legend accepts arg: event
     def on_toggle_legend(self, event):
-        """ Call the WaferMapPanel.toggle_legend() method """
+        """Call the WaferMapPanel.toggle_legend() method."""
         self.panel.toggle_legend()
 
     # TODO: See the 'and' in the docstring? Means I need a separate method!
     def on_change_high_color(self, event):
-        """ Change the high color and refresh display """
+        """Change the high color and refresh display."""
         print("High color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
@@ -277,7 +286,7 @@ class WaferMapWindow(wx.Frame):
 
     # TODO: See the 'and' in the docstring? Means I need a separate method!
     def on_change_low_color(self, event):
-        """ Change the low color and refresh display """
+        """Change the low color and refresh display."""
         print("Low Color menu item clicked!")
         cd = wx.ColourDialog(self)
         cd.GetColourData().SetChooseFull(True)
@@ -293,7 +302,7 @@ class WaferMapWindow(wx.Frame):
 
 
 def main():
-    """ Display just the window frame """
+    """Run when called as a module."""
     app = wx.App()
     frame = WaferMapWindow("Testing", [], None)
     frame.Show()
