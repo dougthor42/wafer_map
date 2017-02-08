@@ -8,7 +8,7 @@ sudo: false
 addons:
   apt:
     packages:
-    - xvfb
+      - xvfb
 
 matrix:
   include:
@@ -18,7 +18,8 @@ matrix:
 #      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-12.04.5-desktop-amd64/wxPython_Phoenix-3.0.3.dev1956_aab2833-cp27-cp27mu-linux_x86_64.whl
   - python: "3.5"
     env:
-      - WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-16.04-server-amd64/wxPython_Phoenix-3.0.3.dev2804+0a44abb-cp35-cp35m-linux_x86_64.whl
+      #- WXPYTHON=https://gitlab.com/dougthor42/wxPython_Phoenix-wheels/raw/master/ubuntu-16.04-server-amd64/wxPython_Phoenix-3.0.3.dev2804+0a44abb-cp35-cp35m-linux_x86_64.whl
+      - WXPYTHON_SNAPSHOTS=https://wxpython.org/Phoenix/snapshot-builds/linux/gtk3/ubuntu-16.04/
 
 notifications:
   email: false
@@ -34,7 +35,8 @@ install:
 
   # Start the install of everything
   - pip install --upgrade pip
-  - pip install $WXPYTHON
+  #- pip install $WXPYTHON
+  - "pip install --only-binary :all: --pre -f $WXPYTHON_SNAPSHOTS wxPython_Phoenix"
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
 
