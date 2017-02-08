@@ -2,24 +2,7 @@
 # pylint: disable=E1101
 #   E1101 = Module X has no Y member
 """
-@name:          wafer_map.py
-@vers:          1.0.0
-@author:        dthor
-@created:       Tue Nov 11 15:08:43 2014
-@descr:         A new file
-
-Usage:
-    wafer_map.py
-
-Options:
-    -h --help           # Show this screen.
-    --version           # Show version.
-
-Changelog
-=========
-
-See README.rst
-
+The core of ``wafer_map``.
 """
 # ---------------------------------------------------------------------------
 ### Imports
@@ -49,11 +32,39 @@ class WaferMapPanel(wx.Panel):
     """
     The Canvas that the wafer map resides on.
 
-    Usage: WaferMap(parent, xyd, wafer_info)
-        xyd :: List of (x_coord, y_coord, data) tuples
-
-        wafer_info :: instance of the WaferInfo class
+    Parameters
+    ----------
+    parent : :class:`wx.Panel`
+        The panel that this panel belongs to, if any.
+    xyd : list of 3-tuples
+        The data to plot.
+    wafer_info : :class:`wx_info.WaferInfo`
+        The wafer information.
+    data_type : str, optional
+        The type of data to plot. Must be one of `continuous` or `discrete`.
+        Defaults to `continuous`.
+    coord_type : str, optional
+        The coordinate type to use. Must be one of `absolute`, `relative`.
+        Defaults to `absolute`.
+    high_color : :class:`wx.Colour`, optional
+        The color to display if a value is above the plot range. Defaults
+        to `wm_constants.wm_HIGH_COLOR`.
+    low_color : :class:`wx.Colour`, optional
+        The color to display if a value is below the plot range. Defaults
+        to `wm_constants.wm_LOW_COLOR`.
+    plot_range : tuple, optional
+        The plot range to display. If ``None``, then auto-ranges. Defaults
+        to auto-ranging.
+    plot_die_centers : bool, optional
+        If ``True``, display small red circles denoting the die centers.
+        Defaults to ``False``.
+    discrete_legend_values : ???, optional
+        TODO: Document.
+    show_die_gridlines : bool, optional
+        If ``True``, displayes gridlines along the die edges. Defaults to
+        ``True``.
     """
+
     def __init__(self,
                  parent,
                  xyd,
@@ -67,15 +78,6 @@ class WaferMapPanel(wx.Panel):
                  discrete_legend_values=None,
                  show_die_gridlines=True,
                  ):
-        """
-        __init__(self,
-                 parent_panel,
-                 [(x, y, data), ...] xyd,
-                 WaferInfo wafer_info,
-                 string data_type='continuous',
-                 string coord_type='absolute',
-                 ) -> wx.Panel
-        """
         wx.Panel.__init__(self, parent)
 
         ### Inputs ##########################################################
@@ -112,10 +114,7 @@ class WaferMapPanel(wx.Panel):
     ### #--------------------------------------------------------------------
 
     def _init_ui(self):
-        """
-        Creates the UI Elements for the wafer map and binds various events
-        such as mouse wheel change (zoom) and left-click+drag (pan).
-        """
+        """Create the UI Elements and bind various events."""
         # Create items to add to our layout
         self.canvas = FloatCanvas.FloatCanvas(self,
                                               BackgroundColor="BLACK",
@@ -216,11 +215,11 @@ class WaferMapPanel(wx.Panel):
                                                      )
 
     def _clear_canvas(self):
-        """ Clears the canvas """
+        """Clear the canvas."""
         self.canvas.ClearAll(ResetBB=False)
 
     def draw_die(self):
-        """ Draws and add the die on the canvas """
+        """Draw and add the die on the canvas."""
         color_dict = None
         for die in self.xyd:
             # define the die color
@@ -243,7 +242,7 @@ class WaferMapPanel(wx.Panel):
                                      )
 
     def draw_die_center(self):
-        """ Plots the die centers as a small dot """
+        """Plot the die centers as a small dot."""
         for die in self.xyd:
             # Determine the die's lower-left coordinate
             lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
@@ -261,9 +260,7 @@ class WaferMapPanel(wx.Panel):
             self.canvas.AddObject(circ)
 
     def draw_wafer_objects(self):
-        """
-        Draw and Add the various wafer objects
-        """
+        """Draw and add the various wafer objects."""
         self.wafer_outline = draw_wafer_outline(self.wafer_info.dia,
                                                 self.wafer_info.edge_excl,
                                                 self.wafer_info.flat_excl)
@@ -275,11 +272,11 @@ class WaferMapPanel(wx.Panel):
         self.canvas.AddObject(self.crosshairs)
 
     def zoom_fill(self):
-        """ Zoom so that everything is displayed """
+        """Zoom so that everything is displayed."""
         self.canvas.ZoomToBB()
 
     def toggle_outline(self):
-        """ Toggles the wafer outline and edge exclusion on and off """
+        """Toggle the wafer outline and edge exclusion on and off."""
         if self.wfr_outline_bool:
             self.canvas.RemoveObject(self.wafer_outline)
             self.wfr_outline_bool = False
@@ -289,7 +286,7 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Draw()
 
     def toggle_crosshairs(self):
-        """ Toggles the center crosshairs on and off """
+        """Toggle the center crosshairs on and off."""
         if self.crosshairs_bool:
             self.canvas.RemoveObject(self.crosshairs)
             self.crosshairs_bool = False
@@ -299,7 +296,7 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Draw()
 
     def toggle_die_gridlines(self):
-        """ Toggles the die gridlines on and off """
+        """Toggle the die gridlines on and off."""
         if self.die_gridlines_bool:
             self.canvas.RemoveObject(self.die_gridlines)
             self.die_gridlines_bool = False
@@ -309,7 +306,7 @@ class WaferMapPanel(wx.Panel):
         self.canvas.Draw()
 
     def toggle_legend(self):
-        """ Toggles the legend on and off """
+        """Toggle the legend on and off."""
         if self.legend_bool:
             self.hbox.Remove(0)
             self.Layout()       # forces update of layout
@@ -326,9 +323,10 @@ class WaferMapPanel(wx.Panel):
 
     def _on_key_down(self, event):
         """
-        Event Handler for Keyboard Shortcuts. This is used when the panel
-        is integrated into a Frame and the Frame does not define the KB
-        Shortcuts already.
+        Event Handler for Keyboard Shortcuts.
+
+        This is used when the panel is integrated into a Frame and the
+        Frame does not define the KB Shortcuts already.
 
         If inside a frame, the wx.EVT_KEY_DOWN event is sent to the toplevel
         Frame which handles the event (if defined).
@@ -360,7 +358,7 @@ class WaferMapPanel(wx.Panel):
             pass
 
     def _on_first_paint(self, event):
-        """ Zoom to fill on the first paint event """
+        """Zoom to fill on the first paint event."""
         # disable the handler for future paint events
         self.canvas.Bind(wx.EVT_PAINT, None)
 
@@ -368,7 +366,7 @@ class WaferMapPanel(wx.Panel):
         self.zoom_fill()
 
     def on_color_change(self, event):
-        """ Update the wafer map canvas with the new color """
+        """Update the wafer map canvas with the new color."""
         self._clear_canvas()
         if self.data_type == "continuous":
             # call the continuous legend on_color_change() code
@@ -383,14 +381,15 @@ class WaferMapPanel(wx.Panel):
 
     def on_move_timer(self, event=None):
         """
-        Redraw the canvas whenever the move_timer is triggered. Is needed to
-        prevent buffers from being rebuilt too often
+        Redraw the canvas whenever the move_timer is triggered.
+
+        This is needed to prevent buffers from being rebuilt too often.
         """
 #        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
         self.canvas.Draw()
 
     def on_mouse_wheel(self, event):
-        """ Mouse wheel event for Zooming """
+        """Mouse wheel event for Zooming."""
         speed = event.GetWheelRotation()
         pos = event.GetPosition()
         x, y, w, h = self.canvas.GetClientRect()
@@ -417,9 +416,7 @@ class WaferMapPanel(wx.Panel):
         self.canvas.MoveImage(-delta, 'World')  # performs the redraw
 
     def on_mouse_move(self, event):
-        """
-        Updates the status bar with the world coordinates
-        """
+        """Update the status bar with the world coordinates."""
         # display the mouse coords on the Frame StatusBar
         parent = wx.GetTopLevelParent(self)
 
@@ -472,7 +469,7 @@ class WaferMapPanel(wx.Panel):
             self.move_timer.Start(30, oneShot=True)
 
     def on_mouse_middle_down(self, event):
-        """ Start the drag """
+        """Start the drag."""
         self.drag = True
 
         # Update various positions
@@ -485,7 +482,7 @@ class WaferMapPanel(wx.Panel):
         self.SetCursor(wx.Cursor(wx.CURSOR_SIZING))
 
     def on_mouse_middle_up(self, event):
-        """ End the drag """
+        """End the drag."""
         self.drag = False
 
         # update various positions
@@ -498,9 +495,7 @@ class WaferMapPanel(wx.Panel):
         self.SetCursor(wx.Cursor(wx.CURSOR_ARROW))
 
     def on_mouse_left_down(self, event):
-        """
-        Start making the zoom-to-box box.
-        """
+        """Start making the zoom-to-box box."""
 #        print("Left mouse down!")
 #        pcoord = event.GetPosition()
 #        wcoord = self.canvas.PixelToWorld(pcoord)
@@ -511,21 +506,15 @@ class WaferMapPanel(wx.Panel):
         wx.PostEvent(self.parent, event)
 
     def on_mouse_left_up(self, event):
-        """
-        End making the zoom-to-box box and execute the zoom.
-        """
+        """End making the zoom-to-box box and execute the zoom."""
         print("Left mouse up!")
 
     def on_mouse_right_down(self, event):
-        """
-        Start making the zoom-out box.
-        """
+        """Start making the zoom-out box."""
         print("Right mouse down!")
 
     def on_mouse_right_up(self, event):
-        """
-        Stop making the zoom-out box and execute the zoom
-        """
+        """Stop making the zoom-out box and execute the zoom."""
         print("Right mouse up!")
 
 
@@ -534,23 +523,30 @@ class WaferMapPanel(wx.Panel):
 # ---------------------------------------------------------------------------
 
 def xyd_to_dict(xyd_list):
-    """ Converts the xyd list to a dict of xNNyNN key-value pairs """
+    """Convert the xyd list to a dict of xNNyNN key-value pairs."""
     return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
 
 
 def draw_wafer_outline(dia=150, excl=5, flat=None):
     """
-    Draws a wafer outline for a given radius, including any edge exclusion
-    lines.
+    Draw a wafer outline for a given radius, including any exclusion lines.
 
-    Returns a FloatCanvas.Group object that can be added to any
-    FloatCanvas.FloatCanvas instance.
+    Parameters
+    ----------
+    dia : float, optional
+        The wafer diameter in mm. Defaults to `150`.
+    excl : float, optional
+        The exclusion distance from the edge of the wafer in mm. Defaults to
+        `5`.
+    flat : float, optional
+        The exclusion distance from the wafer flat in mm. If ``None``, uses
+        the same value as ``excl``. Defaults to ``None``.
 
-    :dia:   Wafer diameter in mm
-    :excl:  Wafer edge exclusion in mm. Defaults to None (no edge excl.)
-    :flat:  Flat edge exclusion. Defaults to the same as excl.
+    Returns
+    -------
+    :class:`wx.lib.floatcanvas.FloatCanvas.Group`
+        A ``Group`` that can be added to any floatcanvas.FloatCanvas instance.
     """
-
     rad = float(dia)/2.0
     if flat is None:
         flat = excl
@@ -637,27 +633,31 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
 
 def calc_flat_coords(radius, angle):
     """
-    Calculates the starting and ending XY coordinates for a horizontal line
+    Calculate the chord of a circle that spans ``angle``.
+
+    Assumes the chord is centered on the y-axis.
+
+    Calculate the starting and ending XY coordinates for a horizontal line
     below the y axis that interects a circle of radius ``radius`` and
     makes an angle ``angle`` at the center of the circle.
 
     This line is below the y axis.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     radius : float
         The radius of the circle that the line intersects.
     angle : float
         The angle, in degrees, that the line spans.
 
-    Returns:
-    --------
+    Returns
+    -------
     (start_xy, end_xy) : tuple of coord pairs
         The starting and ending XY coordinates of the line.
         (start_x, start_y), (end_x, end_y))
 
-    Notes:
-    ------
+    Notes
+    -----
     What follows is a poor-mans schematic. I hope.
 
     ::
@@ -695,7 +695,7 @@ def calc_flat_coords(radius, angle):
 
 
 def draw_crosshairs(dia=150, dot=False):
-    """ Draws the crosshairs or center dot """
+    """Draw the crosshairs or wafer center dot."""
     if dot:
         circ = FloatCanvas.Circle((0, 0),
                                   2.5,
@@ -718,16 +718,16 @@ def draw_crosshairs(dia=150, dot=False):
 
 def draw_die_gridlines(wf):
     """
-    Draws the die gridlines.
+    Draw the die gridlines.
 
-    Parameters:
-    -----------
-    wf : ``wm_info.WaferInfo`` class
+    Parameters
+    ----------
+    wf : :class:`wm_info.WaferInfo`
         The wafer info to calculate gridlines for.
 
-    Returns:
-    --------
-    group : ``FloatCanvas.Group`` object
+    Returns
+    -------
+    group : :class:`wx.lib.floatcanvas.FloatCanvas.Group`
         The collection of all die gridlines.
     """
     x_size = wf.die_size[0]
@@ -757,7 +757,7 @@ def draw_die_gridlines(wf):
 
 
 def draw_wafer_flat(rad, flat_length):
-    """ Draws a wafer flat for a given radius and flat length """
+    """Draw a wafer flat for a given radius and flat length."""
     x = flat_length/2
     y = -math.sqrt(rad**2 - x**2)
 
@@ -769,7 +769,7 @@ def draw_wafer_flat(rad, flat_length):
 
 
 def draw_excl_flat(rad, flat_y, line_width=1, line_color='black'):
-    """ Draws a wafer flat for a given radius and flat length """
+    """Draw a wafer flat for a given radius and flat length."""
     flat_x = math.sqrt(rad**2 - flat_y**2)
 
     flat = FloatCanvas.Line([(-flat_x, flat_y), (flat_x, flat_y)],
@@ -780,7 +780,7 @@ def draw_excl_flat(rad, flat_y, line_width=1, line_color='black'):
 
 
 def draw_wafer_notch(rad):
-    """ Draws a wafer notch for a given wafer radius"""
+    """Draw a wafer notch for a given wafer radius."""
     ang = 2.5
     ang_rad = ang * math.pi / 180
 
@@ -797,7 +797,7 @@ def draw_wafer_notch(rad):
 
 
 def main():
-    """ Main Code """
+    """Run when called as a module."""
     raise RuntimeError("This module is not meant to be run by itself.")
 
 
