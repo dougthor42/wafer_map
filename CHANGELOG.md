@@ -2,8 +2,11 @@
 This document highlights high-level changes made to this program.
 
 
-## 1.0.20 / 2017-02-20
+## 1.0.21 / 2017-02-20
++ Moved deploy to a rendezvousing build stage in gitlab ci.
 
+
+## 1.0.20 / 2017-02-20
 + Updated gitlab CI to auto-deploy to local PyPI on tags
 + Updated formatting in Changelog.
 

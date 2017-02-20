@@ -1,7 +1,8 @@
 stages:
   - init
   - test
-  - tag_deploy
+  - build
+  - deploy
   - cleanup
 
 variables:
@@ -71,8 +72,8 @@ python35_x64-tests:
     - call %BUILD_DIR%\Scripts\activate.bat
     - green -vvv -s 1 -W -t wafer_map
 
-python35_x64-tag_bundle:
-  stage: tag_deploy
+python35_x64-build:
+  stage: build
   when: on_success
   tags:
     - python
@@ -82,12 +83,9 @@ python35_x64-tag_bundle:
     - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
     - python setup.py sdist bdist_wheel
-    - python -m pip install --upgrade twine
-    - twine register --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' dist/*.whl
-    - twine upload --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' dist/*
-#  artifacts:
-#    paths:
-#      - dist/*.whl
+  artifacts:
+    paths:
+      - dist/*
 
 python35_x64-clean-up:
   stage: cleanup
@@ -136,8 +134,8 @@ python27_x32-tests:
     - call %BUILD_DIR27%\Scripts\activate.bat
     - green -vvv -s 1 -W -t wafer_map
 
-python27_x32-tag_bundle:
-  stage: tag_deploy
+python27_x32-build:
+  stage: build
   when: on_success
   tags:
     - python
@@ -146,10 +144,10 @@ python27_x32-tag_bundle:
   script:
     - call C:\WinPython27_x32\scripts\env.bat
     - call %BUILD_DIR27%\Scripts\activate.bat
-    - python setup.py bdist_wheel
+    - python setup.py sdist bdist_wheel
   artifacts:
     paths:
-      - dist/*.whl
+      - dist/*
 
 python27_x32-clean-up:
   stage: cleanup
@@ -158,3 +156,27 @@ python27_x32-clean-up:
     - python
   script:
     - rd /S /Q %BUILD_DIR27%
+
+
+#################################################
+### All Builds                                ###
+#################################################
+deploy:
+  stage: deploy
+  environment:
+    name: production
+    url: $PYPI_URL/simple/wafer-map           # note that we use linux-style env vars even though we're on windows!
+  when: on_success
+  tags:
+    - python
+  only:
+    - tags
+  script:
+    - call C:\WinPython35\scripts\env.bat
+    - call %BUILD_DIR%\Scripts\activate.bat
+    - python -m pip install --upgrade twine
+    - dir dist\*.zip /b/s > temp.txt
+    - set /p VAR=<temp.txt
+    - echo %VAR%
+    - twine register --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' %VAR%
+    - twine upload --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' dist/*
