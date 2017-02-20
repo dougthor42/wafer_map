@@ -9,6 +9,7 @@ variables:
   VENV_PY27: C:\temp\builds\python27_x32
   VENV_PY35: C:\temp\builds\python35_x64
   WXPYTHON_SNAPSHOTS: https://wxpython.org/Phoenix/snapshot-builds
+  PYPI_URL: http://tphweb.tph.local/pypi
 
 # Set environment vars
 before_script:
@@ -37,16 +38,16 @@ before_script:
   - rd /S /Q C:\Users\tph-buildbot\AppData\Local\pip\Cache
 
 #################################################
-### Python34_x64 jobs                         ###
+### Python35_x64 jobs                         ###
 #################################################
-python34_x64-pip-install:
+python35_x64-pip-install:
   stage: init
   when: always
   tags:
     - python
   script:
     - "REM ==================== pip-install ===================="
-    - call C:\WinPython34\scripts\env.bat
+    - call C:\WinPython35\scripts\env.bat
 
     - python -m venv --clear %BUILD_DIR%
     - call %BUILD_DIR%\Scripts\activate.bat
@@ -60,17 +61,17 @@ python34_x64-pip-install:
     - python -m pip install -r requirements.txt --no-cache-dir
     - python -m pip install -r dev-requirements.txt --no-cache-dir
 
-python34_x64-tests:
+python35_x64-tests:
   stage: test
   when: on_success
   tags:
     - python
   script:
-    - call C:\WinPython34\scripts\env.bat
+    - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
     - green -vvv -s 1 -W -t wafer_map
 
-python34_x64-tag_bundle:
+python35_x64-tag_bundle:
   stage: tag_deploy
   when: on_success
   tags:
@@ -78,14 +79,17 @@ python34_x64-tag_bundle:
   only:
     - tags
   script:
-    - call C:\WinPython34\scripts\env.bat
+    - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
-    - python setup.py bdist_wheel
-  artifacts:
-    paths:
-      - dist/*.whl
+    - python setup.py sdist bdist_wheel
+    - python -m pip install --upgrade twine
+    - twine register --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' dist/*.whl
+    - twine upload --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' dist/*
+#  artifacts:
+#    paths:
+#      - dist/*.whl
 
-python34_x64-clean-up:
+python35_x64-clean-up:
   stage: cleanup
   when: always
   tags:
