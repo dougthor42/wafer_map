@@ -144,7 +144,7 @@ python27_x32-build:
   script:
     - call C:\WinPython27_x32\scripts\env.bat
     - call %BUILD_DIR27%\Scripts\activate.bat
-    - python setup.py sdist bdist_wheel
+    - python setup.py bdist_wheel
   artifacts:
     paths:
       - dist/*
@@ -175,7 +175,7 @@ deploy:
     - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
     - python -m pip install --upgrade twine
-    - dir dist\*.zip /b/s > temp.txt
+    - dir dist\*.tar.gz /b/s > temp.txt
     - set /p VAR=<temp.txt
     - echo %VAR%
     - twine register --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' %VAR%

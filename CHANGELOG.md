@@ -2,6 +2,10 @@
 This document highlights high-level changes made to this program.
 
 
+## 1.0.22 / 2017-02-20
++ More attempts to fix the gitlab CI.
+
+
 ## 1.0.21 / 2017-02-20
 + Moved deploy to a rendezvousing build stage in gitlab ci.
 
