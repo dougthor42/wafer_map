@@ -1,8 +1,7 @@
 stages:
   - init
   - test
-  - build
-  - deploy
+  - tag_deploy
   - cleanup
 
 variables:
@@ -10,7 +9,6 @@ variables:
   VENV_PY27: C:\temp\builds\python27_x32
   VENV_PY35: C:\temp\builds\python35_x64
   WXPYTHON_SNAPSHOTS: https://wxpython.org/Phoenix/snapshot-builds
-  PYPI_URL: http://tphweb.tph.local/pypi
 
 # Set environment vars
 before_script:
@@ -22,7 +20,7 @@ before_script:
   - set BUILD_DIR=%BUILD_DIR%__%CI_PROJECT_NAMESPACE%
   - set BUILD_DIR=%BUILD_DIR%__%CI_PROJECT_NAME%
   - set BUILD_DIR=%BUILD_DIR%__%CI_PIPELINE_ID%
-  - set BUILD_DIR=%BUILD_DIR%__%CI_BUILD_REF_NAME%
+  - set BUILD_DIR=%BUILD_DIR%__%CI_COMMIT_REF_NAME%
   - echo %BUILD_DIR%
 
   # And also for Py27
@@ -30,7 +28,7 @@ before_script:
   - set BUILD_DIR27=%BUILD_DIR27%__%CI_PROJECT_NAMESPACE%
   - set BUILD_DIR27=%BUILD_DIR27%__%CI_PROJECT_NAME%
   - set BUILD_DIR27=%BUILD_DIR27%__%CI_PIPELINE_ID%
-  - set BUILD_DIR27=%BUILD_DIR27%__%CI_BUILD_REF_NAME%
+  - set BUILD_DIR27=%BUILD_DIR27%__%CI_COMMIT_REF_NAME%
   - echo %BUILD_DIR27%
 
   - REM ~~~~~~~~~~~~~~~~~~~~ End Before Script ~~~~~~~~~~~~~~~~~~~~
@@ -72,8 +70,8 @@ python35_x64-tests:
     - call %BUILD_DIR%\Scripts\activate.bat
     - green -vvv -s 1 -W -t wafer_map
 
-python35_x64-build:
-  stage: build
+python35_x64-tag_bundle:
+  stage: tag_deploy
   when: on_success
   tags:
     - python
@@ -82,10 +80,10 @@ python35_x64-build:
   script:
     - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
-    - python setup.py sdist bdist_wheel
+    - python setup.py bdist_wheel
   artifacts:
     paths:
-      - dist/*
+      - dist/*.whl
 
 python35_x64-clean-up:
   stage: cleanup
@@ -134,8 +132,8 @@ python27_x32-tests:
     - call %BUILD_DIR27%\Scripts\activate.bat
     - green -vvv -s 1 -W -t wafer_map
 
-python27_x32-build:
-  stage: build
+python27_x32-tag_bundle:
+  stage: tag_deploy
   when: on_success
   tags:
     - python
@@ -147,7 +145,7 @@ python27_x32-build:
     - python setup.py bdist_wheel
   artifacts:
     paths:
-      - dist/*
+      - dist/*.whl
 
 python27_x32-clean-up:
   stage: cleanup
@@ -156,27 +154,3 @@ python27_x32-clean-up:
     - python
   script:
     - rd /S /Q %BUILD_DIR27%
-
-
-#################################################
-### All Builds                                ###
-#################################################
-deploy:
-  stage: deploy
-  environment:
-    name: production
-    url: $PYPI_URL/simple/wafer-map           # note that we use linux-style env vars even though we're on windows!
-  when: on_success
-  tags:
-    - python
-  only:
-    - tags
-  script:
-    - call C:\WinPython35\scripts\env.bat
-    - call %BUILD_DIR%\Scripts\activate.bat
-    - python -m pip install --upgrade twine
-    - dir dist\*.tar.gz /b/s > temp.txt
-    - set /p VAR=<temp.txt
-    - echo %VAR%
-    - twine register --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' %VAR%
-    - twine upload --repository %PYPI_URL% --repository-url %PYPI_URL% -u '' -p '' dist/*
