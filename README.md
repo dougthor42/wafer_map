@@ -48,8 +48,10 @@ Install from PyPI.
 wafer_map requires the following non-built-in packages:
 
 - [wxPython Phoenix](https://github.com/wxWidgets/Phoenix)
+
   + If installing on Windows or Mac, use the wheels found at the [Phoenix
     snapshot builds](http://wxpython.org/Phoenix/snapshot-builds/).
+
 - [numpy](https://pypi.python.org/pypi/numpy)
 - [colour](https://pypi.python.org/pypi/colour)
 
@@ -156,21 +158,30 @@ values representing the absolute postion of a die) and a die's grid location
 (integer row-column or x-y values that are sometimes printed on die).
 
 + **coordinate**
+
   + Floating-point value representing the exact location of
     a die on the wafer. Also sometimes called 'coord'
   + The coordinate origin is the center of the wafer and the
     center of the FloatCanvas panel.
+
 + **grid**
+
   + Integer value representing the printed die. Can only be mapped
     to a coordinate if a grid_center is defined.
   + Each grid line falls on a die's center.
+
 + **grid_center**
+
   + The ``(float_x, float_y)`` tuple which is coincident with the
     wafer's center coordinate ``(0, 0)``.
   + This is the only ``grid`` value that can be made up of floats.
+
 + **row**
+
   + Alias for ``grid_y``.
+
 + **col**
+
   + Alias for ``grid_x``.
 
 
