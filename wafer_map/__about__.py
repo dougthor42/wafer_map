@@ -2,8 +2,8 @@
 """
 Plots up a wafer map. Used in semiconductor processing and analysis.
 
-Please see README.md and CHANGELOG.md at
-https://github.com/dougthor42/wafer_map
+Please see README.md and CHANGELOG.md on the
+[project homepage](https://github.com/dougthor42/wafer_map).
 
 """
 
