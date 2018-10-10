@@ -5,6 +5,16 @@ This document highlights high-level changes made to this program.
 ## Unreleased
 
 
+## 1.0.23 / 2018-10-10
++ Python requirements are now pinned (#59)
++ Docs for wm_core.WaferMapPanel have been updated (#60)
++ Updated `.gitlab-ci.yml` to use the correct runner since we've changed
+  names. (#64)
++ Switched to using `pytest` instead of `green` (#65)
++ Updated CI to no longer use the wxPython snapshots (#66)
++ Fixed pypi long_description (hopefully).
++ Updated PyPI trove classifiers to reflect supported python versions.
+
 
 ## 1.0.22 / 2017-02-20
 + More attempts to fix the gitlab CI.
