@@ -68,7 +68,7 @@ python35_x64-tests:
   script:
     - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
-    - green -vvv -s 1 -W -t wafer_map
+    - pytest -ra wafer_map --cov wafer_map --cov-report term
 
 python35_x64-tag_bundle:
   stage: tag_deploy
@@ -130,7 +130,7 @@ python27_x32-tests:
   script:
     - call C:\WinPython27_x32\scripts\env.bat
     - call %BUILD_DIR27%\Scripts\activate.bat
-    - green -vvv -s 1 -W -t wafer_map
+    - pytest -ra wafer_map --cov wafer_map --cov-report term
 
 python27_x32-tag_bundle:
   stage: tag_deploy
