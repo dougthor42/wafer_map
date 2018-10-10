@@ -26,7 +26,7 @@ __author__ = "Douglas Thor"
 __email__ = "doug.thor@gmail.com"
 
 __license__ = "GNU General Public License v3 (GPLv3)"
-__version__ = "1.0.24"
+__version__ = "1.0.25"
 __released__ = "2018-10-10"
 __created__ = "2014-11-25"
 
