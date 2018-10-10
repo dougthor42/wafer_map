@@ -7,8 +7,6 @@ https://github.com/dougthor42/wafer_map
 
 """
 
-import os
-
 __all__ = (
     "__author__",
     "__email__",
@@ -38,11 +36,3 @@ __package_name__ = "wafer_map"
 
 __description__ = "Semiconductor Wafer Mapping"
 __long_descr__ = __doc__
-
-# Try to read the README file and use that as our long description.
-try:
-    base_dir = os.path.dirname(__file__)
-    with open(os.path.join(base_dir, os.pardir, "README.md")) as f:
-        __long_descr__ = f.read()
-except Exception:
-    pass
