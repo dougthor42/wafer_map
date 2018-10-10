@@ -43,7 +43,7 @@ python35_x64-pip-install:
   stage: init
   when: always
   tags:
-    - python
+    - python-windows
   script:
     - "REM ==================== pip-install ===================="
     - call C:\WinPython35\scripts\env.bat
@@ -64,7 +64,7 @@ python35_x64-tests:
   stage: test
   when: on_success
   tags:
-    - python
+    - python-windows
   script:
     - call C:\WinPython35\scripts\env.bat
     - call %BUILD_DIR%\Scripts\activate.bat
@@ -74,7 +74,7 @@ python35_x64-tag_bundle:
   stage: tag_deploy
   when: on_success
   tags:
-    - python
+    - python-windows
   only:
     - tags
   script:
@@ -89,7 +89,7 @@ python35_x64-clean-up:
   stage: cleanup
   when: always
   tags:
-    - python
+    - python-windows
   script:
     - rd /S /Q %BUILD_DIR%
 
@@ -101,7 +101,7 @@ python27_x32-pip-install:
   stage: init
   when: always
   tags:
-    - python
+    - python-windows
   script:
     - REM ==================== pip-install ====================
     - call C:\WinPython27_x32\scripts\env.bat
@@ -126,7 +126,7 @@ python27_x32-tests:
   stage: test
   when: on_success
   tags:
-    - python
+    - python-windows
   script:
     - call C:\WinPython27_x32\scripts\env.bat
     - call %BUILD_DIR27%\Scripts\activate.bat
@@ -136,7 +136,7 @@ python27_x32-tag_bundle:
   stage: tag_deploy
   when: on_success
   tags:
-    - python
+    - python-windows
   only:
     - tags
   script:
@@ -151,6 +151,6 @@ python27_x32-clean-up:
   stage: cleanup
   when: always
   tags:
-    - python
+    - python-windows
   script:
     - rd /S /Q %BUILD_DIR27%
