@@ -8,7 +8,6 @@ variables:
   VENV_ROOT: C:\temp\builds
   VENV_PY27: C:\temp\builds\python27_x32
   VENV_PY35: C:\temp\builds\python35_x64
-  WXPYTHON_SNAPSHOTS: https://wxpython.org/Phoenix/snapshot-builds
 
 # Set environment vars
 before_script:
@@ -54,9 +53,6 @@ python35_x64-pip-install:
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
     - python -m pip install --upgrade --no-cache-dir pip setuptools wheel
-
-    - "python -m pip install --only-binary :all: --pre -f %WXPYTHON_SNAPSHOTS% wxPython_Phoenix"
-
     - python -m pip install -r requirements.txt --no-cache-dir
     - python -m pip install -r dev-requirements.txt --no-cache-dir
 
@@ -116,9 +112,6 @@ python27_x32-pip-install:
     # Can't upgrade pip in place.
     # See https://github.com/pypa/pip/issues/1299#issuecomment-188198496
     - python -m pip install --upgrade --no-cache-dir pip setuptools wheel
-
-    - "python -m pip install --only-binary :all: --pre -f %WXPYTHON_SNAPSHOTS% wxPython_Phoenix"
-
     - python -m pip install -r requirements.txt --no-cache-dir
     - python -m pip install -r dev-requirements.txt --no-cache-dir
 
