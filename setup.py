@@ -50,6 +50,7 @@ setup(
     version=about["__version__"],
 
     description=about["__description__"],
+    long_description_content_type="text/markdown",
     long_description=long_description,
     url=about["__project_url__"],
 
