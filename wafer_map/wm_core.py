@@ -58,8 +58,10 @@ class WaferMapPanel(wx.Panel):
     plot_die_centers : bool, optional
         If ``True``, display small red circles denoting the die centers.
         Defaults to ``False``.
-    discrete_legend_values : ???, optional
-        TODO: Document.
+    discrete_legend_values : list, optional
+        A list of strings for die bins. Every data value in ``xyd`` must
+        be in this list. This will define the legend order. Only used when
+        ``data_type`` is ``discrete``.
     show_die_gridlines : bool, optional
         If ``True``, displayes gridlines along the die edges. Defaults to
         ``True``.
