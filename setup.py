@@ -56,5 +56,5 @@ setup(
     packages=find_packages(),
     classifiers=classifiers,
 
-    requires=["wxPython>=4.0.0", "numpy>=1.12.1", "colour>=0.1.4"],
+    install_requires=["wxPython>=4.0.0", "numpy>=1.12.1", "colour>=0.1.4"],
     )
