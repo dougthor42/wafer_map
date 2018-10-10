@@ -44,7 +44,7 @@ build: off  # Not a C# project, build stuff at the test step instead.
 test_script:
   # Build the compiled extension and run the project tests
   - "%PYTHON%\\python.exe --version"
-  - "%PYTHON%\\python.exe -m green -vvv -t wafer_map"
+  - "pytest -ra wafer_map --cov wafer_map --cov-report term"
 
 after_test:
   # if tests OK, create whl package
