@@ -55,7 +55,7 @@ script:
   - python -c "import sys;print(sys.version);print(sys.path)"
   - python -c "import wx;print(wx.VERSION_STRING)"
 #  - grep -C 5 '_Colour___hash__'
-  - green wafer_map -vv --run-coverage
+  - pytest -ra wafer_map --cov wafer_map --cov-report term
 
 after_success:
   - echo "----- after_success -----"
