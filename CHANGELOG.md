@@ -5,6 +5,10 @@ This document highlights high-level changes made to this program.
 ## Unreleased
 
 
+## 1.0.24 / 2018-10-10
++ Fixed rendering in README.rst (for PyPI's `long_description`).
+
+
 ## 1.0.23 / 2018-10-10
 + Python requirements are now pinned (#59)
 + Docs for wm_core.WaferMapPanel have been updated (#60)
