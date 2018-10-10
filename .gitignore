@@ -57,3 +57,6 @@ target/
 
 # Spyder project settings
 .spyderproject
+
+# Virtual Environments
+.venv*/
