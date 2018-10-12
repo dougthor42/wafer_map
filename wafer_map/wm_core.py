@@ -40,7 +40,7 @@ class WaferMapPanel(wx.Panel):
         The data to plot.
     wafer_info : :class:`wx_info.WaferInfo`
         The wafer information.
-    data_type : str, optional
+    data_type : wm_constants.DataType or str, optional
         The type of data to plot. Must be one of `continuous` or `discrete`.
         Defaults to `continuous`.
     coord_type : str, optional
@@ -71,7 +71,7 @@ class WaferMapPanel(wx.Panel):
                  parent,
                  xyd,
                  wafer_info,
-                 data_type='continuous',
+                 data_type=wm_const.DataType.CONTINUOUS,
                  coord_type='absolute',
                  high_color=wm_const.wm_HIGH_COLOR,
                  low_color=wm_const.wm_LOW_COLOR,
@@ -86,6 +86,9 @@ class WaferMapPanel(wx.Panel):
         self.parent = parent
         self.xyd = xyd
         self.wafer_info = wafer_info
+        # backwards compatability
+        if isinstance(data_type, str):
+            data_type = wm_const.DataType(data_type)
         self.data_type = data_type
         self.coord_type = coord_type
         self.high_color = high_color
@@ -187,7 +190,7 @@ class WaferMapPanel(wx.Panel):
 
         Might change to 5th percentile and 95th percentile.
         """
-        if self.data_type == "discrete":
+        if self.data_type == wm_const.DataType.DISCRETE:
             if self.discrete_legend_values is None:
                 unique_items = list({_die[2] for _die in self.xyd})
             else:
@@ -225,7 +228,7 @@ class WaferMapPanel(wx.Panel):
         color_dict = None
         for die in self.xyd:
             # define the die color
-            if self.data_type == 'discrete':
+            if self.data_type == wm_const.DataType.DISCRETE:
                 color_dict = self.legend.color_dict
                 color = color_dict[die[2]]
             else:
@@ -370,7 +373,7 @@ class WaferMapPanel(wx.Panel):
     def on_color_change(self, event):
         """Update the wafer map canvas with the new color."""
         self._clear_canvas()
-        if self.data_type == "continuous":
+        if self.data_type == wm_const.DataType.CONTINUOUS:
             # call the continuous legend on_color_change() code
             self.legend.on_color_change(event)
         self.draw_die()

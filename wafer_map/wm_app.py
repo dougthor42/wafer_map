@@ -38,7 +38,7 @@ class WaferMapApp(object):
     flat_excl : float, optional
         The distance in mm from the wafer flat that should be
         considered bad die. Defaults to 5mm.
-    data_type : str, optional
+    data_type : wm_constants.DataType or str, optional
         The type of data to plot. Must be one of `continuous` or `discrete`.
     high_color : :class:`wx.Colour`, optional
         The color to display if a value is above the plot range. Defaults
@@ -64,7 +64,7 @@ class WaferMapApp(object):
                  dia=150,
                  edge_excl=5,
                  flat_excl=5,
-                 data_type='continuous',
+                 data_type=wm_const.DataType.CONTINUOUS,
                  high_color=wm_const.wm_HIGH_COLOR,
                  low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
@@ -124,12 +124,12 @@ def main():
                     in xyd]
 
     discrete = False
-    dtype = 'continuous'
+    dtype = wm_const.DataType.CONTINUOUS
 
 #    discrete = True         # uncomment this line to use discrete data
     if discrete:
         xyd = discrete_xyd
-        dtype = 'discrete'
+        dtype = wm_const.DataType.DISCRETE
 
     WaferMapApp(xyd,
                 wafer_info.die_size,

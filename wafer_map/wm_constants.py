@@ -7,6 +7,7 @@ Constants for the wafer_map package.
 # ---------------------------------------------------------------------------
 # Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
+from enum import Enum
 
 # Third-Party
 import wx
@@ -40,3 +41,11 @@ wm_ZOOM_FACTOR = 1.1 / 120
 
 # Wafer Flat lengths, defined by SEMI M1-0302
 wm_FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
+
+
+class DataType(Enum):
+    CONTINUOUS = 'continuous'
+    DISCRETE = 'discrete'
+
+    def __repr__(self):
+        return '<%s.%s>' % (self.__class__.__name__, self.name)

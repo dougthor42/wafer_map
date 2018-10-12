@@ -118,7 +118,7 @@ def generate_fake_data(**kwargs):
                       'x_offset': random.choice(offset_list),
                       'y_offset': random.choice(offset_list),
                       'grid_center': None,
-                      'dtype': 'continuous',
+                      'dtype': wm_const.DataType.CONTINUOUS,
                       }
 
     # parse the keyword arguements, asigning defaults if not found.

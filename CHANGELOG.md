@@ -3,7 +3,7 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
-
++ Use enums for `data_type`. (#61)
 
 ## 1.0.25 / 2018-10-10
 + Fixed rendering in README.rst (for PyPI's `long_description`). Again.
