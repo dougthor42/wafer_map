@@ -43,9 +43,16 @@ wm_ZOOM_FACTOR = 1.1 / 120
 wm_FLAT_LENGTHS = {50: 15.88, 75: 22.22, 100: 32.5, 125: 42.5, 150: 57.5}
 
 
-class DataType(Enum):
+class NoValueEnum(Enum):
+    def __repr__(self):
+        return '<%s.%s>' % (self.__class__.__name__, self.name)
+
+
+class DataType(NoValueEnum):
     CONTINUOUS = 'continuous'
     DISCRETE = 'discrete'
 
-    def __repr__(self):
-        return '<%s.%s>' % (self.__class__.__name__, self.name)
+
+class CoordType(NoValueEnum):
+    ABSOLUTE = 'absolute'
+    RELATIVE = 'relative'
