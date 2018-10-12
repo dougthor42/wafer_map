@@ -3,6 +3,7 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
++ Use an ordered dict internally for `DiscreteLegend`.
 
 
 ## 1.0.25 / 2018-10-10
