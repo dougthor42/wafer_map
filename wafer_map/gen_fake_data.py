@@ -58,8 +58,8 @@ def generate_fake_data(**kwargs):
         Datatype. Valid options are "discrete" and "continuous".
         Defaults to "continuous".
 
-    Examples of Offsets:
-    --------------------
+    Examples of Offsets
+    -------------------
     The ``X`` denotes the center of the wafer::
 
       x_offset = 0          x_offset = 0
@@ -78,8 +78,8 @@ def generate_fake_data(**kwargs):
       |           |         |           |
       |-----------|         X-----------|
 
-    Notes:
-    ------
+    Notes
+    -----
     Another rewrite, this time starting from the top. We will not look at
     the wafer map until I'm satisfied with the numerical values.
 
