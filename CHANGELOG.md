@@ -3,6 +3,9 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
+
+
+## 1.1.0 / 2018-10-12
 + Use enums for `data_type`. (#61)
 + Use enums for `coord_type`.
 + Use an ordered dict internally for `DiscreteLegend`.
