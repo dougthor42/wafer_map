@@ -8,6 +8,7 @@ Draws the wafer map legend.
 # Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 import colorsys
+from collections import OrderedDict
 
 # Third-Party
 import wx
@@ -582,7 +583,7 @@ class DiscreteLegend(wx.Panel):
         lables, colors.
         """
         # TODO: Determine if I want this to be a public callable method
-        self.color_dict = dict(zip(self.labels, self.colors))
+        self.color_dict = OrderedDict(zip(self.labels, self.colors))
         return self.color_dict
 
     def on_color_pick(self, event):

@@ -65,6 +65,10 @@ class WaferMapPanel(wx.Panel):
     show_die_gridlines : bool, optional
         If ``True``, displayes gridlines along the die edges. Defaults to
         ``True``.
+    discrete_legend_values : list, optional
+        A list of strings for die bins. Every data value in ``xyd`` must
+        be in this list. This will define the legend order. Only used when
+        ``data_type`` is ``discrete``.
     """
 
     def __init__(self,
@@ -79,6 +83,7 @@ class WaferMapPanel(wx.Panel):
                  plot_die_centers=False,
                  discrete_legend_values=None,
                  show_die_gridlines=True,
+                 discrete_legend_colors=None,
                  ):
         wx.Panel.__init__(self, parent)
 
@@ -98,6 +103,7 @@ class WaferMapPanel(wx.Panel):
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
         self.discrete_legend_values = discrete_legend_values
+        self.discrete_legend_colors = discrete_legend_colors
         self.die_gridlines_bool = show_die_gridlines
 
         ### Other Attributes ################################################
@@ -197,7 +203,7 @@ class WaferMapPanel(wx.Panel):
                 unique_items = self.discrete_legend_values
             self.legend = wm_legend.DiscreteLegend(self,
                                                    labels=unique_items,
-                                                   colors=None,
+                                                   colors=self.discrete_legend_colors,
                                                    )
         else:
             if self.plot_range is None:
