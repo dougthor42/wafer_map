@@ -543,7 +543,8 @@ class DiscreteLegend(wx.Panel):
         self.hbox.Add(self.fgs)
         self.SetSizer(self.hbox)
 
-    def create_colors(self, n):
+    @staticmethod
+    def create_colors(n):
         """
         Create the colors based on how many legend items there are (n).
 

@@ -5,6 +5,10 @@ This document highlights high-level changes made to this program.
 ## Unreleased
 
 
+## 1.1.1 / 2018-10-12
++ Make `DiscreteLegend.create_colors` a static method. (#67)
+
+
 ## 1.1.0 / 2018-10-12
 + Use enums for `data_type`. (#61)
 + Use enums for `coord_type`.
