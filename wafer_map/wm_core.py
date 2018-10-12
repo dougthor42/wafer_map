@@ -40,12 +40,12 @@ class WaferMapPanel(wx.Panel):
         The data to plot.
     wafer_info : :class:`wx_info.WaferInfo`
         The wafer information.
-    data_type : wm_constants.DataType or str, optional
+    data_type : :class:`wm_constants.DataType` or str, optional
         The type of data to plot. Must be one of `continuous` or `discrete`.
-        Defaults to `continuous`.
-    coord_type : str, optional
-        The coordinate type to use. Must be one of `absolute`, `relative`.
-        Defaults to `absolute`.
+        Defaults to `CoordType.CONTINUOUS`.
+    coord_type : :class:`wm_constants.CoordType`, optional
+        The coordinate type to use. Defaults to ``CoordType.ABSOLUTE``. Not
+        yet implemented.
     high_color : :class:`wx.Colour`, optional
         The color to display if a value is above the plot range. Defaults
         to `wm_constants.wm_HIGH_COLOR`.
@@ -76,7 +76,7 @@ class WaferMapPanel(wx.Panel):
                  xyd,
                  wafer_info,
                  data_type=wm_const.DataType.CONTINUOUS,
-                 coord_type='absolute',
+                 coord_type=wm_const.CoordType.ABSOLUTE,
                  high_color=wm_const.wm_HIGH_COLOR,
                  low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
