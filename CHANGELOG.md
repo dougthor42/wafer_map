@@ -3,6 +3,7 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
++ Use enums for `data_type`. (#61)
 + Use an ordered dict internally for `DiscreteLegend`.
 + Add a `discrete_legend_colors` arg to the WaferMapPanel constructor.
 

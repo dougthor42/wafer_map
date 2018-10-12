@@ -38,7 +38,7 @@ class WaferMapWindow(wx.Frame):
     size : tuple, optional
         The windows size in ``(width, height)``. Values must be ``int``s.
         Defaults to ``(800, 600)``.
-    data_type : str, optional
+    data_type : wm_constants.DataType or string, optional
         The type of data to plot. Must be one of `continuous` or `discrete`.
         Defaults to `continuous`.
     high_color : :class:`wx.Colour`, optional
@@ -63,7 +63,7 @@ class WaferMapWindow(wx.Frame):
                  xyd,
                  wafer_info,
                  size=(800, 600),
-                 data_type='continuous',
+                 data_type=wm_const.DataType.CONTINUOUS,
                  high_color=wm_const.wm_HIGH_COLOR,
                  low_color=wm_const.wm_LOW_COLOR,
                  plot_range=None,
@@ -78,6 +78,9 @@ class WaferMapWindow(wx.Frame):
                           )
         self.xyd = xyd
         self.wafer_info = wafer_info
+        # backwards compatability
+        if isinstance(data_type, str):
+            data_type = wm_const.DataType(data_type)
         self.data_type = data_type
         self.high_color = high_color
         self.low_color = low_color

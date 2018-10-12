@@ -17,6 +17,7 @@ import wx
 from . import gen_fake_data
 from . import wm_core
 from . import wm_app
+from .wm_constants import DataType
 
 
 __author__ = "Douglas Thor"
@@ -148,7 +149,7 @@ def discrete_data_example(xyd, wafer_info):
                        wafer_info.dia,
                        wafer_info.edge_excl,
                        wafer_info.flat_excl,
-                       data_type="discrete",
+                       data_type=DataType.DISCRETE,
                        show_die_gridlines=False,
                        )
 
