@@ -3,6 +3,7 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
++ Fix x-position of gridlines (#38)
 
 
 ## 1.1.1 / 2018-10-12

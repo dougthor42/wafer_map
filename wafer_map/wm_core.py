@@ -747,7 +747,7 @@ def draw_die_gridlines(wf):
     edge = (wf.dia / 2) * 1.05
 
     # calculate the values for the gridlines
-    x_ref = math.modf(wf.center_xy[0])[0] * x_size + (x_size/2)
+    x_ref = -math.modf(wf.center_xy[0])[0] * x_size + (x_size / 2)
     pos_vert = np.arange(x_ref, edge, x_size)
     neg_vert = np.arange(x_ref, -edge, -x_size)
 
