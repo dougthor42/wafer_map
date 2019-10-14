@@ -113,6 +113,7 @@ class WaferMapPanel(wx.Panel):
         self.crosshairs_bool = True
         self.reticle_gridlines_bool = False
         self.legend_bool = True
+        self.die_centers = None
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -322,9 +323,7 @@ class WaferMapPanel(wx.Panel):
 
     def toggle_die_centers(self):
         """Toggle the die centers on and off."""
-        try:
-            self.die_centers
-        except AttributeError:
+        if self.die_centers is None:
             self.die_centers = self.draw_die_center()
 
         if self.plot_die_centers:
