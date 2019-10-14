@@ -103,6 +103,7 @@ class WaferMapWindow(wx.Frame):
         # Initialize default states
         self.mv_outline.Check()
         self.mv_crosshairs.Check()
+        self.mv_diecenters.Check(self.plot_die_centers)
         self.mv_legend.Check()
 
         # Set the MenuBar and create a status bar (easy thanks to wx.Frame)
@@ -177,6 +178,12 @@ class WaferMapWindow(wx.Frame):
                                       "Show or hide the wafer outline",
                                       wx.ITEM_CHECK,
                                       )
+        self.mv_diecenters = wx.MenuItem(self.mview,
+                                      wx.ID_ANY,
+                                      "Die Centers\tD",
+                                      "Show or hide the die centers",
+                                      wx.ITEM_CHECK,
+                                      )
         self.mv_legend = wx.MenuItem(self.mview,
                                      wx.ID_ANY,
                                      "Legend\tL",
@@ -215,6 +222,7 @@ class WaferMapWindow(wx.Frame):
         self.mview.AppendSeparator()
         self.mview.Append(self.mv_crosshairs)
         self.mview.Append(self.mv_outline)
+        self.mview.Append(self.mv_diecenters)
         self.mview.Append(self.mv_legend)
 
         self.mopts.Append(self.mo_test)
@@ -233,6 +241,7 @@ class WaferMapWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_quit, self.mf_close)
         self.Bind(wx.EVT_MENU, self.on_zoom_fit, self.mv_zoomfit)
         self.Bind(wx.EVT_MENU, self.on_toggle_crosshairs, self.mv_crosshairs)
+        self.Bind(wx.EVT_MENU, self.on_toggle_diecenters, self.mv_diecenters)
         self.Bind(wx.EVT_MENU, self.on_toggle_outline, self.mv_outline)
         self.Bind(wx.EVT_MENU, self.on_toggle_legend, self.mv_legend)
         self.Bind(wx.EVT_MENU, self.on_change_high_color, self.mo_high_color)
@@ -257,6 +266,11 @@ class WaferMapWindow(wx.Frame):
     def on_toggle_crosshairs(self, event):
         """Call :meth:`wafer_map.wm_core.WaferMapPanel.toggle_crosshairs()`."""
         self.panel.toggle_crosshairs()
+
+    # TODO: I don't think I need a separate method for this
+    def on_toggle_diecenters(self, event):
+        """Call :meth:`wafer_map.wm_core.WaferMapPanel.toggle_crosshairs()`."""
+        self.panel.toggle_die_centers()
 
     # TODO: I don't think I need a separate method for this
     def on_toggle_outline(self, event):

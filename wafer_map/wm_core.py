@@ -113,6 +113,7 @@ class WaferMapPanel(wx.Panel):
         self.crosshairs_bool = True
         self.reticle_gridlines_bool = False
         self.legend_bool = True
+        self.die_centers = None
 
         # timer to give a delay when moving so that buffers aren't
         # re-built too many times.
@@ -140,7 +141,8 @@ class WaferMapPanel(wx.Panel):
         # Draw the die and wafer objects (outline, crosshairs, etc) on the canvas
         self.draw_die()
         if self.plot_die_centers:
-            self.draw_die_center()
+            self.die_centers = self.draw_die_center()
+            self.canvas.AddObject(self.die_centers)
         self.draw_wafer_objects()
 
         # Bind events to the canvas
@@ -254,6 +256,7 @@ class WaferMapPanel(wx.Panel):
 
     def draw_die_center(self):
         """Plot the die centers as a small dot."""
+        centers = []
         for die in self.xyd:
             # Determine the die's lower-left coordinate
             lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
@@ -268,7 +271,9 @@ class WaferMapPanel(wx.Panel):
                                       0.5,
                                       FillColor=wm_const.wm_DIE_CENTER_DOT_COLOR,
                                       )
-            self.canvas.AddObject(circ)
+            centers.append(circ)
+
+        return FloatCanvas.Group(centers)
 
     def draw_wafer_objects(self):
         """Draw and add the various wafer objects."""
@@ -316,6 +321,19 @@ class WaferMapPanel(wx.Panel):
             self.die_gridlines_bool = True
         self.canvas.Draw()
 
+    def toggle_die_centers(self):
+        """Toggle the die centers on and off."""
+        if self.die_centers is None:
+            self.die_centers = self.draw_die_center()
+
+        if self.plot_die_centers:
+            self.canvas.RemoveObject(self.die_centers)
+            self.plot_die_centers = False
+        else:
+            self.canvas.AddObject(self.die_centers)
+            self.plot_die_centers = True
+        self.canvas.Draw()
+
     def toggle_legend(self):
         """Toggle the legend on and off."""
         if self.legend_bool:
@@ -351,12 +369,14 @@ class WaferMapPanel(wx.Panel):
             O:      Toggle wafer outline
             C:      Toggle wafer crosshairs
             L:      Toggle the legend
+            D:      Toggle die centers
         """
         # TODO: Decide if I want to move this to a class attribute
         keycodes = {wx.WXK_HOME: self.zoom_fill,      # "Home
                     79: self.toggle_outline,          # "O"
                     67: self.toggle_crosshairs,       # "C"
                     76: self.toggle_legend,           # "L"
+                    68: self.toggle_die_centers,      # "D"
                     }
 
 #        print("panel event!")
@@ -384,7 +404,8 @@ class WaferMapPanel(wx.Panel):
             self.legend.on_color_change(event)
         self.draw_die()
         if self.plot_die_centers:
-            self.draw_die_center()
+            self.die_centers = self.draw_die_center()
+            self.canvas.AddObject(self.die_centers)
         self.draw_wafer_objects()
         self.canvas.Draw(True)
 #        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
