@@ -3,6 +3,9 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
+
+
+## 1.1.2 / 201910-14
 + Fix x-position of gridlines (#38)
 + The die center dots can now be toggled on and off. (#82)
 

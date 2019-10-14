@@ -26,8 +26,8 @@ __author__ = "Douglas Thor"
 __email__ = "doug.thor@gmail.com"
 
 __license__ = "GNU General Public License v3 (GPLv3)"
-__version__ = "1.1.1"
-__released__ = "2018-10-12"
+__version__ = "1.1.2"
+__released__ = "2019-10-14"
 __created__ = "2014-11-25"
 
 __project_name__ = "Wafer Map"
