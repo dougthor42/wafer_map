@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A self-contained Window for a Wafer Map.
 """

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Provides examples on how to use the ``wafer_map`` package.
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The core of ``wafer_map``.
 """

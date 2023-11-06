@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Constants for the wafer_map package.
 """

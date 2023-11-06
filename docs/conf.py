@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # wafer_map documentation build configuration file, created by
 # sphinx-quickstart on Wed Feb  1 14:36:48 2017.

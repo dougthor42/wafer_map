@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Plots up a wafer map. Used in semiconductor processing and analysis.
 

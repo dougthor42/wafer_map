@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Unittests for the :module:`wafer_map.utils` module.
 """

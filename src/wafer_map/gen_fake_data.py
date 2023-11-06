@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Generate fake data for the wafer_map demo.
 

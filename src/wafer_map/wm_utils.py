@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Holds various utilities used by ``wafer_map``.
 """
