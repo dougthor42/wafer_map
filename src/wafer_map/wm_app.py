@@ -2,16 +2,10 @@
 """
 A self-contained Window for a Wafer Map.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import wx
 
-# Package / Application
 from . import wm_frame
 from . import wm_info
 from . import gen_fake_data

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=E1101
-#   E1101 = Module X has no Y member
 """
 This is the main window of the Wafer Map application.
 """

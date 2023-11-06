@@ -1,26 +1,18 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=E1101
-#   E1101 = Module X has no Y member
 """
 The core of ``wafer_map``.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 import math
 
-# Third-Party
 import numpy as np
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-# Package / Application
-from . import wm_legend
-from . import wm_utils
-from . import wm_constants as wm_const
+from wafer_map import wm_legend
+from wafer_map import wm_utils
+from wafer_map import wm_constants as wm_const
 
 
 # Module-level TODO list.

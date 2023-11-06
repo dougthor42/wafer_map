@@ -2,23 +2,17 @@
 """
 Draws the wafer map legend.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 import colorsys
 from collections import OrderedDict
 
-# Third-Party
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
 
-# Package / Application
 from wafer_map import PY2
-from . import wm_utils
-from . import wm_constants as wm_const
+from wafer_map import wm_utils
+from wafer_map import wm_constants as wm_const
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
 

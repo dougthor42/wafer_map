@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=C0103
-#         C0103 = invalid variable name
 """
 Holds various utilities used by ``wafer_map``.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import numpy as np
 from colour import Color
 
-# Package/Application
 from wafer_map import PY2
 
 

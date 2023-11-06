@@ -5,19 +5,14 @@ Generate fake data for the wafer_map demo.
 Typically not used by anything but the example. It's also a pretty shitty
 peice of code so... ye be warned.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 import math
 import random
 
-# Package/Application
 from wafer_map import PY2
-from . import wm_info
-from . import wm_utils
-from . import wm_constants as wm_const
+from wafer_map import wm_info
+from wafer_map import wm_utils
+from wafer_map import wm_constants as wm_const
 
 
 # Python2 Compatibility

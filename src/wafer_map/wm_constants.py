@@ -2,20 +2,12 @@
 """
 Constants for the wafer_map package.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 from enum import Enum
 
-# Third-Party
 import wx
 
 
-# ---------------------------------------------------------------------------
-### Constants
-# ---------------------------------------------------------------------------
 # Colors
 wm_OOR_HIGH_COLOR = wx.Colour(255, 0, 128, 255)
 wm_OOR_LOW_COLOR = wx.Colour(255, 128, 0, 255)
