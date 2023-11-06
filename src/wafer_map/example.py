@@ -4,16 +4,10 @@ Provides examples on how to use the ``wafer_map`` package.
 
 This module is called when running ``python -m wafer_map``.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import wx
 
-# Package/Application
 from wafer_map import gen_fake_data
 from wafer_map import wm_core
 from wafer_map import wm_app
@@ -46,13 +40,14 @@ def standalone_app(xyd, wafer_info):
 
       [(grid_x_1, grid_y_1, data_1), (grid_x_2, grid_y_2, data_2), ..., ]
     """
-    wm_app.WaferMapApp(xyd,
-                       wafer_info.die_size,
-                       wafer_info.center_xy,
-                       wafer_info.dia,
-                       wafer_info.edge_excl,
-                       wafer_info.flat_excl,
-                       )
+    wm_app.WaferMapApp(
+        xyd,
+        wafer_info.die_size,
+        wafer_info.center_xy,
+        wafer_info.dia,
+        wafer_info.edge_excl,
+        wafer_info.flat_excl,
+    )
 
 
 def add_to_existing_app(xyd, wafer_info):
@@ -76,12 +71,13 @@ def add_to_existing_app(xyd, wafer_info):
         """Base Frame."""
 
         def __init__(self, title, xyd, wafer_info):
-            wx.Frame.__init__(self,
-                              None,                         # Window Parent
-                              wx.ID_ANY,                    # id
-                              title=title,                  # Window Title
-                              size=(600 + 16, 500 + 38),    # Size in px
-                              )
+            wx.Frame.__init__(
+                self,
+                None,  # Window Parent
+                wx.ID_ANY,  # id
+                title=title,  # Window Title
+                size=(600 + 16, 500 + 38),  # Size in px
+            )
             self.xyd = xyd
             self.wafer_info = wafer_info
 
@@ -92,18 +88,20 @@ def add_to_existing_app(xyd, wafer_info):
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
 
             # Create some other dummy stuff for the example
-            self.listbox = wx.ListBox(self,
-                                      wx.ID_ANY,
-                                      choices=['A', 'B', 'C', 'D'],
-                                      )
+            self.listbox = wx.ListBox(
+                self,
+                wx.ID_ANY,
+                choices=["A", "B", "C", "D"],
+            )
             self.button = wx.Button(self, wx.ID_ANY, label="Big Button!")
 
             # Create the wafer map
-            self.panel = wm_core.WaferMapPanel(self,
-                                               self.xyd,
-                                               self.wafer_info,
-                                               show_die_gridlines=False,
-                                               )
+            self.panel = wm_core.WaferMapPanel(
+                self,
+                self.xyd,
+                self.wafer_info,
+                show_die_gridlines=False,
+            )
 
             # set our layout
             self.hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -138,20 +136,20 @@ def discrete_data_example(xyd, wafer_info):
         The wafer information such as die size, diameter, etc.
     """
     import random
-    bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
-    discrete_xyd = [(_x, _y, random.choice(bins))
-                    for _x, _y, _
-                    in xyd]
 
-    wm_app.WaferMapApp(discrete_xyd,
-                       wafer_info.die_size,
-                       wafer_info.center_xy,
-                       wafer_info.dia,
-                       wafer_info.edge_excl,
-                       wafer_info.flat_excl,
-                       data_type=DataType.DISCRETE,
-                       show_die_gridlines=False,
-                       )
+    bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
+    discrete_xyd = [(_x, _y, random.choice(bins)) for _x, _y, _ in xyd]
+
+    wm_app.WaferMapApp(
+        discrete_xyd,
+        wafer_info.die_size,
+        wafer_info.center_xy,
+        wafer_info.dia,
+        wafer_info.edge_excl,
+        wafer_info.flat_excl,
+        data_type=DataType.DISCRETE,
+        show_die_gridlines=False,
+    )
 
 
 def main():
@@ -162,6 +160,7 @@ def main():
     standalone_app(xyd, wafer_info)
     add_to_existing_app(xyd, wafer_info)
     discrete_data_example(xyd, wafer_info)
+
 
 if __name__ == "__main__":
     main()

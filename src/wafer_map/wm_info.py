@@ -3,6 +3,7 @@
 The :class:`wafer_map.wm_info.WaferInfo` class.
 """
 
+
 class WaferInfo(object):
     """
     Contains the wafer information.
@@ -38,12 +39,13 @@ Grid Center XY: {}
 Edge Excl: {}
 Flat Excl: {}
 """
-        return string.format(self.dia,
-                             self.die_size,
-                             self.center_xy,
-                             self.edge_excl,
-                             self.flat_excl,
-                             )
+        return string.format(
+            self.dia,
+            self.die_size,
+            self.center_xy,
+            self.edge_excl,
+            self.flat_excl,
+        )
 
 
 def main():

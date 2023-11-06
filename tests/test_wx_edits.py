@@ -6,19 +6,13 @@ Created on Fri Mar 25 12:14:25 2016
 
 @author: dthor
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 import unittest
 
-# Third-Party
 import wx
 from wx.lib.floatcanvas import FloatCanvas
 
 
 class TestWxPython(unittest.TestCase):
-
     def setUp(cls):
         cls.app = wx.App()
 

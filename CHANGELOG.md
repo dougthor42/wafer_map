@@ -8,6 +8,7 @@ This document highlights high-level changes made to this program.
 + Migrated CI from Travis + GitLab + Appveyor CIs to Github.
 + Added `pre-commit` config.
 + Removed now-unnecessary `build_reqs` directory; moved tests to external package.
++ Formatted code with `black`.
 
 
 ## 1.1.2 / 2019-10-14

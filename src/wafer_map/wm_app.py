@@ -2,16 +2,10 @@
 """
 A self-contained Window for a Wafer Map.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import wx
 
-# Package / Application
 from . import wm_frame
 from . import wm_info
 from . import gen_fake_data
@@ -57,49 +51,52 @@ class WaferMapApp(object):
         ``True``.
     """
 
-    def __init__(self,
-                 xyd,
-                 die_size,
-                 center_xy=(0, 0),
-                 dia=150,
-                 edge_excl=5,
-                 flat_excl=5,
-                 data_type=wm_const.DataType.CONTINUOUS,
-                 high_color=wm_const.wm_HIGH_COLOR,
-                 low_color=wm_const.wm_LOW_COLOR,
-                 plot_range=None,
-                 plot_die_centers=False,
-                 show_die_gridlines=True,
-                 ):
+    def __init__(
+        self,
+        xyd,
+        die_size,
+        center_xy=(0, 0),
+        dia=150,
+        edge_excl=5,
+        flat_excl=5,
+        data_type=wm_const.DataType.CONTINUOUS,
+        high_color=wm_const.wm_HIGH_COLOR,
+        low_color=wm_const.wm_LOW_COLOR,
+        plot_range=None,
+        plot_die_centers=False,
+        show_die_gridlines=True,
+    ):
         self.app = wx.App()
 
-        self.wafer_info = wm_info.WaferInfo(die_size,
-                                            center_xy,
-                                            dia,
-                                            edge_excl,
-                                            flat_excl,
-                                            )
+        self.wafer_info = wm_info.WaferInfo(
+            die_size,
+            center_xy,
+            dia,
+            edge_excl,
+            flat_excl,
+        )
         self.xyd = xyd
         self.data_type = data_type
         self.high_color = high_color
         self.low_color = low_color
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
-        self.show_die_gridlines=show_die_gridlines
+        self.show_die_gridlines = show_die_gridlines
 
-        self.frame = wm_frame.WaferMapWindow("Wafer Map Phoenix",
-                                             self.xyd,
-                                             self.wafer_info,
-                                             data_type=self.data_type,
-                                             high_color=self.high_color,
-                                             low_color=self.low_color,
-#                                             high_color=wx.Colour(255, 0, 0),
-#                                             low_color=wx.Colour(0, 0, 255),
-                                             plot_range=self.plot_range,
-                                             size=(600, 500),
-                                             plot_die_centers=self.plot_die_centers,
-                                             show_die_gridlines=self.show_die_gridlines,
-                                             )
+        self.frame = wm_frame.WaferMapWindow(
+            "Wafer Map Phoenix",
+            self.xyd,
+            self.wafer_info,
+            data_type=self.data_type,
+            high_color=self.high_color,
+            low_color=self.low_color,
+            #  high_color=wx.Colour(255, 0, 0),
+            #  low_color=wx.Colour(0, 0, 255),
+            plot_range=self.plot_range,
+            size=(600, 500),
+            plot_die_centers=self.plot_die_centers,
+            show_die_gridlines=self.show_die_gridlines,
+        )
 
         self.frame.Show()
         self.app.MainLoop()
@@ -107,42 +104,42 @@ class WaferMapApp(object):
 
 def main():
     """Run when called as a module."""
-    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=5.43,
-                                                       die_y=6.3,
-                                                       dia=150,
-                                                       edge_excl=4.5,
-                                                       flat_excl=4.5,
-                                                       x_offset=0,
-                                                       y_offset=0.5,
-                                                       grid_center=(29, 21.5),
-                                                       )
+    wafer_info, xyd = gen_fake_data.generate_fake_data(
+        die_x=5.43,
+        die_y=6.3,
+        dia=150,
+        edge_excl=4.5,
+        flat_excl=4.5,
+        x_offset=0,
+        y_offset=0.5,
+        grid_center=(29, 21.5),
+    )
 
     import random
+
     bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
-    discrete_xyd = [(_x, _y, random.choice(bins))
-                    for _x, _y, _
-                    in xyd]
+    discrete_xyd = [(_x, _y, random.choice(bins)) for _x, _y, _ in xyd]
 
     discrete = False
     dtype = wm_const.DataType.CONTINUOUS
 
-#    discrete = True         # uncomment this line to use discrete data
+    #  discrete = True         # uncomment this line to use discrete data
     if discrete:
         xyd = discrete_xyd
         dtype = wm_const.DataType.DISCRETE
 
-    WaferMapApp(xyd,
-                wafer_info.die_size,
-                wafer_info.center_xy,
-                wafer_info.dia,
-                wafer_info.edge_excl,
-                wafer_info.flat_excl,
-                data_type=dtype,
-#                plot_range=(0.0, 75.0**2),
-                plot_die_centers=True,
-                )
+    WaferMapApp(
+        xyd,
+        wafer_info.die_size,
+        wafer_info.center_xy,
+        wafer_info.dia,
+        wafer_info.edge_excl,
+        wafer_info.flat_excl,
+        data_type=dtype,
+        #  plot_range=(0.0, 75.0**2),
+        plot_die_centers=True,
+    )
 
 
 if __name__ == "__main__":
     main()
-#    pass

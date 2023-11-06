@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=C0103
-#         C0103 = invalid variable name
 """
 Holds various utilities used by ``wafer_map``.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import numpy as np
 from colour import Color
 
-# Package/Application
 from wafer_map import PY2
 
 
@@ -191,11 +183,11 @@ def linear_gradient(initial_color, dest_color, value):
         return dest_color
 
     # Old way, linear averaging.
-#    r1, g1, b1 = (_c for _c in initial_color)
-#    r2, g2, b2 = (_c for _c in dest_color)
-#    r = int(rescale(value, (0, 1), (r1, r2)))
-#    g = int(rescale(value, (0, 1), (g1, g2)))
-#    b = int(rescale(value, (0, 1), (b1, b2)))
+    #  r1, g1, b1 = (_c for _c in initial_color)
+    #  r2, g2, b2 = (_c for _c in dest_color)
+    #  r = int(rescale(value, (0, 1), (r1, r2)))
+    #  g = int(rescale(value, (0, 1), (g1, g2)))
+    #  b = int(rescale(value, (0, 1), (b1, b2)))
 
     # Using the ``colour`` package
     # Convert 0-255 to 0-1, drop the 4th term, and instance the Color class
@@ -236,10 +228,10 @@ def polylinear_gradient(colors, value):
         return colors[0]
 
     # divide up our range into n - 1 segments, where n is the number of colors
-    l = 1 / (n - 1)     # float division
+    l = 1 / (n - 1)  # float division
 
     # figure out which segment we're in - determines start and end colors
-    m = int(value // l)      # Note floor division
+    m = int(value // l)  # Note floor division
 
     low = m * l
     high = (m + 1) * l
@@ -260,11 +252,12 @@ def beizer_gradient(initial_color, arc_color, dest_color, value):
     pass
 
 
-def _GradientFillLinear(rect,
-                        intial_color,
-                        dest_color,
-                        direction,
-                        ):
+def _GradientFillLinear(
+    rect,
+    intial_color,
+    dest_color,
+    direction,
+):
     """
     Reimplement the ``wxDCImpl::DoGradientFillLinear`` algorithm.
 
@@ -289,6 +282,8 @@ def _GradientFillLinear(rect,
     I'm an idiot! This is just linear algebra, I can solve this!
     """
     pass
+
+
 r"""
     void wxDCImpl::DoGradientFillLinear(const wxRect& rect,
                                         const wxColour& initialColour,
@@ -416,8 +411,8 @@ def coord_to_grid(coord, die_size, grid_center):
     (grid_x, grid_y) : tuple
         The grid coordinates. Also known as (column, row).
     """
-#    grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
-#    grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
+    #  grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
+    #  grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
     # Fixes #30, courtesy of GitHub user sinkra
     grid_x = int(round(grid_center[0] + (coord[0] / die_size[0])))
     grid_y = int(round(grid_center[1] - (coord[1] / die_size[1])))
@@ -488,13 +483,13 @@ def max_dist_sqrd(center, size):
         Calculates the distance from the orgin (0, 0) to the
         farthest corner of a rectangle.
     """
-    half_x = size[0]/2.
-    half_y = size[1]/2.
+    half_x = size[0] / 2.0
+    half_y = size[1] / 2.0
     if center[0] < 0:
         half_x = -half_x
     if center[1] < 0:
         half_y = -half_y
-    dist = (center[0] + half_x)**2 + (center[1] + half_y)**2
+    dist = (center[0] + half_x) ** 2 + (center[1] + half_y) ** 2
     return dist
 
 
@@ -541,7 +536,7 @@ def rescale(x, orig_scale, new_scale=(0, 1)):
     part_b = original_min * new_max - original_max * new_min
     denominator = original_max - original_min
     try:
-        result = (part_a - part_b)/denominator
+        result = (part_a - part_b) / denominator
     except ZeroDivisionError:
         result = 0
     return float(result)
@@ -575,6 +570,7 @@ def rescale_clip(x, orig_scale, new_scale=(0, 1)):
     else:
         return result
 
+
 if __name__ == "__main__":
     print("0 and 1")
     print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0))
@@ -589,12 +585,17 @@ if __name__ == "__main__":
     print(polylinear_gradient([(0, 0, 0), (255, 0, 0), (0, 255, 0)], 0.75))
 
     print("\n4 colors")
-    print(polylinear_gradient([(0, 0, 0),
-                               (255, 0, 0),
-                               (0, 255, 0),
-                               (0, 0, 255),
-                               ],
-                              0.5))
+    print(
+        polylinear_gradient(
+            [
+                (0, 0, 0),
+                (255, 0, 0),
+                (0, 255, 0),
+                (0, 0, 255),
+            ],
+            0.5,
+        )
+    )
 
     print("\nLinear Gradient, 0.5")
-    print(linear_gradient((0, 0, 0), (255, 255, 255), .5))
+    print(linear_gradient((0, 0, 0), (255, 255, 255), 0.5))

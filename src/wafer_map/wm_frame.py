@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=E1101
-#   E1101 = Module X has no Y member
 """
 This is the main window of the Wafer Map application.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import wx
 
-# Package / Application
 from . import wm_core
 from . import wm_constants as wm_const
 
@@ -58,24 +50,26 @@ class WaferMapWindow(wx.Frame):
         ``True``.
     """
 
-    def __init__(self,
-                 title,
-                 xyd,
-                 wafer_info,
-                 size=(800, 600),
-                 data_type=wm_const.DataType.CONTINUOUS,
-                 high_color=wm_const.wm_HIGH_COLOR,
-                 low_color=wm_const.wm_LOW_COLOR,
-                 plot_range=None,
-                 plot_die_centers=False,
-                 show_die_gridlines=True,
-                 ):
-        wx.Frame.__init__(self,
-                          None,
-                          wx.ID_ANY,
-                          title=title,
-                          size=size,
-                          )
+    def __init__(
+        self,
+        title,
+        xyd,
+        wafer_info,
+        size=(800, 600),
+        data_type=wm_const.DataType.CONTINUOUS,
+        high_color=wm_const.wm_HIGH_COLOR,
+        low_color=wm_const.wm_LOW_COLOR,
+        plot_range=None,
+        plot_die_centers=False,
+        show_die_gridlines=True,
+    ):
+        wx.Frame.__init__(
+            self,
+            None,
+            wx.ID_ANY,
+            title=title,
+            size=size,
+        )
         self.xyd = xyd
         self.wafer_info = wafer_info
         # backwards compatability
@@ -114,16 +108,17 @@ class WaferMapWindow(wx.Frame):
         if __name__ == "__main__":
             self.panel = None
         else:
-            self.panel = wm_core.WaferMapPanel(self,
-                                               self.xyd,
-                                               self.wafer_info,
-                                               data_type=self.data_type,
-                                               high_color=self.high_color,
-                                               low_color=self.low_color,
-                                               plot_range=self.plot_range,
-                                               plot_die_centers=self.plot_die_centers,
-                                               show_die_gridlines=self.show_die_gridlines,
-                                               )
+            self.panel = wm_core.WaferMapPanel(
+                self,
+                self.xyd,
+                self.wafer_info,
+                data_type=self.data_type,
+                high_color=self.high_color,
+                low_color=self.low_color,
+                plot_range=self.plot_range,
+                plot_die_centers=self.plot_die_centers,
+                show_die_gridlines=self.show_die_gridlines,
+            )
 
     # TODO: There's gotta be a more scalable way to make menu items
     #       and bind events... I'll run out of names if I have too many items.
@@ -139,84 +134,94 @@ class WaferMapWindow(wx.Frame):
     def _create_menu_items(self):
         """Create each item for each menu."""
         ### Menu: File (mf_) ###
-#        self.mf_new = wx.MenuItem(self.mfile,
-#                                  wx.ID_ANY,
-#                                  "&New\tCtrl+N",
-#                                  "TestItem")
-#        self.mf_open = wx.MenuItem(self.mfile,
-#                                   wx.ID_ANY,
-#                                   "&Open\tCtrl+O",
-#                                   "TestItem")
-        self.mf_close = wx.MenuItem(self.mfile,
-                                    wx.ID_ANY,
-                                    "&Close\tCtrl+Q",
-                                    "TestItem",
-                                    )
+        #  self.mf_new = wx.MenuItem(self.mfile,
+        #                            wx.ID_ANY,
+        #                            "&New\tCtrl+N",
+        #                            "TestItem")
+        #  self.mf_open = wx.MenuItem(self.mfile,
+        #                             wx.ID_ANY,
+        #                             "&Open\tCtrl+O",
+        #                             "TestItem")
+        self.mf_close = wx.MenuItem(
+            self.mfile,
+            wx.ID_ANY,
+            "&Close\tCtrl+Q",
+            "TestItem",
+        )
 
         ### Menu: Edit (me_) ###
-        self.me_redraw = wx.MenuItem(self.medit,
-                                     wx.ID_ANY,
-                                     "&Redraw",
-                                     "Force Redraw",
-                                     )
+        self.me_redraw = wx.MenuItem(
+            self.medit,
+            wx.ID_ANY,
+            "&Redraw",
+            "Force Redraw",
+        )
 
         ### Menu: View (mv_) ###
-        self.mv_zoomfit = wx.MenuItem(self.mview,
-                                      wx.ID_ANY,
-                                      "Zoom &Fit\tHome",
-                                      "Zoom to fit",
-                                      )
-        self.mv_crosshairs = wx.MenuItem(self.mview,
-                                         wx.ID_ANY,
-                                         "Crosshairs\tC",
-                                         "Show or hide the crosshairs",
-                                         wx.ITEM_CHECK,
-                                         )
-        self.mv_outline = wx.MenuItem(self.mview,
-                                      wx.ID_ANY,
-                                      "Wafer Outline\tO",
-                                      "Show or hide the wafer outline",
-                                      wx.ITEM_CHECK,
-                                      )
-        self.mv_diecenters = wx.MenuItem(self.mview,
-                                      wx.ID_ANY,
-                                      "Die Centers\tD",
-                                      "Show or hide the die centers",
-                                      wx.ITEM_CHECK,
-                                      )
-        self.mv_legend = wx.MenuItem(self.mview,
-                                     wx.ID_ANY,
-                                     "Legend\tL",
-                                     "Show or hide the legend",
-                                     wx.ITEM_CHECK,
-                                     )
+        self.mv_zoomfit = wx.MenuItem(
+            self.mview,
+            wx.ID_ANY,
+            "Zoom &Fit\tHome",
+            "Zoom to fit",
+        )
+        self.mv_crosshairs = wx.MenuItem(
+            self.mview,
+            wx.ID_ANY,
+            "Crosshairs\tC",
+            "Show or hide the crosshairs",
+            wx.ITEM_CHECK,
+        )
+        self.mv_outline = wx.MenuItem(
+            self.mview,
+            wx.ID_ANY,
+            "Wafer Outline\tO",
+            "Show or hide the wafer outline",
+            wx.ITEM_CHECK,
+        )
+        self.mv_diecenters = wx.MenuItem(
+            self.mview,
+            wx.ID_ANY,
+            "Die Centers\tD",
+            "Show or hide the die centers",
+            wx.ITEM_CHECK,
+        )
+        self.mv_legend = wx.MenuItem(
+            self.mview,
+            wx.ID_ANY,
+            "Legend\tL",
+            "Show or hide the legend",
+            wx.ITEM_CHECK,
+        )
 
         # Menu: Options (mo_) ###
-        self.mo_test = wx.MenuItem(self.mopts,
-                                   wx.ID_ANY,
-                                   "&Test",
-                                   "Nothing",
-                                   )
-        self.mo_high_color = wx.MenuItem(self.mopts,
-                                         wx.ID_ANY,
-                                         "Set &High Color",
-                                         "Choose the color for high values",
-                                         )
-        self.mo_low_color = wx.MenuItem(self.mopts,
-                                        wx.ID_ANY,
-                                        "Set &Low Color",
-                                        "Choose the color for low values",
-                                        )
+        self.mo_test = wx.MenuItem(
+            self.mopts,
+            wx.ID_ANY,
+            "&Test",
+            "Nothing",
+        )
+        self.mo_high_color = wx.MenuItem(
+            self.mopts,
+            wx.ID_ANY,
+            "Set &High Color",
+            "Choose the color for high values",
+        )
+        self.mo_low_color = wx.MenuItem(
+            self.mopts,
+            wx.ID_ANY,
+            "Set &Low Color",
+            "Choose the color for low values",
+        )
 
     def _add_menu_items(self):
         """Append MenuItems to each menu."""
-#        self.mfile.Append(self.mf_new)
-#        self.mfile.Append(self.mf_open)
+        #  self.mfile.Append(self.mf_new)
+        #  self.mfile.Append(self.mf_open)
         self.mfile.Append(self.mf_close)
 
         self.medit.Append(self.me_redraw)
-#        self.medit.Append(self.me_test1)
-#        self.medit.Append(self.me_test2)
+        #  self.medit.Append(self.me_test1)
+        #  self.medit.Append(self.me_test2)
 
         self.mview.Append(self.mv_zoomfit)
         self.mview.AppendSeparator()
@@ -249,8 +254,8 @@ class WaferMapWindow(wx.Frame):
 
         # If I define an ID to the menu item, then I can use that instead of
         #   and event source:
-        #self.mo_test = wx.MenuItem(self.mopts, 402, "&Test", "Nothing")
-        #self.Bind(wx.EVT_MENU, self.on_zoom_fit, id=402)
+        # self.mo_test = wx.MenuItem(self.mopts, 402, "&Test", "Nothing")
+        # self.Bind(wx.EVT_MENU, self.on_zoom_fit, id=402)
 
     def on_quit(self, event):
         """Action for the quit event."""
@@ -295,7 +300,7 @@ class WaferMapWindow(wx.Frame):
         if cd.ShowModal() == wx.ID_OK:
             new_color = cd.GetColourData().Colour
             print("The color {} was chosen!".format(new_color))
-            self.panel.on_color_change({'high': new_color, 'low': None})
+            self.panel.on_color_change({"high": new_color, "low": None})
             self.panel.Refresh()
         else:
             print("no color chosen :-(")
@@ -311,7 +316,7 @@ class WaferMapWindow(wx.Frame):
         if cd.ShowModal() == wx.ID_OK:
             new_color = cd.GetColourData().Colour
             print("The color {} was chosen!".format(new_color))
-            self.panel.on_color_change({'high': None, 'low': new_color})
+            self.panel.on_color_change({"high": None, "low": new_color})
             self.panel.Refresh()
         else:
             print("no color chosen :-(")
@@ -324,6 +329,7 @@ def main():
     frame = WaferMapWindow("Testing", [], None)
     frame.Show()
     app.MainLoop()
+
 
 if __name__ == "__main__":
     main()
