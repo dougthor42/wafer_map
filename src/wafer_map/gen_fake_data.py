@@ -5,11 +5,6 @@ Generate fake data for the wafer_map demo.
 Typically not used by anything but the example. It's also a pretty shitty
 peice of code so... ye be warned.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import math
 import random
 
