@@ -4,13 +4,16 @@ Provides examples on how to use the ``wafer_map`` package.
 
 This module is called when running ``python -m wafer_map``.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import wx
 
 from wafer_map import gen_fake_data
-from wafer_map import wm_core
 from wafer_map import wm_app
+from wafer_map import wm_core
 from wafer_map.wm_constants import DataType
 
 

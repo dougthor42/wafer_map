@@ -2,17 +2,21 @@
 """
 The core of ``wafer_map``.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import math
 
 import numpy as np
 import wx
-from wx.lib.floatcanvas import FloatCanvas
 import wx.lib.colourselect as csel
+from wx.lib.floatcanvas import FloatCanvas
 
+from wafer_map import wm_constants as wm_const
 from wafer_map import wm_legend
 from wafer_map import wm_utils
-from wafer_map import wm_constants as wm_const
 
 
 # Module-level TODO list.
