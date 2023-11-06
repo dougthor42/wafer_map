@@ -368,12 +368,18 @@ class WaferMapPanel(wx.Panel):
             D:      Toggle die centers
         """
         # TODO: Decide if I want to move this to a class attribute
-        keycodes = {wx.WXK_HOME: self.zoom_fill,      # "Home
-                    79: self.toggle_outline,          # "O"
-                    67: self.toggle_crosshairs,       # "C"
-                    76: self.toggle_legend,           # "L"
-                    68: self.toggle_die_centers,      # "D"
-                    }
+        keycodes = {
+            # Home
+            wx.WXK_HOME: self.zoom_fill,
+            # "O"
+            79: self.toggle_outline,
+            # "C"
+            67: self.toggle_crosshairs,
+            # "L"
+            76: self.toggle_legend,
+            # "D"
+            68: self.toggle_die_centers,
+        }
 
         #  print("panel event!")
         key = event.GetKeyCode()
@@ -525,7 +531,7 @@ class WaferMapPanel(wx.Panel):
         if self.start_move_loc is not None:
             self.end_move_loc = np.array(event.GetPosition())
             self.diff_loc = self.mid_move_loc - self.end_move_loc
-            self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
+            self.canvas.MoveImage(self.diff_loc, "Pixel", ReDraw=True)
 
         # change the cursor back to normal
         self.SetCursor(wx.Cursor(wx.CURSOR_ARROW))

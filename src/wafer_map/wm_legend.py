@@ -118,6 +118,7 @@ class ContinuousLegend(wx.Panel):
         # These get set in set_sizes(), but are here to remind me that
         # the instance attribute exists and what they are.
         # Values are in px.
+        # fmt: off
         self.text_h = None          # text height
         self.text_w = None          # Length of longest tick label
         self.grad_w = None          # gradient width
@@ -131,6 +132,7 @@ class ContinuousLegend(wx.Panel):
         self.tick_start_x = None    # tick label left pixel coord
         self.dc_w = None            # total bitmap width
         self.dc_h = None            # total bitmap height
+        # fmt: on
 
         ### Other Instance Attributes #######################################
         self.ticks = None
@@ -196,9 +198,7 @@ class ContinuousLegend(wx.Panel):
                 #  color = self.mdc.GetPixelPoint(point)
 
                 # New Method
-                pxl = wm_utils.rescale(value,
-                                       self.plot_range,
-                                       (0, 1))
+                pxl = wm_utils.rescale(value, self.plot_range, (0, 1))
                 color = self.gradient.get_color(pxl)
                 color = wx.Colour(*color)
             except ValueError:
@@ -406,12 +406,11 @@ class ContinuousLegend(wx.Panel):
 
         This is done by updating self.gradient and calling self.draw_scale()
         """
-        if event['low'] is not None:
-            self.low_color = event['low']
-        if event['high'] is not None:
-            self.high_color = event['high']
-        self.gradient = wm_utils.LinearGradient(self.low_color,
-                                                self.high_color)
+        if event["low"] is not None:
+            self.low_color = event["low"]
+        if event["high"] is not None:
+            self.high_color = event["high"]
+        self.gradient = wm_utils.LinearGradient(self.low_color, self.high_color)
 
         #  self._clear_scale()
         self.hbox.Remove(0)
@@ -455,18 +454,19 @@ class ContinuousLegend(wx.Panel):
         """Used for debugging."""
         print("Right-click - color from get_color()")
         pos = event.GetPosition()
-        w, h = self.mdc.GetSize()       # change to gradient area
+        w, h = self.mdc.GetSize()  # change to gradient area
         if pos[0] < w and pos[1] < h:
-            val = wm_utils.rescale(pos[1],
-                                   (self.grad_start_y, self.grad_end_y - 1),
-                                   reversed(self.plot_range))
+            val = wm_utils.rescale(
+                pos[1],
+                (self.grad_start_y, self.grad_end_y - 1),
+                reversed(self.plot_range),
+            )
             a = self.get_color(val)
             print("{}\t{}\t{}".format(pos, a, val))
 
     def on_mouse_wheel(self, event):
         print("mouse wheel!")
         #  self.on_mouse_left_down(event)
-
 
 
 class DiscreteLegend(wx.Panel):

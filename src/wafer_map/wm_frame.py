@@ -142,11 +142,12 @@ class WaferMapWindow(wx.Frame):
         #                             wx.ID_ANY,
         #                             "&Open\tCtrl+O",
         #                             "TestItem")
-        self.mf_close = wx.MenuItem(self.mfile,
-                                    wx.ID_ANY,
-                                    "&Close\tCtrl+Q",
-                                    "TestItem",
-                                    )
+        self.mf_close = wx.MenuItem(
+            self.mfile,
+            wx.ID_ANY,
+            "&Close\tCtrl+Q",
+            "TestItem",
+        )
 
         ### Menu: Edit (me_) ###
         self.me_redraw = wx.MenuItem(

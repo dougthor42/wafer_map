@@ -81,21 +81,22 @@ class WaferMapApp(object):
         self.low_color = low_color
         self.plot_range = plot_range
         self.plot_die_centers = plot_die_centers
-        self.show_die_gridlines=show_die_gridlines
+        self.show_die_gridlines = show_die_gridlines
 
-        self.frame = wm_frame.WaferMapWindow("Wafer Map Phoenix",
-                                             self.xyd,
-                                             self.wafer_info,
-                                             data_type=self.data_type,
-                                             high_color=self.high_color,
-                                             low_color=self.low_color,
-                                             #  high_color=wx.Colour(255, 0, 0),
-                                             #  low_color=wx.Colour(0, 0, 255),
-                                             plot_range=self.plot_range,
-                                             size=(600, 500),
-                                             plot_die_centers=self.plot_die_centers,
-                                             show_die_gridlines=self.show_die_gridlines,
-                                             )
+        self.frame = wm_frame.WaferMapWindow(
+            "Wafer Map Phoenix",
+            self.xyd,
+            self.wafer_info,
+            data_type=self.data_type,
+            high_color=self.high_color,
+            low_color=self.low_color,
+            #  high_color=wx.Colour(255, 0, 0),
+            #  low_color=wx.Colour(0, 0, 255),
+            plot_range=self.plot_range,
+            size=(600, 500),
+            plot_die_centers=self.plot_die_centers,
+            show_die_gridlines=self.show_die_gridlines,
+        )
 
         self.frame.Show()
         self.app.MainLoop()
@@ -127,16 +128,17 @@ def main():
         xyd = discrete_xyd
         dtype = wm_const.DataType.DISCRETE
 
-    WaferMapApp(xyd,
-                wafer_info.die_size,
-                wafer_info.center_xy,
-                wafer_info.dia,
-                wafer_info.edge_excl,
-                wafer_info.flat_excl,
-                data_type=dtype,
-                #  plot_range=(0.0, 75.0**2),
-                plot_die_centers=True,
-                )
+    WaferMapApp(
+        xyd,
+        wafer_info.die_size,
+        wafer_info.center_xy,
+        wafer_info.dia,
+        wafer_info.edge_excl,
+        wafer_info.flat_excl,
+        data_type=dtype,
+        #  plot_range=(0.0, 75.0**2),
+        plot_die_centers=True,
+    )
 
 
 if __name__ == "__main__":

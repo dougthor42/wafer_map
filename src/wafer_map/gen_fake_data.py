@@ -165,33 +165,38 @@ def generate_fake_data(**kwargs):
             center_rad_sqrd = coord_die_center_x**2 + coord_die_center_y**2
             die_max_sqrd = wm_utils.max_dist_sqrd(coord_die_center, die_size)
             #  coord_lower_left_x = coord_die_center_x - die_x/2
-            coord_lower_left_y = coord_die_center_y - die_y/2
+            coord_lower_left_y = coord_die_center_y - die_y / 2
             #  coord_lower_left = (coord_lower_left_x, coord_lower_left_y)
-            if (die_max_sqrd > excl_sqrd
-                    or coord_lower_left_y < (flat_y + flat_excl)):
+            if die_max_sqrd > excl_sqrd or coord_lower_left_y < (flat_y + flat_excl):
                 continue
             else:
-                if dtype == 'discrete':
-                    grid_points.append((_x,
-                                        _y,
-                                        random.choice(['a', 'b', 'c']),
-                                        # these items are for debug.
-                                        #  coord_lower_left,
-                                        #  center_rad_sqrd,
-                                        #  coord_die_center,
-                                        #  die_max_sqrd,
-                                        ))
+                if dtype == "discrete":
+                    grid_points.append(
+                        (
+                            _x,
+                            _y,
+                            random.choice(["a", "b", "c"]),
+                            # these items are for debug.
+                            #  coord_lower_left,
+                            #  center_rad_sqrd,
+                            #  coord_die_center,
+                            #  die_max_sqrd,
+                        )
+                    )
 
                 else:
-                    grid_points.append((_x,
-                                        _y,
-                                        center_rad_sqrd,
-                                        # these items are for debug.
-                                        #  coord_lower_left,
-                                        #  center_rad_sqrd,
-                                        #  coord_die_center,
-                                        #  die_max_sqrd,
-                                        ))
+                    grid_points.append(
+                        (
+                            _x,
+                            _y,
+                            center_rad_sqrd,
+                            # these items are for debug.
+                            #  coord_lower_left,
+                            #  center_rad_sqrd,
+                            #  coord_die_center,
+                            #  die_max_sqrd,
+                        )
+                    )
 
     print("\nPlotting {} die.".format(len(grid_points)))
 
