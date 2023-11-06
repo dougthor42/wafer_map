@@ -183,11 +183,11 @@ def linear_gradient(initial_color, dest_color, value):
         return dest_color
 
     # Old way, linear averaging.
-#    r1, g1, b1 = (_c for _c in initial_color)
-#    r2, g2, b2 = (_c for _c in dest_color)
-#    r = int(rescale(value, (0, 1), (r1, r2)))
-#    g = int(rescale(value, (0, 1), (g1, g2)))
-#    b = int(rescale(value, (0, 1), (b1, b2)))
+    #  r1, g1, b1 = (_c for _c in initial_color)
+    #  r2, g2, b2 = (_c for _c in dest_color)
+    #  r = int(rescale(value, (0, 1), (r1, r2)))
+    #  g = int(rescale(value, (0, 1), (g1, g2)))
+    #  b = int(rescale(value, (0, 1), (b1, b2)))
 
     # Using the ``colour`` package
     # Convert 0-255 to 0-1, drop the 4th term, and instance the Color class
@@ -411,8 +411,8 @@ def coord_to_grid(coord, die_size, grid_center):
     (grid_x, grid_y) : tuple
         The grid coordinates. Also known as (column, row).
     """
-#    grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
-#    grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
+    #  grid_x = int(grid_center[0] + 0.5 + (coord[0] / die_size[0]))
+    #  grid_y = int(grid_center[1] + 0.5 - (coord[1] / die_size[1]))
     # Fixes #30, courtesy of GitHub user sinkra
     grid_x = int(round(grid_center[0] + (coord[0] / die_size[0])))
     grid_y = int(round(grid_center[1] - (coord[1] / die_size[1])))

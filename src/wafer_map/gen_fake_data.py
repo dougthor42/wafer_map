@@ -164,9 +164,9 @@ def generate_fake_data(**kwargs):
             coord_die_center = (coord_die_center_x, coord_die_center_y)
             center_rad_sqrd = coord_die_center_x**2 + coord_die_center_y**2
             die_max_sqrd = wm_utils.max_dist_sqrd(coord_die_center, die_size)
-#            coord_lower_left_x = coord_die_center_x - die_x/2
+            #  coord_lower_left_x = coord_die_center_x - die_x/2
             coord_lower_left_y = coord_die_center_y - die_y/2
-#            coord_lower_left = (coord_lower_left_x, coord_lower_left_y)
+            #  coord_lower_left = (coord_lower_left_x, coord_lower_left_y)
             if (die_max_sqrd > excl_sqrd
                     or coord_lower_left_y < (flat_y + flat_excl)):
                 continue
@@ -176,10 +176,10 @@ def generate_fake_data(**kwargs):
                                         _y,
                                         random.choice(['a', 'b', 'c']),
                                         # these items are for debug.
-#                                        coord_lower_left,
-#                                        center_rad_sqrd,
-#                                        coord_die_center,
-#                                        die_max_sqrd,
+                                        #  coord_lower_left,
+                                        #  center_rad_sqrd,
+                                        #  coord_die_center,
+                                        #  die_max_sqrd,
                                         ))
 
                 else:
@@ -187,10 +187,10 @@ def generate_fake_data(**kwargs):
                                         _y,
                                         center_rad_sqrd,
                                         # these items are for debug.
-#                                        coord_lower_left,
-#                                        center_rad_sqrd,
-#                                        coord_die_center,
-#                                        die_max_sqrd,
+                                        #  coord_lower_left,
+                                        #  center_rad_sqrd,
+                                        #  coord_die_center,
+                                        #  die_max_sqrd,
                                         ))
 
     print("\nPlotting {} die.".format(len(grid_points)))
@@ -214,10 +214,8 @@ def main():
     from pprint import pprint
 
     pprint(data)
-
-
-#    print()
-#    pprint([_i for _i in data if _i[0] in (17, 18, 19)])
+    #  print()
+    #  pprint([_i for _i in data if _i[0] in (17, 18, 19)])
 
 
 if __name__ == "__main__":
