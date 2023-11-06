@@ -3,9 +3,11 @@ This document highlights high-level changes made to this program.
 
 
 ## Unreleased
++ Modernization: Switch from `setup.py` to `pyproject.toml`; drop support for Python
+  3.7 and below; move to `src` dir.
 
 
-## 1.1.2 / 201910-14
+## 1.1.2 / 2019-10-14
 + Fix x-position of gridlines (#38)
 + The die center dots can now be toggled on and off. (#82)
 
