@@ -14,10 +14,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import wx
 
 # Package/Application
-from . import gen_fake_data
-from . import wm_core
-from . import wm_app
-from .wm_constants import DataType
+from wafer_map import gen_fake_data
+from wafer_map import wm_core
+from wafer_map import wm_app
+from wafer_map.wm_constants import DataType
 
 
 __author__ = "Douglas Thor"
