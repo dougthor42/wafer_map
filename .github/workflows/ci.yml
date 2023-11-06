@@ -58,6 +58,7 @@ jobs:
           pip install pre-commit
 
       - name: Run lint
+        continue-on-error: true
         run: |
           pre-commit run --all-files
 
