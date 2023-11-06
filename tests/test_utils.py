@@ -2,14 +2,9 @@
 """
 Unittests for the :module:`wafer_map.utils` module.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 import unittest
 
-# Package/Application
 from wafer_map import wm_utils as utils
 
 

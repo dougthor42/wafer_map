@@ -151,7 +151,7 @@ class ContinuousLegend(wx.Panel):
         self.set_sizes()
 
         # Create EmptyBitmap in our MemoryDC where we'll do all our drawing.
-#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        #  self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
         self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         # Draw the entire thing
@@ -161,10 +161,6 @@ class ContinuousLegend(wx.Panel):
         self._bind_events()
 
         self._init_ui()
-
-    ### #--------------------------------------------------------------------
-    ### Methods
-    ### #--------------------------------------------------------------------
 
     def _init_ui(self):
         """Add a Sizer that is the same size as the MemoryDC."""
@@ -176,9 +172,9 @@ class ContinuousLegend(wx.Panel):
         """Bind events to various event handlers."""
         self.Bind(wx.EVT_PAINT, self._on_paint)
         self.Bind(wx.EVT_SIZE, self._on_size)
-#        self.Bind(wx.EVT_MOTION, self.on_mouse_move)
-#        self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
-#        self.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
+        #  self.Bind(wx.EVT_MOTION, self.on_mouse_move)
+        #  self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+        #  self.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
 
     def get_color(self, value):
         """Get a color from the gradient."""
@@ -190,14 +186,14 @@ class ContinuousLegend(wx.Panel):
             color = self.oor_low_color
         else:
             try:
-#                pxl = int(wm_utils.rescale(value,
-#                                           self.plot_range,
-#                                           (self.grad_end_y - 1,
-#                                            self.grad_start_y)))
-#
-#                x_pt = self.grad_w // 2 + self.grad_start_x
-#                point = (x_pt, pxl)
-#                color = self.mdc.GetPixelPoint(point)
+                #  pxl = int(wm_utils.rescale(value,
+                #                             self.plot_range,
+                #                             (self.grad_end_y - 1,
+                #                              self.grad_start_y)))
+                #
+                #  x_pt = self.grad_w // 2 + self.grad_start_x
+                #  point = (x_pt, pxl)
+                #  color = self.mdc.GetPixelPoint(point)
 
                 # New Method
                 pxl = wm_utils.rescale(value,
@@ -344,12 +340,12 @@ class ContinuousLegend(wx.Panel):
 
     def draw_gradient(self):
         """Draw the Gradient, painted from North (high) to South (low)."""
-#        self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
-#                                     self.grad_w, self.grad_h),
-#                                    self.high_color,
-#                                    self.low_color,
-#                                    wx.SOUTH,
-#                                    )
+        #  self.mdc.GradientFillLinear((self.grad_start_x, self.grad_start_y,
+        #                               self.grad_w, self.grad_h),
+        #                              self.high_color,
+        #                              self.low_color,
+        #                              wx.SOUTH,
+        #                              )
 
         # Remake of the wx.DC.GradientFillLinear wx core function, but uses
         # my own algorithm for determining the colors.
@@ -394,7 +390,7 @@ class ContinuousLegend(wx.Panel):
         self.set_sizes()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        #  self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
         self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
         self.draw_scale()
         self.Refresh()
@@ -417,10 +413,10 @@ class ContinuousLegend(wx.Panel):
         self.gradient = wm_utils.LinearGradient(self.low_color,
                                                 self.high_color)
 
-#        self._clear_scale()
+        #  self._clear_scale()
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        #  self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
         self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         self.draw_scale()
@@ -431,7 +427,7 @@ class ContinuousLegend(wx.Panel):
 
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
-#        self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
+        #  self.mdc.SelectObject(wx.EmptyBitmap(self.dc_w, self.dc_h))
         self.mdc.SelectObject(wx.Bitmap(self.dc_w, self.dc_h))
 
         self.draw_scale()
@@ -469,7 +465,7 @@ class ContinuousLegend(wx.Panel):
 
     def on_mouse_wheel(self, event):
         print("mouse wheel!")
-#        self.on_mouse_left_down(event)
+        #  self.on_mouse_left_down(event)
 
 
 
@@ -579,7 +575,7 @@ class DiscreteLegend(wx.Panel):
 
     def on_color_pick(self, event):
         """Recreate the {label: color} dict and send to the parent."""
-#        print(event.GetId())
+        #  print(event.GetId())
         self.colors[event.GetId()] = event.GetValue().Get()
         self.create_color_dict()
         # Send the event to the parent:
@@ -636,7 +632,7 @@ class LegendOverlay(FloatCanvas.Text):
 def main():
     """Display the Legend when module is run directly."""
     legend_labels = ["A", "Banana!", "C", "Donut", "E"]
-#    legend_labels = [str(_i) for _i in range(10)]
+    #  legend_labels = [str(_i) for _i in range(10)]
 
     legend_colors = None
 

@@ -2,16 +2,10 @@
 """
 This is the main window of the Wafer Map application.
 """
-# ---------------------------------------------------------------------------
-### Imports
-# ---------------------------------------------------------------------------
-# Standard Library
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Third-Party
 import wx
 
-# Package / Application
 from . import wm_core
 from . import wm_constants as wm_const
 
@@ -140,14 +134,14 @@ class WaferMapWindow(wx.Frame):
     def _create_menu_items(self):
         """Create each item for each menu."""
         ### Menu: File (mf_) ###
-#        self.mf_new = wx.MenuItem(self.mfile,
-#                                  wx.ID_ANY,
-#                                  "&New\tCtrl+N",
-#                                  "TestItem")
-#        self.mf_open = wx.MenuItem(self.mfile,
-#                                   wx.ID_ANY,
-#                                   "&Open\tCtrl+O",
-#                                   "TestItem")
+        #  self.mf_new = wx.MenuItem(self.mfile,
+        #                            wx.ID_ANY,
+        #                            "&New\tCtrl+N",
+        #                            "TestItem")
+        #  self.mf_open = wx.MenuItem(self.mfile,
+        #                             wx.ID_ANY,
+        #                             "&Open\tCtrl+O",
+        #                             "TestItem")
         self.mf_close = wx.MenuItem(self.mfile,
                                     wx.ID_ANY,
                                     "&Close\tCtrl+Q",
@@ -220,13 +214,13 @@ class WaferMapWindow(wx.Frame):
 
     def _add_menu_items(self):
         """Append MenuItems to each menu."""
-#        self.mfile.Append(self.mf_new)
-#        self.mfile.Append(self.mf_open)
+        #  self.mfile.Append(self.mf_new)
+        #  self.mfile.Append(self.mf_open)
         self.mfile.Append(self.mf_close)
 
         self.medit.Append(self.me_redraw)
-#        self.medit.Append(self.me_test1)
-#        self.medit.Append(self.me_test2)
+        #  self.medit.Append(self.me_test1)
+        #  self.medit.Append(self.me_test2)
 
         self.mview.Append(self.mv_zoomfit)
         self.mview.AppendSeparator()

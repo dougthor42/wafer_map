@@ -173,13 +173,13 @@ class WaferMapPanel(wx.Panel):
         #      parent panel or application can't set focus to this
         #      panel, which prevents the EVT_MOUSEWHEEL event from firing
         #      properly.
-#        self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
-#        self.canvas.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
-#        self.canvas.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
-#        self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
+        #  self.canvas.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
+        #  self.canvas.Bind(wx.EVT_RIGHT_DOWN, self.on_mouse_right_down)
+        #  self.canvas.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
+        #  self.canvas.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
         # This is supposed to fix flicker on mouse move, but it doesn't work.
-#        self.Bind(wx.EVT_ERASE_BACKGROUND, None)
+        #  self.Bind(wx.EVT_ERASE_BACKGROUND, None)
 
         # Panel Events
         self.Bind(csel.EVT_COLOURSELECT, self.on_color_change)
@@ -375,13 +375,13 @@ class WaferMapPanel(wx.Panel):
                     68: self.toggle_die_centers,      # "D"
                     }
 
-#        print("panel event!")
+        #  print("panel event!")
         key = event.GetKeyCode()
 
         if key in keycodes.keys():
             keycodes[key]()
         else:
-#            print("KeyCode: {}".format(key))
+            #  print("KeyCode: {}".format(key))
             pass
 
     def _on_first_paint(self, event):
@@ -404,8 +404,8 @@ class WaferMapPanel(wx.Panel):
             self.canvas.AddObject(self.die_centers)
         self.draw_wafer_objects()
         self.canvas.Draw(True)
-#        self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
-#        self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.on_mouse_wheel)
+        #  self.canvas.Unbind(FloatCanvas.EVT_MOUSEWHEEL)
+        #  self.canvas.Bind(FloatCanvas.EVT_MOUSEWHEEL, self.on_mouse_wheel)
 
     def on_move_timer(self, event=None):
         """
@@ -413,7 +413,7 @@ class WaferMapPanel(wx.Panel):
 
         This is needed to prevent buffers from being rebuilt too often.
         """
-#        self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
+        #  self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
         self.canvas.Draw()
 
     def on_mouse_wheel(self, event):
@@ -532,11 +532,11 @@ class WaferMapPanel(wx.Panel):
 
     def on_mouse_left_down(self, event):
         """Start making the zoom-to-box box."""
-#        print("Left mouse down!")
-#        pcoord = event.GetPosition()
-#        wcoord = self.canvas.PixelToWorld(pcoord)
-#        string = "Pixel Coord = {}    \tWorld Coord = {}"
-#        print(string.format(pcoord, wcoord))
+        #  print("Left mouse down!")
+        #  pcoord = event.GetPosition()
+        #  wcoord = self.canvas.PixelToWorld(pcoord)
+        #  string = "Pixel Coord = {}    \tWorld Coord = {}"
+        #  print(string.format(pcoord, wcoord))
         # TODO: Look into what I was doing here. Why no 'self' on parent?
         parent = wx.GetTopLevelParent(self)
         wx.PostEvent(self.parent, event)
@@ -552,11 +552,6 @@ class WaferMapPanel(wx.Panel):
     def on_mouse_right_up(self, event):
         """Stop making the zoom-out box and execute the zoom."""
         print("Right mouse up!")
-
-
-# ---------------------------------------------------------------------------
-### Module Functions
-# ---------------------------------------------------------------------------
 
 
 def xyd_to_dict(xyd_list):
