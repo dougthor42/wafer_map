@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import unittest
 
 # Package/Application
-from .. import wm_utils as utils
+from wafer_map import wm_utils as utils
 
 
 class LinearGradient(unittest.TestCase):
