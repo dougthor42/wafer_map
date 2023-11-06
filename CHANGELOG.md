@@ -7,6 +7,7 @@ This document highlights high-level changes made to this program.
   3.7 and below; move to `src` dir.
 + Migrated CI from Travis + GitLab + Appveyor CIs to Github.
 + Added `pre-commit` config.
++ Removed now-unnecessary `build_reqs` directory; moved tests to external package.
 
 
 ## 1.1.2 / 2019-10-14
