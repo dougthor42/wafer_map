@@ -5,6 +5,7 @@ This document highlights high-level changes made to this program.
 ## Unreleased
 + Modernization: Switch from `setup.py` to `pyproject.toml`; drop support for Python
   3.7 and below; move to `src` dir.
++ Migrated CI from Travis + GitLab + Appveyor CIs to Github.
 
 
 ## 1.1.2 / 2019-10-14

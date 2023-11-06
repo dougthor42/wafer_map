@@ -1,0 +1,78 @@
+---
+name: CI
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  tests:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        allowed-to-fail: [false]
+        include:
+          - python-version: "3.12"
+            allowed-to-fail: true
+    name: "Build and Test: Python ${{ matrix.python-version }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: "Set up Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ matrix.python-version }}"
+
+      - name: Install dependencies
+        continue-on-error: ${{ matrix.allowed-to-fail }}
+        run: |
+          pip install -e .[dev]
+
+      - name: Run tests
+        continue-on-error: ${{ matrix.allowed-to-fail }}
+        run: |
+          pytest
+
+  lint:
+    # TODO: DRY this with tests job
+    name: "Lint"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: "Set up Python 3.8"
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies
+        run: |
+          pip install pre-commit
+
+      - name: Run lint
+        run: |
+          pre-commit run --all-files
+
+  # A summary of all jobs and their result.
+  # This is the only job that's required to pass (as set by branch protection
+  # rules in repo settings) so that we don't have to update those rules when
+  # a new job is added.
+  check-all-jobs:
+    if: always()
+    needs:
+      - tests
+      # - lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check status of all jobs.
+        uses: re-actors/alls-green@v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
