@@ -98,15 +98,16 @@ class ContinuousLegend(wx.Panel):
     6.  Profit.
     """
 
-    def __init__(self,
-                 parent,
-                 plot_range,
-                 high_color=wm_const.wm_HIGH_COLOR,
-                 low_color=wm_const.wm_LOW_COLOR,
-                 num_ticks=wm_const.wm_TICK_COUNT,
-                 oor_high_color=wm_const.wm_OOR_HIGH_COLOR,
-                 oor_low_color=wm_const.wm_OOR_LOW_COLOR,
-                 ):
+    def __init__(
+        self,
+        parent,
+        plot_range,
+        high_color=wm_const.wm_HIGH_COLOR,
+        low_color=wm_const.wm_LOW_COLOR,
+        num_ticks=wm_const.wm_TICK_COUNT,
+        oor_high_color=wm_const.wm_OOR_HIGH_COLOR,
+        oor_low_color=wm_const.wm_OOR_LOW_COLOR,
+    ):
         wx.Panel.__init__(self, parent)
 
         ### Inputs ##########################################################
@@ -139,17 +140,19 @@ class ContinuousLegend(wx.Panel):
 
         ### Other Instance Attributes #######################################
         self.ticks = None
-        self.gradient = wm_utils.LinearGradient(self.low_color,
-                                                self.high_color)
+        self.gradient = wm_utils.LinearGradient(self.low_color, self.high_color)
 
         ### Remainder of __init__ ###########################################
         # Create the MemoryDC now - we'll add the bitmap later.
         self.mdc = wx.MemoryDC()
-        self.mdc.SetFont(wx.Font(9,
-                                 wx.FONTFAMILY_SWISS,
-                                 wx.FONTSTYLE_NORMAL,
-                                 wx.FONTWEIGHT_NORMAL,
-                                 ))
+        self.mdc.SetFont(
+            wx.Font(
+                9,
+                wx.FONTFAMILY_SWISS,
+                wx.FONTSTYLE_NORMAL,
+                wx.FONTWEIGHT_NORMAL,
+            )
+        )
 
         self.set_sizes()
 
@@ -222,18 +225,18 @@ class ContinuousLegend(wx.Panel):
         pr = self.plot_range[1] - self.plot_range[0]
         spacing = pr / (self.num_ticks - 1)
 
-        tick_values = wm_utils.frange(self.plot_range[0],
-                                      self.plot_range[1] + 1,
-                                      spacing)
+        tick_values = wm_utils.frange(
+            self.plot_range[0], self.plot_range[1] + 1, spacing
+        )
 
         ticks = []
         for tick in tick_values:
             string = "{:.3f}".format(tick)
             value = tick
             # `grad_end_y - 1` so that the bottom tick is aligned correctly.
-            pixel = wm_utils.rescale(tick,
-                                     self.plot_range,
-                                     (self.grad_end_y - 1, self.grad_start_y))
+            pixel = wm_utils.rescale(
+                tick, self.plot_range, (self.grad_end_y - 1, self.grad_start_y)
+            )
             # Putting gradient_end_y as the "low" for rescale makes the
             # high value be at the north end and the low value at the south.
             ticks.append((string, value, pixel))
@@ -255,8 +258,7 @@ class ContinuousLegend(wx.Panel):
             # Sorry, everything is measured from right to left...
             tick_end = self.grad_start_x - self.spacer
             tick_start = tick_end - self.tick_w
-            self.mdc.DrawLine(tick_start, tick[2],
-                              tick_end, tick[2])
+            self.mdc.DrawLine(tick_start, tick[2], tick_end, tick[2])
 
             # Text origin is top left of bounding box.
             # Text is currently left-aligned. Maybe Change?
@@ -290,8 +292,8 @@ class ContinuousLegend(wx.Panel):
         self.tick_start_x = self.spacer + self.text_w + self.spacer
         self.grad_start_x = self.tick_start_x + self.tick_w + self.spacer
         self.grad_end_x = self.grad_start_x + self.grad_w
-        self.dc_w = self.grad_end_x + self.spacer   # total bitmap width
-        self.dc_h = self.grad_h + self.text_h       # total bitmap height
+        self.dc_w = self.grad_end_x + self.spacer  # total bitmap width
+        self.dc_h = self.grad_h + self.text_h  # total bitmap height
 
     def draw_background(self):
         """
@@ -329,20 +331,19 @@ class ContinuousLegend(wx.Panel):
         brush = wx.Brush(c)
         self.mdc.SetPen(pen)
         self.mdc.SetBrush(brush)
-        self.mdc.DrawRectangle(self.grad_start_x,
-                               2,
-                               self.grad_w,
-                               self.grad_start_y - 2)
+        self.mdc.DrawRectangle(self.grad_start_x, 2, self.grad_w, self.grad_start_y - 2)
 
         c = self.oor_low_color
         pen = wx.Pen(c)
         brush = wx.Brush(c)
         self.mdc.SetPen(pen)
         self.mdc.SetBrush(brush)
-        self.mdc.DrawRectangle(self.grad_start_x,
-                               self.grad_end_y,
-                               self.grad_w,
-                               self.dc_h - self.grad_end_y - 2)
+        self.mdc.DrawRectangle(
+            self.grad_start_x,
+            self.grad_end_y,
+            self.grad_w,
+            self.dc_h - self.grad_end_y - 2,
+        )
 
         # Calculate and draw the tickmarks.
         self.draw_ticks(self.ticks)
@@ -363,21 +364,17 @@ class ContinuousLegend(wx.Panel):
         # Save the old pen colors
         old_pen = self.mdc.GetPen()
         old_brush = self.mdc.GetBrush()
-        delta = self.grad_h / 255           # height of one shade box
+        delta = self.grad_h / 255  # height of one shade box
         if delta < 1:
-            delta = 1       # max of 255 pts - fractional colors not defined.
+            delta = 1  # max of 255 pts - fractional colors not defined.
 
         y = self.grad_start_y
         while y <= self.grad_end_y:
-            val = wm_utils.rescale(y,
-                                   (self.grad_start_y, self.grad_end_y),
-                                   (1, 0))
+            val = wm_utils.rescale(y, (self.grad_start_y, self.grad_end_y), (1, 0))
             color = self.gradient.get_color(val)
             self.mdc.SetPen(wx.Pen(color))
             self.mdc.SetBrush(wx.Brush(color))
-            self.mdc.DrawRectangle(self.grad_start_x,
-                                   y,
-                                   self.grad_w, delta + 1)
+            self.mdc.DrawRectangle(self.grad_start_x, y, self.grad_w, delta + 1)
             y += delta
 
         # Set the pen and brush back to what they were
@@ -391,7 +388,6 @@ class ContinuousLegend(wx.Panel):
         There's probably a better way...
         """
         return max([self.mdc.GetTextExtent(i[0])[0] for i in ticks])
-
 
     ### #--------------------------------------------------------------------
     ### Events
@@ -437,8 +433,7 @@ class ContinuousLegend(wx.Panel):
 
     def on_scale_change(self, event):
         """Redraw things on scale change."""
-        self.gradient = wm_utils.LinearGradient(self.low_color,
-                                                self.high_color)
+        self.gradient = wm_utils.LinearGradient(self.low_color, self.high_color)
 
         self.hbox.Remove(0)
         self.hbox.Add((self.dc_w, self.dc_h))
@@ -456,11 +451,13 @@ class ContinuousLegend(wx.Panel):
         """Used for debugging."""
         print("Left-click - color from self.mdc.GetPixelPoint.")
         pos = event.GetPosition()
-        w, h = self.mdc.GetSize()       # change to gradient area
+        w, h = self.mdc.GetSize()  # change to gradient area
         if pos[0] < w and pos[1] < h:
-            val = wm_utils.rescale(pos[1],
-                                   (self.grad_start_y, self.grad_end_y - 1),
-                                   reversed(self.plot_range))
+            val = wm_utils.rescale(
+                pos[1],
+                (self.grad_start_y, self.grad_end_y - 1),
+                reversed(self.plot_range),
+            )
             a = self.mdc.GetPixelPoint(event.GetPosition())
             print("{}\t{}\t{}".format(pos, a, val))
 
@@ -497,11 +494,12 @@ class DiscreteLegend(wx.Panel):
     colors : list, optional
     """
 
-    def __init__(self,
-                 parent,
-                 labels,
-                 colors=None,
-                 ):
+    def __init__(
+        self,
+        parent,
+        labels,
+        colors=None,
+    ):
         wx.Panel.__init__(self, parent)
         self.parent = parent
         self.labels = labels
@@ -522,17 +520,15 @@ class DiscreteLegend(wx.Panel):
 
         # Create items to add
         for _i, (key, value) in enumerate(zip(self.labels, self.colors)):
-            self.label = wx.StaticText(self,
-                                       label=str(key),
-                                       style=wx.ALIGN_LEFT,
-                                       )
+            self.label = wx.StaticText(
+                self,
+                label=str(key),
+                style=wx.ALIGN_LEFT,
+            )
 
-            self.colorbox = csel.ColourSelect(self,
-                                              _i,
-                                              "",
-                                              tuple(value),
-                                              style=wx.NO_BORDER,
-                                              size=(20, 20))
+            self.colorbox = csel.ColourSelect(
+                self, _i, "", tuple(value), style=wx.NO_BORDER, size=(20, 20)
+            )
 
             self.Bind(csel.EVT_COLOURSELECT, self.on_color_pick, id=_i)
 
@@ -566,11 +562,11 @@ class DiscreteLegend(wx.Panel):
         spacing = 360 / n
         colors = []
         for val in wm_utils.frange(0, 360, spacing):
-            hsl = (val/360, 1, 0.75)
+            hsl = (val / 360, 1, 0.75)
             colors.append(colorsys.hsv_to_rgb(*hsl))
 
         # convert from 0-1 to 0-255 and return
-        colors = [tuple(int(i*255) for i in color) for color in colors]
+        colors = [tuple(int(i * 255) for i in color) for color in colors]
 
         # Alternate colors across the circle
         colors = colors[::2] + colors[1::2]
@@ -599,28 +595,32 @@ class DiscreteLegend(wx.Panel):
 class LegendOverlay(FloatCanvas.Text):
     """Demo of drawing overlay - to be used for legend."""
 
-    def __init__(self,
-                 String,
-                 xy,
-                 Size=24,
-                 Color="Black",
-                 BackgroundColor=None,
-                 Family=wx.MODERN,
-                 Style=wx.NORMAL,
-                 Weight=wx.NORMAL,
-                 Underlined=False,
-                 Font=None):
-        FloatCanvas.Text.__init__(self,
-                                  String,
-                                  xy,
-                                  Size=Size,
-                                  Color=Color,
-                                  BackgroundColor=BackgroundColor,
-                                  Family=Family,
-                                  Style=Style,
-                                  Weight=Weight,
-                                  Underlined=Underlined,
-                                  Font=Font)
+    def __init__(
+        self,
+        String,
+        xy,
+        Size=24,
+        Color="Black",
+        BackgroundColor=None,
+        Family=wx.MODERN,
+        Style=wx.NORMAL,
+        Weight=wx.NORMAL,
+        Underlined=False,
+        Font=None,
+    ):
+        FloatCanvas.Text.__init__(
+            self,
+            String,
+            xy,
+            Size=Size,
+            Color=Color,
+            BackgroundColor=BackgroundColor,
+            Family=Family,
+            Style=Style,
+            Weight=Weight,
+            Underlined=Underlined,
+            Font=Font,
+        )
 
     def _Draw(self, dc, Canvas):
         """
@@ -652,12 +652,13 @@ def main():
         """Base Frame."""
 
         def __init__(self, title):
-            wx.Frame.__init__(self,
-                              None,                         # Window Parent
-                              wx.ID_ANY,                    # id
-                              title=title,                  # Window Title
-                              size=(300 + 16, 550 + 38),    # Size in px
-                              )
+            wx.Frame.__init__(
+                self,
+                None,  # Window Parent
+                wx.ID_ANY,  # id
+                title=title,  # Window Title
+                size=(300 + 16, 550 + 38),  # Size in px
+            )
 
             self.Bind(wx.EVT_CLOSE, self.OnQuit)
 

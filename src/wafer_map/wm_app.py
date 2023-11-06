@@ -57,28 +57,30 @@ class WaferMapApp(object):
         ``True``.
     """
 
-    def __init__(self,
-                 xyd,
-                 die_size,
-                 center_xy=(0, 0),
-                 dia=150,
-                 edge_excl=5,
-                 flat_excl=5,
-                 data_type=wm_const.DataType.CONTINUOUS,
-                 high_color=wm_const.wm_HIGH_COLOR,
-                 low_color=wm_const.wm_LOW_COLOR,
-                 plot_range=None,
-                 plot_die_centers=False,
-                 show_die_gridlines=True,
-                 ):
+    def __init__(
+        self,
+        xyd,
+        die_size,
+        center_xy=(0, 0),
+        dia=150,
+        edge_excl=5,
+        flat_excl=5,
+        data_type=wm_const.DataType.CONTINUOUS,
+        high_color=wm_const.wm_HIGH_COLOR,
+        low_color=wm_const.wm_LOW_COLOR,
+        plot_range=None,
+        plot_die_centers=False,
+        show_die_gridlines=True,
+    ):
         self.app = wx.App()
 
-        self.wafer_info = wm_info.WaferInfo(die_size,
-                                            center_xy,
-                                            dia,
-                                            edge_excl,
-                                            flat_excl,
-                                            )
+        self.wafer_info = wm_info.WaferInfo(
+            die_size,
+            center_xy,
+            dia,
+            edge_excl,
+            flat_excl,
+        )
         self.xyd = xyd
         self.data_type = data_type
         self.high_color = high_color
@@ -107,21 +109,21 @@ class WaferMapApp(object):
 
 def main():
     """Run when called as a module."""
-    wafer_info, xyd = gen_fake_data.generate_fake_data(die_x=5.43,
-                                                       die_y=6.3,
-                                                       dia=150,
-                                                       edge_excl=4.5,
-                                                       flat_excl=4.5,
-                                                       x_offset=0,
-                                                       y_offset=0.5,
-                                                       grid_center=(29, 21.5),
-                                                       )
+    wafer_info, xyd = gen_fake_data.generate_fake_data(
+        die_x=5.43,
+        die_y=6.3,
+        dia=150,
+        edge_excl=4.5,
+        flat_excl=4.5,
+        x_offset=0,
+        y_offset=0.5,
+        grid_center=(29, 21.5),
+    )
 
     import random
+
     bins = ["Bin1", "Bin1", "Bin1", "Bin2", "Dragons", "Bin1", "Bin2"]
-    discrete_xyd = [(_x, _y, random.choice(bins))
-                    for _x, _y, _
-                    in xyd]
+    discrete_xyd = [(_x, _y, random.choice(bins)) for _x, _y, _ in xyd]
 
     discrete = False
     dtype = wm_const.DataType.CONTINUOUS

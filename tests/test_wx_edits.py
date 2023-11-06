@@ -18,7 +18,6 @@ from wx.lib.floatcanvas import FloatCanvas
 
 
 class TestWxPython(unittest.TestCase):
-
     def setUp(cls):
         cls.app = wx.App()
 

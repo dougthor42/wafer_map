@@ -110,42 +110,43 @@ def generate_fake_data(**kwargs):
     dia_list = [100, 150, 200, 210]
     excl_list = [0, 2.5, 5, 10]
     offset_list = [0, 0.5, -2, 0.24]
-    DEFAULT_KWARGS = {'die_x': random.uniform(5, 10),
-                      'die_y': random.uniform(5, 10),
-                      'dia': random.choice(dia_list),
-                      'edge_excl': random.choice(excl_list),
-                      'flat_excl': random.choice(excl_list),
-                      'x_offset': random.choice(offset_list),
-                      'y_offset': random.choice(offset_list),
-                      'grid_center': None,
-                      'dtype': wm_const.DataType.CONTINUOUS,
-                      }
+    DEFAULT_KWARGS = {
+        "die_x": random.uniform(5, 10),
+        "die_y": random.uniform(5, 10),
+        "dia": random.choice(dia_list),
+        "edge_excl": random.choice(excl_list),
+        "flat_excl": random.choice(excl_list),
+        "x_offset": random.choice(offset_list),
+        "y_offset": random.choice(offset_list),
+        "grid_center": None,
+        "dtype": wm_const.DataType.CONTINUOUS,
+    }
 
     # parse the keyword arguements, asigning defaults if not found.
     for key in DEFAULT_KWARGS:
         if key not in kwargs:
             kwargs[key] = DEFAULT_KWARGS[key]
 
-    die_x = kwargs['die_x']
-    die_y = kwargs['die_y']
-    dia = kwargs['dia']
-    edge_excl = kwargs['edge_excl']
-    flat_excl = kwargs['flat_excl']
-    x_offset = kwargs['x_offset']
-    y_offset = kwargs['y_offset']
-    grid_center = kwargs['grid_center']
-    dtype = kwargs['dtype']
+    die_x = kwargs["die_x"]
+    die_y = kwargs["die_y"]
+    dia = kwargs["dia"]
+    edge_excl = kwargs["edge_excl"]
+    flat_excl = kwargs["flat_excl"]
+    x_offset = kwargs["x_offset"]
+    y_offset = kwargs["y_offset"]
+    grid_center = kwargs["grid_center"]
+    dtype = kwargs["dtype"]
 
     die_size = (die_x, die_y)
 
     # Determine where our wafer edge is for the flat area
-    flat_y = -dia/2     # assume wafer edge at first
+    flat_y = -dia / 2  # assume wafer edge at first
     if dia in wm_const.wm_FLAT_LENGTHS:
         # A flat is defined by SEMI M1-0302, so we calcualte where it is
-        flat_y = -math.sqrt((dia/2)**2 - (wm_const.wm_FLAT_LENGTHS[dia] * 0.5)**2)
+        flat_y = -math.sqrt((dia / 2) ** 2 - (wm_const.wm_FLAT_LENGTHS[dia] * 0.5) ** 2)
 
     # calculate the exclusion radius^2
-    excl_sqrd = (dia/2)**2 + (edge_excl**2) - (dia * edge_excl)
+    excl_sqrd = (dia / 2) ** 2 + (edge_excl**2) - (dia * edge_excl)
 
     # 1. Generate square grid guarenteed to cover entire wafer
     #    We'll use 2x the wafer dia so that we can move center around a bit
@@ -154,7 +155,7 @@ def generate_fake_data(**kwargs):
 
     # 2. Determine the centerpoint
     if grid_center is None:
-        grid_center = (grid_max_x/2 + x_offset, grid_max_y/2 + y_offset)
+        grid_center = (grid_max_x / 2 + x_offset, grid_max_y / 2 + y_offset)
     print("Offsets: {}".format((x_offset, y_offset)))
 
     # This could be more efficient
@@ -200,12 +201,13 @@ def generate_fake_data(**kwargs):
     print("\nPlotting {} die.".format(len(grid_points)))
 
     # put all the wafer info into the WaferInfo class.
-    wafer_info = wm_info.WaferInfo(die_size,      # Die Size in (X, Y)
-                                   grid_center,   # Center Coord (X, Y)
-                                   dia,           # Wafer Diameter
-                                   edge_excl,     # Edge Exclusion
-                                   flat_excl,     # Flat Exclusion
-                                   )
+    wafer_info = wm_info.WaferInfo(
+        die_size,  # Die Size in (X, Y)
+        grid_center,  # Center Coord (X, Y)
+        dia,  # Wafer Diameter
+        edge_excl,  # Edge Exclusion
+        flat_excl,  # Flat Exclusion
+    )
     print(wafer_info)
 
     return (wafer_info, grid_points)
@@ -213,9 +215,11 @@ def generate_fake_data(**kwargs):
 
 def main():
     """Run when called as a module."""
-    wafer, data = generate_fake_data(dtype='discrete')
+    wafer, data = generate_fake_data(dtype="discrete")
     from pprint import pprint
+
     pprint(data)
+
 
 #    print()
 #    pprint([_i for _i in data if _i[0] in (17, 18, 19)])

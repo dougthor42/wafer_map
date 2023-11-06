@@ -71,20 +71,21 @@ class WaferMapPanel(wx.Panel):
         ``data_type`` is ``discrete``.
     """
 
-    def __init__(self,
-                 parent,
-                 xyd,
-                 wafer_info,
-                 data_type=wm_const.DataType.CONTINUOUS,
-                 coord_type=wm_const.CoordType.ABSOLUTE,
-                 high_color=wm_const.wm_HIGH_COLOR,
-                 low_color=wm_const.wm_LOW_COLOR,
-                 plot_range=None,
-                 plot_die_centers=False,
-                 discrete_legend_values=None,
-                 show_die_gridlines=True,
-                 discrete_legend_colors=None,
-                 ):
+    def __init__(
+        self,
+        parent,
+        xyd,
+        wafer_info,
+        data_type=wm_const.DataType.CONTINUOUS,
+        coord_type=wm_const.CoordType.ABSOLUTE,
+        high_color=wm_const.wm_HIGH_COLOR,
+        low_color=wm_const.wm_LOW_COLOR,
+        plot_range=None,
+        plot_die_centers=False,
+        discrete_legend_values=None,
+        show_die_gridlines=True,
+        discrete_legend_colors=None,
+    ):
         wx.Panel.__init__(self, parent)
 
         ### Inputs ##########################################################
@@ -107,7 +108,7 @@ class WaferMapPanel(wx.Panel):
         self.die_gridlines_bool = show_die_gridlines
 
         ### Other Attributes ################################################
-        self.xyd_dict = xyd_to_dict(self.xyd)      # data duplication!
+        self.xyd_dict = xyd_to_dict(self.xyd)  # data duplication!
         self.drag = False
         self.wfr_outline_bool = True
         self.crosshairs_bool = True
@@ -128,9 +129,10 @@ class WaferMapPanel(wx.Panel):
     def _init_ui(self):
         """Create the UI Elements and bind various events."""
         # Create items to add to our layout
-        self.canvas = FloatCanvas.FloatCanvas(self,
-                                              BackgroundColor="BLACK",
-                                              )
+        self.canvas = FloatCanvas.FloatCanvas(
+            self,
+            BackgroundColor="BLACK",
+        )
 
         # Initialize the FloatCanvas. Needs to come before adding items!
         self.canvas.InitAll()
@@ -203,29 +205,27 @@ class WaferMapPanel(wx.Panel):
                 unique_items = list({_die[2] for _die in self.xyd})
             else:
                 unique_items = self.discrete_legend_values
-            self.legend = wm_legend.DiscreteLegend(self,
-                                                   labels=unique_items,
-                                                   colors=self.discrete_legend_colors,
-                                                   )
+            self.legend = wm_legend.DiscreteLegend(
+                self,
+                labels=unique_items,
+                colors=self.discrete_legend_colors,
+            )
         else:
             if self.plot_range is None:
-                p_98 = float(wm_utils.nanpercentile([_i[2]
-                                                    for _i
-                                                    in self.xyd], 98))
-                p_02 = float(wm_utils.nanpercentile([_i[2]
-                                                    for _i
-                                                    in self.xyd], 2))
+                p_98 = float(wm_utils.nanpercentile([_i[2] for _i in self.xyd], 98))
+                p_02 = float(wm_utils.nanpercentile([_i[2] for _i in self.xyd], 2))
 
                 data_min = min([die[2] for die in self.xyd])
                 data_max = max([die[2] for die in self.xyd])
                 self.plot_range = (data_min, data_max)
                 self.plot_range = (p_02, p_98)
 
-            self.legend = wm_legend.ContinuousLegend(self,
-                                                     self.plot_range,
-                                                     self.high_color,
-                                                     self.low_color,
-                                                     )
+            self.legend = wm_legend.ContinuousLegend(
+                self,
+                self.plot_range,
+                self.high_color,
+                self.low_color,
+            )
 
     def _clear_canvas(self):
         """Clear the canvas."""
@@ -243,43 +243,47 @@ class WaferMapPanel(wx.Panel):
                 color = self.legend.get_color(die[2])
 
             # Determine the die's lower-left coordinate
-            lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
-                                                           self.die_size,
-                                                           self.grid_center)
+            lower_left_coord = wm_utils.grid_to_rect_coord(
+                die[:2], self.die_size, self.grid_center
+            )
 
             # Draw the die on the canvas
-            self.canvas.AddRectangle(lower_left_coord,
-                                     self.die_size,
-                                     LineWidth=1,
-                                     FillColor=color,
-                                     )
+            self.canvas.AddRectangle(
+                lower_left_coord,
+                self.die_size,
+                LineWidth=1,
+                FillColor=color,
+            )
 
     def draw_die_center(self):
         """Plot the die centers as a small dot."""
         centers = []
         for die in self.xyd:
             # Determine the die's lower-left coordinate
-            lower_left_coord = wm_utils.grid_to_rect_coord(die[:2],
-                                                           self.die_size,
-                                                           self.grid_center)
+            lower_left_coord = wm_utils.grid_to_rect_coord(
+                die[:2], self.die_size, self.grid_center
+            )
 
             # then adjust back to the die center
-            lower_left_coord = (lower_left_coord[0] + self.die_size[0] / 2,
-                                lower_left_coord[1] + self.die_size[1] / 2)
+            lower_left_coord = (
+                lower_left_coord[0] + self.die_size[0] / 2,
+                lower_left_coord[1] + self.die_size[1] / 2,
+            )
 
-            circ = FloatCanvas.Circle(lower_left_coord,
-                                      0.5,
-                                      FillColor=wm_const.wm_DIE_CENTER_DOT_COLOR,
-                                      )
+            circ = FloatCanvas.Circle(
+                lower_left_coord,
+                0.5,
+                FillColor=wm_const.wm_DIE_CENTER_DOT_COLOR,
+            )
             centers.append(circ)
 
         return FloatCanvas.Group(centers)
 
     def draw_wafer_objects(self):
         """Draw and add the various wafer objects."""
-        self.wafer_outline = draw_wafer_outline(self.wafer_info.dia,
-                                                self.wafer_info.edge_excl,
-                                                self.wafer_info.flat_excl)
+        self.wafer_outline = draw_wafer_outline(
+            self.wafer_info.dia, self.wafer_info.edge_excl, self.wafer_info.flat_excl
+        )
         self.canvas.AddObject(self.wafer_outline)
         if self.die_gridlines_bool:
             self.die_gridlines = draw_die_gridlines(self.wafer_info)
@@ -338,7 +342,7 @@ class WaferMapPanel(wx.Panel):
         """Toggle the legend on and off."""
         if self.legend_bool:
             self.hbox.Remove(0)
-            self.Layout()       # forces update of layout
+            self.Layout()  # forces update of layout
             self.legend_bool = False
         else:
             self.hbox.Insert(0, self.legend, 0)
@@ -393,7 +397,7 @@ class WaferMapPanel(wx.Panel):
         # disable the handler for future paint events
         self.canvas.Bind(wx.EVT_PAINT, None)
 
-        #TODO: Fix a flicker-type event that occurs on this call
+        # TODO: Fix a flicker-type event that occurs on this call
         self.zoom_fill()
 
     def on_color_change(self, event):
@@ -434,7 +438,7 @@ class WaferMapPanel(wx.Panel):
         #   Allows for zoom acceleration: fast wheel move = large zoom.
         #   factor < 1: zoom out. factor > 1: zoom in
         sign = abs(speed) / speed
-        factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR)**sign
+        factor = (abs(speed) * wm_const.wm_ZOOM_FACTOR) ** sign
 
         # Changes to FloatCanvas.Zoom mean we need to do the following
         # rather than calling the zoom() function.
@@ -442,10 +446,10 @@ class WaferMapPanel(wx.Panel):
         # we can call PixelToWorld(pos) again and get a different value!
         oldpoint = self.canvas.PixelToWorld(pos)
         self.canvas.Scale = self.canvas.Scale * factor
-        self.canvas.SetToNewScale(False)        # sets new scale but no redraw
+        self.canvas.SetToNewScale(False)  # sets new scale but no redraw
         newpoint = self.canvas.PixelToWorld(pos)
         delta = newpoint - oldpoint
-        self.canvas.MoveImage(-delta, 'World')  # performs the redraw
+        self.canvas.MoveImage(-delta, "World")  # performs the redraw
 
     def on_mouse_move(self, event):
         """Update the status bar with the world coordinates."""
@@ -454,10 +458,11 @@ class WaferMapPanel(wx.Panel):
 
         ds_x, ds_y = self.die_size
         gc_x, gc_y = self.grid_center
-        dc_x, dc_y = wm_utils.coord_to_grid(event.Coords,
-                                            self.die_size,
-                                            self.grid_center,
-                                            )
+        dc_x, dc_y = wm_utils.coord_to_grid(
+            event.Coords,
+            self.die_size,
+            self.grid_center,
+        )
 
         # lookup the die value
         grid = "x{}y{}"
@@ -469,32 +474,39 @@ class WaferMapPanel(wx.Panel):
 
         # create the status bar string
         coord_str = "{x:0.3f}, {y:0.3f}"
-        mouse_coord = "(" + coord_str.format(x=event.Coords[0],
-                                             y=event.Coords[1],
-                                             ) + ")"
+        mouse_coord = (
+            "("
+            + coord_str.format(
+                x=event.Coords[0],
+                y=event.Coords[1],
+            )
+            + ")"
+        )
 
-        die_radius = math.sqrt((ds_x * (gc_x - dc_x))**2
-                               + (ds_y * (gc_y - dc_y))**2)
-        mouse_radius = math.sqrt(event.Coords[0]**2 + event.Coords[1]**2)
+        die_radius = math.sqrt(
+            (ds_x * (gc_x - dc_x)) ** 2 + (ds_y * (gc_y - dc_y)) ** 2
+        )
+        mouse_radius = math.sqrt(event.Coords[0] ** 2 + event.Coords[1] ** 2)
 
         status_str = "Die {d_grid} :: Radius = {d_rad:0.3f} :: Value = {d_val}   "
         status_str += "Mouse {m_coord} :: Radius = {m_rad:0.3f}"
-        status_str = status_str.format(d_grid=die_grid,             # grid
-                                       d_val=die_val,               # value
-                                       d_rad=die_radius,            # radius
-                                       m_coord=mouse_coord,         # coord
-                                       m_rad=mouse_radius,          # radius
-                                       )
+        status_str = status_str.format(
+            d_grid=die_grid,  # grid
+            d_val=die_val,  # value
+            d_rad=die_radius,  # radius
+            m_coord=mouse_coord,  # coord
+            m_rad=mouse_radius,  # radius
+        )
         try:
             parent.SetStatusText(status_str)
-        except:         # TODO: put in exception types.
+        except:  # TODO: put in exception types.
             pass
 
         # If we're dragging, actually move the image.
         if self.drag:
             self.end_move_loc = np.array(event.GetPosition())
             self.diff_loc = self.mid_move_loc - self.end_move_loc
-            self.canvas.MoveImage(self.diff_loc, 'Pixel', ReDraw=True)
+            self.canvas.MoveImage(self.diff_loc, "Pixel", ReDraw=True)
             self.mid_move_loc = self.end_move_loc
 
             # doesn't appear to do anything...
@@ -554,6 +566,7 @@ class WaferMapPanel(wx.Panel):
 ### Module Functions
 # ---------------------------------------------------------------------------
 
+
 def xyd_to_dict(xyd_list):
     """Convert the xyd list to a dict of xNNyNN key-value pairs."""
     return {"x{}y{}".format(_x, _y): _d for _x, _y, _d in xyd_list}
@@ -579,16 +592,17 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
     :class:`wx.lib.floatcanvas.FloatCanvas.Group`
         A ``Group`` that can be added to any floatcanvas.FloatCanvas instance.
     """
-    rad = float(dia)/2.0
+    rad = float(dia) / 2.0
     if flat is None:
         flat = excl
 
     # Full wafer outline circle
-    circ = FloatCanvas.Circle((0, 0),
-                              dia,
-                              LineColor=wm_const.wm_OUTLINE_COLOR,
-                              LineWidth=1,
-                              )
+    circ = FloatCanvas.Circle(
+        (0, 0),
+        dia,
+        LineColor=wm_const.wm_OUTLINE_COLOR,
+        LineWidth=1,
+    )
 
     # Calculate the exclusion Radius
     exclRad = 0.5 * (dia - 2.0 * excl)
@@ -596,15 +610,16 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
     if dia in wm_const.wm_FLAT_LENGTHS:
         # A flat is defined, so we draw it.
         flat_size = wm_const.wm_FLAT_LENGTHS[dia]
-        x = flat_size/2
-        y = -math.sqrt(rad**2 - x**2)       # Wfr Flat's Y Location
+        x = flat_size / 2
+        y = -math.sqrt(rad**2 - x**2)  # Wfr Flat's Y Location
 
-        arc = FloatCanvas.Arc((x, y),
-                              (-x, y),
-                              (0, 0),
-                              LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                              LineWidth=3,
-                              )
+        arc = FloatCanvas.Arc(
+            (x, y),
+            (-x, y),
+            (0, 0),
+            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+            LineWidth=3,
+        )
 
         # actually a wafer flat, but called notch
         notch = draw_wafer_flat(rad, wm_const.wm_FLAT_LENGTHS[dia])
@@ -613,22 +628,24 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
         FSSflatY = y + flat
         if exclRad < abs(FSSflatY):
             # Then draw a circle with no flat
-            excl_arc = FloatCanvas.Circle((0, 0),
-                                          exclRad * 2,
-                                          LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                                          LineWidth=3,
-                                          )
+            excl_arc = FloatCanvas.Circle(
+                (0, 0),
+                exclRad * 2,
+                LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+                LineWidth=3,
+            )
             excl_group = FloatCanvas.Group([excl_arc])
         else:
             FSSflatX = math.sqrt(exclRad**2 - FSSflatY**2)
 
             # Define the wafer arc
-            excl_arc = FloatCanvas.Arc((FSSflatX, FSSflatY),
-                                       (-FSSflatX, FSSflatY),
-                                       (0, 0),
-                                       LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                                       LineWidth=3,
-                                       )
+            excl_arc = FloatCanvas.Arc(
+                (FSSflatX, FSSflatY),
+                (-FSSflatX, FSSflatY),
+                (0, 0),
+                LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+                LineWidth=3,
+            )
 
             excl_notch = draw_wafer_flat(exclRad, FSSflatX * 2)
             excl_group = FloatCanvas.Group([excl_arc, excl_notch])
@@ -637,23 +654,25 @@ def draw_wafer_outline(dia=150, excl=5, flat=None):
         ang = 2.5
         start_xy, end_xy = calc_flat_coords(rad, ang)
 
-        arc = FloatCanvas.Arc(start_xy,
-                              end_xy,
-                              (0, 0),
-                              LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                              LineWidth=3,
-                              )
+        arc = FloatCanvas.Arc(
+            start_xy,
+            end_xy,
+            (0, 0),
+            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+            LineWidth=3,
+        )
 
         notch = draw_wafer_notch(rad)
         # Flat not defined, so use a notch to denote wafer orientation.
         start_xy, end_xy = calc_flat_coords(exclRad, ang)
 
-        excl_arc = FloatCanvas.Arc(start_xy,
-                                   end_xy,
-                                   (0, 0),
-                                   LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                                   LineWidth=3,
-                                   )
+        excl_arc = FloatCanvas.Arc(
+            start_xy,
+            end_xy,
+            (0, 0),
+            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+            LineWidth=3,
+        )
 
         excl_notch = draw_wafer_notch(exclRad)
         excl_group = FloatCanvas.Group([excl_arc, excl_notch])
@@ -729,21 +748,24 @@ def calc_flat_coords(radius, angle):
 def draw_crosshairs(dia=150, dot=False):
     """Draw the crosshairs or wafer center dot."""
     if dot:
-        circ = FloatCanvas.Circle((0, 0),
-                                  2.5,
-                                  FillColor=wm_const.wm_WAFER_CENTER_DOT_COLOR,
-                                  )
+        circ = FloatCanvas.Circle(
+            (0, 0),
+            2.5,
+            FillColor=wm_const.wm_WAFER_CENTER_DOT_COLOR,
+        )
 
         return FloatCanvas.Group([circ])
     else:
         # Default: use crosshairs
         rad = dia / 2
-        xline = FloatCanvas.Line([(rad * 1.05, 0), (-rad * 1.05, 0)],
-                                 LineColor=wx.CYAN,
-                                 )
-        yline = FloatCanvas.Line([(0, rad * 1.05), (0, -rad * 1.05)],
-                                 LineColor=wx.CYAN,
-                                 )
+        xline = FloatCanvas.Line(
+            [(rad * 1.05, 0), (-rad * 1.05, 0)],
+            LineColor=wx.CYAN,
+        )
+        yline = FloatCanvas.Line(
+            [(0, rad * 1.05), (0, -rad * 1.05)],
+            LineColor=wx.CYAN,
+        )
 
         return FloatCanvas.Group([xline, yline])
 
@@ -772,7 +794,7 @@ def draw_die_gridlines(wf):
     pos_vert = np.arange(x_ref, edge, x_size)
     neg_vert = np.arange(x_ref, -edge, -x_size)
 
-    y_ref = math.modf(wf.center_xy[1])[0] * y_size + (y_size/2)
+    y_ref = math.modf(wf.center_xy[1])[0] * y_size + (y_size / 2)
     pos_horiz = np.arange(y_ref, edge, y_size)
     neg_horiz = np.arange(y_ref, -edge, -y_size)
 
@@ -790,24 +812,26 @@ def draw_die_gridlines(wf):
 
 def draw_wafer_flat(rad, flat_length):
     """Draw a wafer flat for a given radius and flat length."""
-    x = flat_length/2
+    x = flat_length / 2
     y = -math.sqrt(rad**2 - x**2)
 
-    flat = FloatCanvas.Line([(-x, y), (x, y)],
-                            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                            LineWidth=3,
-                            )
+    flat = FloatCanvas.Line(
+        [(-x, y), (x, y)],
+        LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+        LineWidth=3,
+    )
     return flat
 
 
-def draw_excl_flat(rad, flat_y, line_width=1, line_color='black'):
+def draw_excl_flat(rad, flat_y, line_width=1, line_color="black"):
     """Draw a wafer flat for a given radius and flat length."""
     flat_x = math.sqrt(rad**2 - flat_y**2)
 
-    flat = FloatCanvas.Line([(-flat_x, flat_y), (flat_x, flat_y)],
-                            LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                            LineWidth=3,
-                            )
+    flat = FloatCanvas.Line(
+        [(-flat_x, flat_y), (flat_x, flat_y)],
+        LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+        LineWidth=3,
+    )
     return flat
 
 
@@ -817,14 +841,17 @@ def draw_wafer_notch(rad):
     ang_rad = ang * math.pi / 180
 
     # Define the Notch as a series of 3 (x, y) points
-    xy_points = [(-rad * math.sin(ang_rad), -rad * math.cos(ang_rad)),
-                 (0, -rad*0.95),
-                 (rad * math.sin(ang_rad), -rad * math.cos(ang_rad))]
+    xy_points = [
+        (-rad * math.sin(ang_rad), -rad * math.cos(ang_rad)),
+        (0, -rad * 0.95),
+        (rad * math.sin(ang_rad), -rad * math.cos(ang_rad)),
+    ]
 
-    notch = FloatCanvas.Line(xy_points,
-                             LineColor=wm_const.wm_WAFER_EDGE_COLOR,
-                             LineWidth=2,
-                             )
+    notch = FloatCanvas.Line(
+        xy_points,
+        LineColor=wm_const.wm_WAFER_EDGE_COLOR,
+        LineWidth=2,
+    )
     return notch
 
 
