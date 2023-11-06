@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Unittests for the two required changes to wxPython_Phoenix source code.
 

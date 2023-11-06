@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Constants for the wafer_map package.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 from enum import Enum
 
 import wx

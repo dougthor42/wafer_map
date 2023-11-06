@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # wafer_map documentation build configuration file, created by
 # sphinx-quickstart on Wed Feb  1 14:36:48 2017.
@@ -12,14 +11,14 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-
+#
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import logging
 import os
 import sys
-import logging
 
 logging.disable(logging.CRITICAL)
 

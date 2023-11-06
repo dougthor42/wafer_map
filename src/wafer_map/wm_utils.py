@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Holds various utilities used by ``wafer_map``.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import numpy as np
 from colour import Color
 

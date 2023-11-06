@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 A self-contained Window for a Wafer Map.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import wx
 
-from . import wm_frame
-from . import wm_info
-from . import gen_fake_data
-from . import wm_constants as wm_const
+from wafer_map import gen_fake_data
+from wafer_map import wm_constants as wm_const
+from wafer_map import wm_frame
+from wafer_map import wm_info
 
 
 class WaferMapApp(object):

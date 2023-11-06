@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 This is the main window of the Wafer Map application.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import wx
 
-from . import wm_core
-from . import wm_constants as wm_const
+from wafer_map import wm_constants as wm_const
+from wafer_map import wm_core
 
 
 class WaferMapWindow(wx.Frame):

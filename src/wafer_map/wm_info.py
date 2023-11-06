@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The :class:`wafer_map.wm_info.WaferInfo` class.
 """
