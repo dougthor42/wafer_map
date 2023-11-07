@@ -1,0 +1,31 @@
+---
+name: Publish to PyPI
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    name: "Publish to PyPI"
+    runs-on: "windows-2019"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Set up Python 3.8"
+        uses: "actions/setup-python@v4"
+        with:
+          python-version: "3.8"
+
+      - name: "Install Build Requirements"
+        run: "pip install -e .[build]"
+
+      - name: "Build source distribution and wheel"
+        run: "python -m build --sdist --wheel --outdir dist/ ."
+
+      - name: "Publish to PyPI"
+        uses: "pypa/gh-action-pypi-publish@release/v1"
+        with:
+          password: "${{ secrets.PYPI_API_TOKEN }}"
