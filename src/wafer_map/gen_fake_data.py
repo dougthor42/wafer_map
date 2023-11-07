@@ -7,15 +7,9 @@ peice of code so... ye be warned.
 import math
 import random
 
-from wafer_map import PY2
 from wafer_map import wm_constants as wm_const
 from wafer_map import wm_info
 from wafer_map import wm_utils
-
-
-# Python2 Compatibility
-if PY2:
-    range = xrange
 
 
 def generate_fake_data(**kwargs):
