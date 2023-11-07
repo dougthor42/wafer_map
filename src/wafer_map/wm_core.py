@@ -796,7 +796,7 @@ def draw_die_gridlines(wf):
     line_coords = list([(x, -edge), (x, edge)] for x in x_values)
     line_coords.extend([(-edge, y), (edge, y)] for y in y_values)
 
-    lines = [FloatCanvas.Line(l, LineColor=grey) for l in line_coords]
+    lines = [FloatCanvas.Line(_line, LineColor=grey) for _line in line_coords]
 
     return FloatCanvas.Group(list(lines))
 
