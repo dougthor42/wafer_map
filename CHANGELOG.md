@@ -11,6 +11,7 @@ This document highlights high-level changes made to this program.
 + Formatted code with `black`.
 + Removed `__future__` imports now that we no longer support Python 2; reorder
   and fix imports to not use `.` notation. Removed encoding pragma.
++ Addressed some lint issues; removed Py2 `xrange` hack.
 
 
 ## 1.1.2 / 2019-10-14

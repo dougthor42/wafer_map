@@ -85,28 +85,31 @@ The easiest way to use this to to:
 
 0. Import the `wm_app` module:
 
-    ```python
+    ```pycon
     >>> import wm_app
     ```
 
 1.  Set up your data as a list of (grid_x, grid_y, value) tuples:
 
-    ```python
-    >>> data = [(grid_x_1, grid_y_1, data_1),       # 1st die
-    ...         (grid_x_2, grid_y_2, data_2),       # 2nd die
-    ...         (grid_x_3, grid_y_3, data_3)        # 3rd die and so on
-    ...         ]
+    ```pycon
+    >>> data = [
+    ...     (grid_x_1, grid_y_1, data_1),       # 1st die
+    ...     (grid_x_2, grid_y_2, data_2),       # 2nd die
+    ...     (grid_x_3, grid_y_3, data_3),       # 3rd die and so on
+    ... ]
     ```
 
 2.  Call `wm_app.WaferMapApp`.
 
-    ```python
-    >>> wm_app.WaferMapApp(data,
-    ...                    die_size,
-    ...                    center_xy,
-    ...                    dia,
-    ...                    edge_excl,
-    ...                    flat_excl)
+    ```pycon
+    >>> wm_app.WaferMapApp(
+    ...     data,
+    ...     die_size,
+    ...     center_xy,
+    ...     dia,
+    ...     edge_excl,
+    ...     flat_excl,
+    ... )
     ```
 
     The input parameters for WaferMapApp are:
