@@ -8,15 +8,10 @@ import wx
 import wx.lib.colourselect as csel
 from wx.lib.floatcanvas import FloatCanvas
 
-from wafer_map import PY2
 from wafer_map import wm_constants as wm_const
 from wafer_map import wm_utils
 
 # TODO: Update to Bezier Curves for colors. See http://bsou.io/p/3
-
-# Python2 Compatibility
-if PY2:
-    range = xrange
 
 
 class Legend(object):

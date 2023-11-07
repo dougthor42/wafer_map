@@ -4,13 +4,6 @@ Holds various utilities used by ``wafer_map``.
 import numpy as np
 from colour import Color
 
-from wafer_map import PY2
-
-
-# Python2 Compatibility
-if PY2:
-    range = xrange
-
 
 class Gradient(object):
     """
