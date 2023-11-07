@@ -196,12 +196,12 @@ def linear_gradient(initial_color, dest_color, value):
     h2, s2, l2 = c2.hsl
 
     # Perform the linear interpolation
-    h = rescale(value, (0, 1), (h1, h2))
-    s = rescale(value, (0, 1), (s1, s2))
-    l = rescale(value, (0, 1), (l1, l2))
+    hue = rescale(value, (0, 1), (h1, h2))
+    saturation = rescale(value, (0, 1), (s1, s2))
+    lightness = rescale(value, (0, 1), (l1, l2))
 
     # Convert back to 0-255 for wxPython
-    r, g, b = (int(_c * 255) for _c in Color(hsl=(h, s, l)).rgb)
+    r, g, b = (int(_c * 255) for _c in Color(hsl=(hue, saturation, lightness)).rgb)
 
     return (r, g, b)
 
@@ -215,8 +215,8 @@ def polylinear_gradient(colors, value):
     Value is the 0-1 value between colors[0] and colors[-1].
     Assumes uniform spacing between all colors.
     """
-    n = len(colors)
-    if n == 2:
+    num_colors = len(colors)
+    if num_colors == 2:
         return linear_gradient(colors[0], colors[1], value)
 
     if value >= 1:
@@ -225,18 +225,18 @@ def polylinear_gradient(colors, value):
         return colors[0]
 
     # divide up our range into n - 1 segments, where n is the number of colors
-    l = 1 / (n - 1)  # float division
+    segment_size = 1 / (num_colors - 1)  # float division
 
     # figure out which segment we're in - determines start and end colors
-    m = int(value // l)  # Note floor division
+    segment = int(value // segment_size)  # Note floor division
 
-    low = m * l
-    high = (m + 1) * l
+    low = segment * segment_size
+    high = (segment + 1) * segment_size
 
     # calculate where our value lies within that particular gradient
     v2 = rescale(value, (low, high), (0, 1))
 
-    return linear_gradient(colors[m], colors[m + 1], v2)
+    return linear_gradient(colors[segment], colors[segment + 1], v2)
 
 
 def beizer_gradient(initial_color, arc_color, dest_color, value):
